@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacing_xxxx_small">1dp</dimen>
+    <dimen name="spacing_xxx_small">2dp</dimen>
+    <dimen name="spacing_xx_small">4dp</dimen>
+    <dimen name="spacing_x_small">8dp</dimen>
+    <dimen name="spacing_minimum">12dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_tag_spinner">28dp</dimen>
+    <dimen name="spacing_huge">32dp</dimen>
+
+    <dimen name="navdrawer_width">300dp</dimen>
+    <dimen name="navheader_height">192dp</dimen>
+    <!-- Text sizes -->
+    <dimen name="text_tiny">9sp</dimen>
+    <dimen name="text_micro">10sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_medium">14sp</dimen>
+    <dimen name="text_big">18sp</dimen>
+    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_x_large">22sp</dimen>
+    <dimen name="text_xx_large">24sp</dimen>
+    <dimen name="text_xxx_large">48sp</dimen>
+
+
+    <dimen name="avatar_huge">128dp</dimen>
+    <dimen name="avatar_large">96dp</dimen>
+    <dimen name="avatar_big">64dp</dimen>
+    <dimen name="avatar_normal">48dp</dimen>
+    <dimen name="avatar_small">38dp</dimen>
+    <dimen name="avatar_tiny">24dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+</resources>

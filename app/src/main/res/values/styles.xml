@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="PopupAnimation" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/popup_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_out</item>
+
+    </style>
+
+    <style name="Viato.ActionBar.Title" parent="android:TextAppearance">
+        <item name="android:textColor">@color/text_innverse</item>
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+
+    <style name="Viato.ActionBar.Subtitle" parent="android:TextAppearance">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/text_secondary_innverse</item>
+    </style>
+
+
+
+
+</resources>
