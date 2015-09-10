@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- greyscale -->
+    <color name="white">#FFFFFF</color>
+
+    <color name="grey_bg">#E9E9E9</color>
+    <color name="light_grey">#D4D4D4</color>
+    <color name="dark_grey">#A8A8A8</color>
+
+
+    <color name="black">#000000</color>
+    <color name="light_black">#323232</color>
+
+    <color name="shadow">#D3D3D3</color>
+
+
+    <color name="text">#DE000000</color>
+    <color name="secondary_text">#8A000000</color>
+
+    <color name="text_innverse">#DEFFFFFF</color>
+    <color name="text_secondary_innverse">#8AFFFFFF</color>
+
+
+    <color name="hint_text">#61000000</color>
+    <color name="disabled_text">#4B000000</color>
+    <color name="divider">#0C000000</color>
+
+    <!-- theme colors -->
+    <color name="primary">#00BCD4</color>
+    <color name="primary_dark">#0097A7</color>
+    <color name="primary_light">#4DD0E1</color>
+
+    <color name="accent">#00BCD4</color>
+    <color name="accent_translucent">#8000BCD4</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="overlay_black_15p">#26000000</color>
+    <color name="transparent_scrim">#40000000</color>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <string name="pref_access_token">access_token</string>
+        <string name="pref_email">email</string>
+        <string name="pref_name">name</string>
+        <string name="pref_user_id">user_id</string>
+        <string name="pref_mobile_number">mobile_number</string>
+        <string name="pref_device_id">device_id</string>
+
+        <string name="pref_utm_source">pref_utm_source</string>
+        <string name="pref_utm_campaign">pref_utm_campaign</string>
+        <string name="pref_utm_medium">pref_utm_medium</string>
+        <string name="pref_utm_content">pref_utm_content</string>
+        <string name="pref_utm_term">pref_utm_term</string>
+
+        <!--TODO-->
+        <string name="pref_first_launch">pref_first_launch</string>
+        <string name="pref_latitude">pref_latitude</string>
+        <string name="pref_longitude">pref_longitude</string>
+        <string name="pref_location">location</string>
+        <string name="pref_location_settings">location_settings</string>
+
+        <string name="pref_is_verifying">pref_is_verified</string>
+        <string name="pref_verify_status">pref_verify_status</string>
+
+        <string name="pref_city">pref_city</string>
+        <string name="pref_received_sms">pref_received_sms</string>
+        <string name="pref_share_token">pref_share_token</string>
+
+        <string name="pref_last_version_code">pref_last_version_code</string>
+        <string name="pref_last_version_name">pref_last_version_name</string>
+
+        <string name="pref_play_referral">play_referral</string>
+</resources>
