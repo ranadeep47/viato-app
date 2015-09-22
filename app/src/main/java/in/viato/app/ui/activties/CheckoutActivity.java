@@ -1,33 +1,42 @@
 package in.viato.app.ui.activties;
 
-import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import in.viato.app.R;
 
-public class MainActivity extends AbstractNavDrawerActivity {
+public class CheckoutActivity extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.activity_bare);
+
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.frame_content);
+        if(fragment == null) {
+            fragment = new CheckoutActivityFragment();
+            fm.beginTransaction()
+                    .add(R.id.frame_content, fragment)
+                    .commit();
+        }
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mToolbar.setTitle(R.string.app_name);
-        mToolbar.setSubtitle(R.string.app_description);
-        mToolbar.setTitleTextAppearance(this, R.style.Viato_ActionBar_Title);
-        mToolbar.setSubtitleTextAppearance(this, R.style.Viato_ActionBar_Subtitle);
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_checkout, menu);
         return true;
     }
 
@@ -43,10 +52,6 @@ public class MainActivity extends AbstractNavDrawerActivity {
             return true;
         }
 
-        if (id == R.id.action_cart) {
-            startActivity(new Intent(this, CheckoutActivity.class));
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 }
