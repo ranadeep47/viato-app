@@ -1,9 +1,9 @@
 package in.viato.app.ui.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 
 import butterknife.ButterKnife;
+import in.viato.app.ui.activties.AbstractActivity;
 import in.viato.app.utils.RxUtils;
 import rx.subscriptions.CompositeSubscription;
 
@@ -68,6 +69,12 @@ public abstract class AbstractFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
@@ -99,5 +106,9 @@ public abstract class AbstractFragment extends Fragment {
 
     public boolean onBackPressed() {
         return false;
+    }
+
+    public AbstractActivity getHostingActivity() {
+        return ((AbstractActivity) super.getActivity());
     }
 }

@@ -1,14 +1,15 @@
 package in.viato.app.ui.activties;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -101,7 +102,7 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
         //Fetch the current primary fragment. If that will handle the Menu click,
         // pass it to that one
         final AbstractFragment currentMainFragment = (AbstractFragment)
-                getFragmentManager()
+                getSupportFragmentManager()
                         .findFragmentById(R.id.frame_content);
 
         boolean handled = false;
@@ -169,6 +170,9 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
 
 
     public void showNoInternet(){
+        FrameLayout mainContent = (FrameLayout) findViewById(R.id.frame_content);
+        mainContent.setVisibility(View.GONE);
+
         FrameLayout overlay = (FrameLayout) findViewById(R.id.frame_overlay);
         overlay.setVisibility(View.VISIBLE);
 
@@ -204,7 +208,7 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
 
     public AbstractFragment getCurrentMasterFragment() {
 
-        return (AbstractFragment) getFragmentManager()
+        return (AbstractFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.frame_content);
 
     }
@@ -230,7 +234,7 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
                              final boolean customAnimate, final boolean remove) {
 
 
-        final FragmentManager fragmentManager = getFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (remove) {
             fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);

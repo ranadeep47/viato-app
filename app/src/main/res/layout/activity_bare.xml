@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/frame_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/frame_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
     <FrameLayout
         android:id="@+id/frame_overlay"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
         <include layout="@layout/layout_no_internet" android:id="@+id/layout_no_internet" android:visibility="gone"/>
         <include layout="@layout/layout_force_update" android:id="@+id/layout_force_update" android:visibility="gone" />
     </FrameLayout>
-</FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>
+
+

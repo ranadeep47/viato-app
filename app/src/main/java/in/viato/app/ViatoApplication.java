@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
@@ -31,6 +32,9 @@ public class ViatoApplication extends Application implements NetworkStateReceive
 
     private ViatoAPI mViatoAPI;
 
+    public static Typeface roboto;
+    public static Typeface robotoCondensed;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,6 +46,9 @@ public class ViatoApplication extends Application implements NetworkStateReceive
                 .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build());
+
+        roboto = Typeface.createFromAsset(getAssets(), "fonts/roboto/Roboto-Black.ttf");
+        robotoCondensed = Typeface.createFromAsset(getAssets(), "fonts/roboto/RobotoCondensed-Bold.ttf");
 
         Logger.init(mTAG);
 

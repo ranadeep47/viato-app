@@ -1,5 +1,6 @@
 package in.viato.app.ui.activties;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -65,6 +66,7 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                                 Snackbar.make(mDrawerLayout,"Home", Snackbar.LENGTH_LONG);
                                     break;
                             case R.id.nav_my_books :
+                                startActivity(new Intent(getApplicationContext(), BookDetailActivity.class));
                                 break;
                             case R.id.nav_lends :
                                 break;
