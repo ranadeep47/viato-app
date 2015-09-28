@@ -102,7 +102,7 @@ public abstract class AbstractFragment extends Fragment {
      * avoid duplicate all the inflate code in every fragment. You only have to return the layout to
      * inflate in this method when extends BaseFragment.
      */
-    protected abstract int getFragmentLayout();
+//    protected abstract int getFragmentLayout();
 
     public boolean onBackPressed() {
         return false;

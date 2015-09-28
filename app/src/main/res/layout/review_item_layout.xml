@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="false"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:focusable="false">
+
+        <in.viato.app.ui.widgets.RoundedImageView
+            android:layout_width="@dimen/avatar_normal"
+            android:layout_height="@dimen/avatar_normal"
+            android:src="@drawable/img_header"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:id="@+id/reviewer_img"
+            android:focusable="false"/>
+        <RatingBar
+            android:id="@+id/rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:numStars="5"
+            android:rating="4"
+            style="?android:attr/ratingBarStyleSmall"
+            android:focusable="false"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/reviewer_img"
+            android:layout_toLeftOf="@id/rating_bar"
+            android:focusable="false"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/reviewer_name"
+                android:focusable="false"
+                android:text="Saiteja Parsi"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/review_date"
+                android:text="12/15/2015"
+                android:focusable="false"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/review_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginLeft="64dp"
+        android:focusable="false"/>
+</LinearLayout>

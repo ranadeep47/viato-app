@@ -7,18 +7,24 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -28,16 +34,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.lang.annotation.Target;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.models.Review;
 import in.viato.app.ui.activties.AbstractActivity;
+import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
+import in.viato.app.ui.adapters.ReviewRVAdapter;
+import in.viato.app.ui.widgets.MyHorizantalLlm;
+import in.viato.app.ui.widgets.MyVerticalLlm;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +55,8 @@ import in.viato.app.ui.activties.AbstractActivity;
  * create an instance of this fragment.
  */
 public class BookDetailFragment extends AbstractFragment {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -59,28 +71,29 @@ public class BookDetailFragment extends AbstractFragment {
     private static Boolean inWishlist = true;
     private static Boolean isFullDesc = true;
 
+    public static final String EXTRA_ID = "boook_id";
+
     private AbstractActivity mActivity;
 
-    @Bind(R.id.anim_toolbar)
-    Toolbar mToolbar;
+    @Bind(R.id.anim_toolbar) Toolbar mToolbar;
 
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @Bind(R.id.img_header)
-    ImageView mImageView;
+    @Bind(R.id.img_header) ImageView mImageView;
 
-    @Bind(R.id.fab)
-    FloatingActionButton mFloatingActionButton;
+    @Bind(R.id.fab) FloatingActionButton mFloatingActionButton;
 
-    @Bind(R.id.desc)
-    TextView description;
+    @Bind(R.id.user_review) TextView mUserReview;
+    @Bind(R.id.desc) TextView mDescription;
+    @Bind(R.id.sale_price) TextView mSalePrice;
 
-    @Bind(R.id.user_rating)
-    RatingBar userRating;
+    @Bind(R.id.user_rating) RatingBar mUserRating;
 
-    @Bind(R.id.user_review)
-    TextView userReview;
+    @Bind(R.id.related_books_list) RecyclerView mRelatedBooksRV;
+    @Bind(R.id.review_list_small) RecyclerView mReviewList;
+
+    @Bind(R.id.all_reviews)
+    LinearLayout allReviews;
 
     public static BookDetailFragment newInstance(String param1, String param2) {
         BookDetailFragment fragment = new BookDetailFragment();
@@ -119,20 +132,19 @@ public class BookDetailFragment extends AbstractFragment {
         mActivity.setSupportActionBar(mToolbar);
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mCollapsingToolbarLayout.setTitle("");
+//        mCollapsingToolbarLayout.setTitle("");
+        mSalePrice.setPaintFlags(mSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         setPalleteColors();
 
         setListeners();
-//        description.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        setupRecyclerView(mRelatedBooksRV);
+
+        setupReviewRecyclerView(mReviewList);
 
         return view;
 
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_book_detail;
     }
 
     @Override
@@ -148,10 +160,24 @@ public class BookDetailFragment extends AbstractFragment {
         ButterKnife.unbind(this);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_RATING) {
+            Float rating = data.getFloatExtra(RaingDialogFragment.EXTRA_RATING, 0);
+            String review = data.getStringExtra(RaingDialogFragment.EXTRA_REVIEW).replaceAll("\\s+", " ");;
+            mUserRating.setRating(rating);
+            mUserReview.setText(review);
+        }
+    }
+
     @TargetApi(21)
     public void setPalleteColors() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_header);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_header2);
 
             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
@@ -180,13 +206,13 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     public void setListeners() {
-        userRating.setIsIndicator(false);
-        userRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        mUserRating.setIsIndicator(false);
+        mUserRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             public void onRatingChanged(RatingBar ratingBar, float rating,
                                         boolean fromUser) {
                 rating = (float) Math.ceil(rating);
 
-                String review = String.valueOf(userReview.getText());
+                String review = String.valueOf(mUserReview.getText());
 
                 FragmentManager fm = mActivity.getSupportFragmentManager();
 
@@ -194,6 +220,22 @@ public class BookDetailFragment extends AbstractFragment {
                         .newInstance(rating, review);
                 dialog.setTargetFragment(BookDetailFragment.this, REQUEST_RATING);
                 dialog.show(fm, DIALOG_RATING);
+            }
+        });
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Todo: Add to cart
+                Snackbar.make(v, "Added to cart", Snackbar.LENGTH_SHORT)
+                        .setAction("Undo", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //Todo: Remove from cart
+                                Snackbar.make(v, "Removed from cart", Snackbar.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
             }
         });
     }
@@ -213,25 +255,61 @@ public class BookDetailFragment extends AbstractFragment {
     public void toggleDesc(TextView view) {
         isFullDesc = ! isFullDesc;
         if(isFullDesc) {
-            description.setMaxLines(8);
+            mDescription.setMaxLines(8);
             view.setText("Show More");
         } else {
-            description.setMaxLines(Integer.MAX_VALUE);
+            mDescription.setMaxLines(Integer.MAX_VALUE);
             view.setText("Show Less");
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
+    @OnClick(R.id.all_reviews)
+    public void showAllReviews(LinearLayout layout) {
+        Log.d(TAG, "clicked");
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+        fm.beginTransaction()
+                .add(R.id.frame_content, ShowCaseReview.newInstance("abc", "abc"), "ShowCaseReviewFragment")
+                .addToBackStack("ShowCaseReview")
+                .commit();
+    }
+
+    private void setupRecyclerView(RecyclerView recyclerView) {
+        List<String> links = new ArrayList<String>();
+        for (int i = 0; i < 5; i++) {
+            links.add("http://i.imgur.com/DvpvklR.png");
         }
 
-        if (requestCode == REQUEST_RATING) {
-            Float rating = data.getFloatExtra(RaingDialogFragment.EXTRA_RATING, 0);
-            String review = data.getStringExtra(RaingDialogFragment.EXTRA_REVIEW);
-            userRating.setRating(rating);
-            userReview.setText(review);
-        }
+        LinearLayoutManager layoutManager = new MyHorizantalLlm(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(getActivity(), links);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+//        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), LinearLayout.HORIZONTAL));
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                // Handle RecyclerView touch events.
+                v.onTouchEvent(event);
+                return true;
+            }
+        });
+    }
+
+    public void setupReviewRecyclerView(RecyclerView mRecyclerView) {
+        List<Review> reviews = Review.get();
+        mRecyclerView.setLayoutManager(new MyVerticalLlm(mRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setAdapter(new ReviewRVAdapter(reviews));
     }
 }
