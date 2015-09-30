@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<in.viato.app.ui.widgets.BetterViewAnimator
+    android:id="@+id/category_books_animator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:inAnimation="@android:anim/fade_in"
+    android:outAnimation="@android:anim/fade_out"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ProgressBar
+        android:id="@+id/category_books_loading"
+        android:layout_gravity="center"
+        style="@android:style/Widget.ProgressBar.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:id="@+id/category_books_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="48dp"
+        >
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/error"
+            />
+        <TextView
+            android:id="@+id/error_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/error_image"
+            android:gravity="center_horizontal"
+            android:textSize="34sp"
+            android:textColor="?android:attr/textColorPrimary"
+            />
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/error_image"
+            android:gravity="center_horizontal"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/category_books_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="48dp"
+        >
+        <ImageView
+            android:id="@+id/empty_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/empty"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/empty_image"
+            android:gravity="center_horizontal"
+            android:textSize="34sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:text="Coming Soon"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/empty_image"
+            android:gravity="center_horizontal"
+            android:text="No books found. We are updating this section. Please try again soon !"
+            />
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/category_books_grid"
+        android:padding="@dimen/spacing_vvv_small"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</in.viato.app.ui.widgets.BetterViewAnimator>

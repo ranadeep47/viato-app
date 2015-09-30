@@ -6,6 +6,5 @@
     <integer name="medium_anim_time">264</integer>
     <integer name="long_anim_time">330</integer>
     <integer name="main_activity_launch">500</integer>
-
-
+    <integer name="phone_number_length">10</integer>
 </resources>

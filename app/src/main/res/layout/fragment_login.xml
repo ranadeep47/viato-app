@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <in.viato.app.ui.widgets.ViewPagerSmoothSlide
+            android:id="@+id/imagePager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <in.viato.app.ui.widgets.CirclePageIndicator
+            android:layout_gravity="bottom"
+            android:id="@+id/imagePagerIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_v_small"
+            app:fillColor="@color/white"
+            app:pageColor="@color/transparent"
+            app:radius="4dp"
+            />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/spacing_medium"
+            android:paddingRight="@dimen/spacing_medium"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/spacing_large">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/mobile_input_label"
+                app:theme="@style/LoginInput"
+                android:layout_marginRight="@dimen/spacing_v_small"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/mobile_input"
+                    android:maxLength="@integer/phone_number_length"
+                    android:textColor="@color/text_innverse"
+                    android:inputType="phone"
+                    android:hint="@string/enter_mobile_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/submit"
+                android:text="ENTER"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>

@@ -4,7 +4,7 @@ package in.viato.app.ui.fragments;
  * Created by ranadeep on 12/09/15.
  */
 
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

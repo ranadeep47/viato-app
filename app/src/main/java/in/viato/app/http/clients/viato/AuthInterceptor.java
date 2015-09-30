@@ -1,10 +1,11 @@
 package in.viato.app.http.clients.viato;
+
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import in.viato.app.utils.AppConstants;
+import in.viato.app.utils.AppConstants.UserInfo;
 
 
 /**
@@ -17,9 +18,9 @@ public class AuthInterceptor implements Interceptor {
     private final String mDeviceId;
 
     public AuthInterceptor() {
-        mAccessToken = AppConstants.UserInfo.INSTANCE.getAccessToken();
-        mAppVersion = AppConstants.UserInfo.INSTANCE.getAppVersion();
-        mDeviceId = AppConstants.UserInfo.INSTANCE.getDeviceId();
+        mAccessToken = UserInfo.INSTANCE.getAccessToken();
+        mAppVersion = UserInfo.INSTANCE.getAppVersion();
+        mDeviceId = UserInfo.INSTANCE.getDeviceId();
     }
 
     @Override

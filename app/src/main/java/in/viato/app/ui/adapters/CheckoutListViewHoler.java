@@ -1,7 +1,6 @@
 package in.viato.app.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import in.viato.app.databinding.FragmentCheckoutListItemBinding;
 import in.viato.app.model.Book;

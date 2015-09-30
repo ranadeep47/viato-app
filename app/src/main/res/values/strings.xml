@@ -10,6 +10,10 @@
     <string name="nav_notifications">Notifications</string>
     <string name="nav_help">Help &amp; Feedback</string>
 
+    <!--Menu-->
+    <string name="menu_search">Title, Author, ISBN</string>
+    <string name="menu_barcode">Scan barcode</string>
+
     <!--Sharing-->
     <string name="share">Share</string>
     <string name="share_via">Share via</string>
@@ -32,7 +36,6 @@
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_closed">drawer_closed</string>
 
-    <string name="enter_mobile_number">Mobile Number</string>
     <string name="name">Name</string>
 
     <string name="cancel">Cancel</string>
@@ -74,7 +77,6 @@
         <item>Import from GOOGLE</item>
     </string-array>
 
-
     <string name="just_now">Just now</string>
     <string name="seconds_ago">%ds ago</string>
     <string name="minutes_ago">%dm ago</string>
@@ -98,4 +100,37 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="rating_dialog_title">Your Review</string>
+    <!--Search-->
+    <string name="search_hint">Search by Title,Author,ISBN</string>
+    <!--Activity Titles-->
+    <string name="title_activity_home">Home</string>
+    <string name="title_activity_search">Search</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_my_books">My Books</string>
+
+
+    <!--Fragments & Activities specific-->
+    <!--Login Fragment-->
+    <string-array name="title_array">
+        <item>Rent books</item>
+        <item>Lend &amp; Earn !</item>
+        <item>Free doorstep delivery</item>
+    </string-array>
+    <string-array name="subtitle_array">
+        <item>Thousands of books to read at the lowest prices</item>
+        <item>Give your old books to the ones who need them and earn money </item>
+        <item>Order today and get it delivered to your doorstep by tomorrow!.</item>
+    </string-array>
+
+    <string name="enter_mobile_number">Mobile Number</string>
+    <string name="error_mobile_input">Enter a 10 digit indian mobile number</string>
+    <!--LoginConfirm Fragment-->
+    <string name="valid_email">Select your email</string>
+    <string name="set_email">Your Email address</string>
+    <string name="complete">Complete</string>
+    <string name="wait_for_sms">Please enter the code from the SMS you will soon receive</string>
+    <string name="verify">VERIFY</string>
+    <string name="resend">RESEND</string>
+
+    <string name="book_id">book_id</string>
 </resources>

@@ -1,7 +1,6 @@
 package in.viato.app.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,15 +8,12 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import in.viato.app.R;
-import in.viato.app.models.Review;
+import in.viato.app.model.Review;
 
 /**
  * Created by saiteja on 24/09/15.

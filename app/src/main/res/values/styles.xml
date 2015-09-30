@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="Theme.Viato" parent="BaseTheme"/>
+
+    <style name="BaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="selectableItemBackground">@drawable/selector_click</item>
+    </style>
+
     <style name="PopupAnimation" parent="android:Animation" mce_bogus="1">
         <item name="android:windowEnterAnimation">@anim/popup_in</item>
         <item name="android:windowExitAnimation">@anim/popup_out</item>
-
     </style>
 
     <style name="Viato.ActionBar.Title" parent="android:TextAppearance">
@@ -17,7 +26,54 @@
         <item name="android:textColor">@color/text_secondary_innverse</item>
     </style>
 
+    <style name="Headings" parent="android:TextAppearance">
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="Headings.H3">
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+
+    <style name="FabStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/spacing_large</item>
+        <item name="borderWidth">0dp</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="rippleColor">@android:color/white</item>
+    </style>
 
 
+    <!--LoginScreen-->
+    <style name="Login" parent="android:TextAppearance">
+        <item name="android:textColor">@color/text_innverse</item>
+    </style>
+    <style name="Login.ImageTitle">
+        <item name="android:textSize">@dimen/text_xx_large</item>
+    </style>
+    <style name="Login.ImageSubtitle">
+        <item name="android:textSize">@dimen/text_xx_medium</item>
+    </style>
 
+    <style name="LoginInput" parent="Theme.Viato">
+        <item name="android:textColorHint">@color/text_innverse</item>
+        <item name="colorControlNormal">@color/text_innverse</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
+    <style name="BoldButton" parent="android:TextAppearance">
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/text_innverse</item>
+        <!--<item name="fontPath">"fonts/Montserrat-Bold.ttf"</item>-->
+    </style>
+
+    <style name="LinkButton" parent="android:TextAppearance">
+        <item name="android:drawable">@drawable/selector_click</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/primary</item>
+    </style>
 </resources>

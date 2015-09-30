@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Environment;
+import android.os.StatFs;
 import android.provider.Settings;
 
 import com.orhanobut.logger.Logger;
@@ -31,8 +32,10 @@ import in.viato.app.ViatoApplication;
  */
 public class MiscUtils {
 
-    public static float distanceBetween(final Location start, final Location end) {
+    private static final int MIN_DISK_CACHE_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final int MAX_DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
 
+    public static float distanceBetween(final Location start, final Location end) {
         final float[] results = new float[1];
         Location.distanceBetween(start.getLatitude(), start.getLongitude(), end
                 .getLatitude(), end.getLongitude(), results);
@@ -147,10 +150,8 @@ public class MiscUtils {
     }
 
     public static String getDeviceId(){
-        String android_id = Settings.Secure.getString(ViatoApplication.get().getContentResolver(),
+        return Settings.Secure.getString(ViatoApplication.get().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-
-        return android_id;
     }
 
     public static boolean isNetConnected(Context context){
@@ -158,5 +159,20 @@ public class MiscUtils {
                 .getActiveNetworkInfo()
                 .isConnectedOrConnecting();
 
+    }
+
+    public static long calculateDiskCacheSize(File dir) {
+        long size = MIN_DISK_CACHE_SIZE;
+
+        try {
+            StatFs statFs = new StatFs(dir.getAbsolutePath());
+            long available =  ((long) statFs.getBlockCount()) * statFs.getBlockSize();
+            // Target 2% of the total space.
+            size = available / 50;
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        // Bound inside min/max size for disk cache.
+        return Math.max(Math.min(size, MAX_DISK_CACHE_SIZE), MIN_DISK_CACHE_SIZE);
     }
 }

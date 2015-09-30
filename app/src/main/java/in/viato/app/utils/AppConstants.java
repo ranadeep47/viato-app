@@ -62,7 +62,7 @@ public class AppConstants {
         private String mEmail;
         private String mMobileNumber;
         private String mId;
-        private String mProfilePicture;
+
         private String mDeviceId;
         private String mName;
         private int mAppVersion;
@@ -75,7 +75,7 @@ public class AppConstants {
             mAccessToken = "";
             mEmail = "";
             mId = "";
-            mProfilePicture = "";
+
             mName = "";
             mMobileNumber = "";
             mAppVersion = MiscUtils.getPackageInfo().versionCode;
@@ -146,20 +146,6 @@ public class AppConstants {
             }
         }
 
-        public String getProfilePicture() {
-            return mProfilePicture;
-        }
-
-        public void setProfilePicture(final String profilePicture) {
-
-            if (profilePicture == null) {
-                mProfilePicture = "";
-            } else {
-                mProfilePicture = profilePicture;
-            }
-
-        }
-
         public String getDeviceId() {
             return mDeviceId;
         }
@@ -167,8 +153,6 @@ public class AppConstants {
         public void setDeviceId(final String deviceId) {
             mDeviceId = deviceId;
         }
-
-
 
     }
 
@@ -226,5 +210,7 @@ public class AppConstants {
 
     }
 
-
+    public static interface Keys {
+        public static final String UP_NAVIGATION_TAG = "up_navigation_tag";
+    }
 }

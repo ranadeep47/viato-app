@@ -46,8 +46,8 @@ public class SMSReceiver extends BroadcastReceiver {
 //                    Logger.d(TAG, "SmsReceiver : senderNum: " + senderNum + "; message: " + mMessage);
 //
 
-
-            } // end for loop
+//            }// end for loop
+            }
         } // bundle is null
         catch(Exception e) {
             Logger.e(TAG, "Exception smsReceiver" + e);

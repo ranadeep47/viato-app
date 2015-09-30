@@ -23,7 +23,9 @@
 
     <color name="hint_text">#61000000</color>
     <color name="disabled_text">#4B000000</color>
-    <color name="divider">#ffcdcdcd</color>
+
+    <!--<color name="divider">#ffcdcdcd</color>-->
+    <color name="divider">#0C000000</color>
 
     <!-- theme colors -->
     <color name="primary">#00BCD4</color>
@@ -31,6 +33,7 @@
     <color name="primary_light">#4DD0E1</color>
 
     <color name="accent">#00BCD4</color>
+    <color name="accent_translucent">#8000BCD4</color>
 
     <color name="transparent">#00000000</color>
     <color name="overlay_black_15p">#26000000</color>

@@ -2,8 +2,6 @@ package in.viato.app.ui.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,14 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
-import in.viato.app.models.Review;
 import in.viato.app.ui.adapters.ReviewRVAdapter;
-import in.viato.app.ui.widgets.MyVerticalLlm;
 
 public abstract class ShowcaseFragment extends AbstractFragment {
     // TODO: Rename parameter arguments, choose names that match

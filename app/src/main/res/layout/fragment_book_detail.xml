@@ -153,7 +153,7 @@
                     android:text="Buy at Rs. 300"
                     android:textColor="@color/hint_text"
                     android:id="@+id/sale_price"
-                    android:layout_marginTop="@dimen/spacing_x_small"
+                    android:layout_marginTop="4dp"
                     />
 
                 <TextView

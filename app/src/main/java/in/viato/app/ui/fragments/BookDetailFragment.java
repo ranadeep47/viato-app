@@ -13,9 +13,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,9 +41,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
-import in.viato.app.models.Review;
-import in.viato.app.ui.activties.AbstractActivity;
-import in.viato.app.ui.activties.CheckoutActivity;
+import in.viato.app.model.Review;
+import in.viato.app.ui.activities.AbstractActivity;
+import in.viato.app.ui.activities.CheckoutActivity;
 import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
 import in.viato.app.ui.adapters.ReviewRVAdapter;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
@@ -114,7 +112,7 @@ public class BookDetailFragment extends AbstractFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        mActivity = getHostingActivity();
+        mActivity = (AbstractActivity) getActivity();
         setPalleteColors();
     }
 

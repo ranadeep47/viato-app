@@ -23,10 +23,6 @@ public class NetworkStateReceiver extends BroadcastReceiver {
     private List<NetworkStateReceiverListener> mListeners;
     private boolean mConnected;
 
-    public NetworkStateReceiver() {
-        super();
-    }
-
     public NetworkStateReceiver(Context context) {
         mListeners = new ArrayList<NetworkStateReceiverListener>();
         mManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

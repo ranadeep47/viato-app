@@ -1,28 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="spacing_xxxx_small">1dp</dimen>
-    <dimen name="spacing_xxx_small">2dp</dimen>
-    <dimen name="spacing_xx_small">4dp</dimen>
-    <dimen name="spacing_x_small">8dp</dimen>
-    <dimen name="spacing_minimum">12dp</dimen>
+    <dimen name="book_thumb">150dp</dimen>
+    <dimen name="book_thumb_small_width">64dp</dimen>
+    <dimen name="book_thumb_small_height">100dp</dimen>
+
+    <dimen name="spacing_tiny">2dp</dimen>
+    <dimen name="spacing_vvv_small">6dp</dimen>
+    <dimen name="spacing_vv_small">8dp</dimen>
+    <dimen name="spacing_v_small">10dp</dimen>
+    <dimen name="spacing_small">12dp</dimen>
+
     <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_x_medium">18dp</dimen>
+    <dimen name="spacing_xx_medium">20dp</dimen>
+
     <dimen name="spacing_large">24dp</dimen>
-    <dimen name="spacing_tag_spinner">28dp</dimen>
+    <dimen name="spacing_x_large">26dp</dimen>
+    <dimen name="spacing_xx_largee">28dp</dimen>
+
     <dimen name="spacing_huge">32dp</dimen>
 
     <dimen name="navdrawer_width">300dp</dimen>
     <dimen name="navheader_height">192dp</dimen>
     <!-- Text sizes -->
     <dimen name="text_tiny">9sp</dimen>
-    <dimen name="text_micro">10sp</dimen>
+    <dimen name="text_v_small">10sp</dimen>
     <dimen name="text_small">12sp</dimen>
-    <dimen name="text_medium">14sp</dimen>
-    <dimen name="text_big">18sp</dimen>
-    <dimen name="text_large">20sp</dimen>
-    <dimen name="text_x_large">22sp</dimen>
-    <dimen name="text_xx_large">24sp</dimen>
-    <dimen name="text_xxx_large">48sp</dimen>
 
+    <dimen name="text_medium">14sp</dimen>
+    <dimen name="text_x_medium">16sp</dimen>
+    <dimen name="text_xx_medium">18sp</dimen>
+
+    <dimen name="text_large">22sp</dimen>
+    <dimen name="text_x_large">24sp</dimen>
+    <dimen name="text_xx_large">26sp</dimen>
+
+    <dimen name="text_huge">30sp</dimen>
+    <dimen name="text_x_huge">32sp</dimen>
+    <dimen name="text_xx_huge">34sp</dimen>
 
     <dimen name="avatar_huge">128dp</dimen>
     <dimen name="avatar_large">96dp</dimen>
@@ -33,6 +48,4 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
-
 </resources>
