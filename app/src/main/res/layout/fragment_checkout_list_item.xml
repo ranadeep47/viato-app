@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="book"
+            type="in.viato.app.model.Book">
+        </variable>
+    </data>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <ImageView
+            android:id="@+id/checkout_list_image"
+            android:layout_width="60dp"
+            android:layout_height="75dp"
+            android:src="@drawable/img_placeholder"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:scaleType="fitXY"
+            />
+
+        <TextView
+            android:id="@+id/checkout_list_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/checkout_list_image"
+            android:textColor="@color/text"
+            android:layout_toLeftOf="@+id/checkout_list_price"
+            android:text="@{book.name}"
+            />
+
+        <TextView
+            android:id="@+id/checkout_list_author"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/checkout_list_name"
+            android:layout_toRightOf="@id/checkout_list_image"
+            android:layout_toLeftOf="@+id/checkout_list_price"
+            android:singleLine="true"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            android:text="@{book.author}"
+            />
+
+        <TextView
+            android:id="@+id/checkout_list_count"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/checkout_list_author"
+            android:layout_toRightOf="@id/checkout_list_image"
+            android:layout_toLeftOf="@+id/checkout_list_price"
+            android:textColor="@color/hint_text"
+            android:text="Remove"
+            android:singleLine="true"
+            android:textSize="10sp"
+            />
+        <TextView
+            android:id="@+id/checkout_list_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(book.rentPrice)}"
+            android:textSize="16sp"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textColor="@color/text"
+            />
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    tools:context="in.viato.app.ui.activties.CheckoutActivityFragment">
+    <include layout="@layout/toolbar"
+        android:id="@+id/checkout_toolbar"></include>
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        android:layout_below="@+id/checkout_toolbar"
+        android:layout_above="@+id/place_order_divider">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                card_view:cardCornerRadius="2dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/checkout_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/divider"
+                        android:id="@+id/checkout_list_divider"></FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/activity_horizontal_margin">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="50"
+                            android:textSize="20sp"
+                            android:textAllCaps="true"
+                            android:text="Order Total"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="50"
+                            android:text="Rs 93.00"
+                            android:textSize="20sp"
+                            android:gravity="end"
+                            android:textColor="#8BC34A"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                card_view:cardCornerRadius="2dp"
+                android:layout_marginTop="16dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:id="@+id/lv_addressList">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_centerVertical="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="50"
+                                android:textColor="@color/text"
+                                android:textStyle="bold"
+                                android:textSize="14sp"
+                                android:text="Work"
+                                android:id="@+id/tv_label_addressItem"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="50"
+                                android:gravity="end"
+                                android:textColor="@color/hint_text"
+                                android:textSize="10dp"
+                                android:text="Change"
+                                android:layout_gravity="center_vertical"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="108, B Wing, Building No. 32, Sahyadri CHS, MHADA"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="12sp"
+                            android:layout_marginTop="6dp"
+                            android:layout_below="@+id/tv_address_addressItem"
+                            android:id="@+id/street_addressItem"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Chandivali, Mumbai - 400072"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp"
+                            android:layout_below="@+id/tv_locality_addressItem"
+                            android:id="@+id/sdsdsd"
+                            />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/card_view_address"
+                android:layout_marginTop="16dp"
+                card_view:cardCornerRadius="2dp"
+                android:layout_marginBottom="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/activity_horizontal_margin">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="50"
+                                android:text="Estimated Delivery"
+                                android:textColor="@color/text"
+                                android:textStyle="bold"
+                                android:textSize="14sp"
+                                android:id="@+id/heading_text"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="50"
+                                android:gravity="end"
+                                android:text="21st Sep, Monday"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="60"
+                                android:text="Estimated Return (15 days)"
+                                android:textColor="@color/text"
+                                android:textStyle="bold"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="40"
+                                android:gravity="end"
+                                android:text="6th Oct, Tuesday"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/divider"
+        android:layout_above="@+id/place_order"
+        android:id="@+id/place_order_divider"
+        android:elevation="4dp"
+        android:visibility="gone"></FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/place_order"
+        android:elevation="4dp"
+        android:background="@color/white"
+        android:padding="16dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Place Order"
+            android:textStyle="bold"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textAllCaps="true"
+            android:textSize="14sp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:background="#FE7A4C"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

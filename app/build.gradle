@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'com.android.databinding'
 
 buildscript {
 
@@ -22,7 +23,7 @@ apt {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "in.viato.app"
@@ -56,7 +57,9 @@ dependencies {
     compile 'com.squareup.retrofit:converter-moshi:2.0.0-beta1'
     compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta1'
 
-    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+//    compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'io.reactivex:rxandroid:1.0.1'
 

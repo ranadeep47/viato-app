@@ -1,0 +1,14 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout_addressList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.viato.app.AddressListFragment">
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listView_addressList"
+        android:choiceMode="singleChoice">
+    </ListView>
+</android.support.design.widget.CoordinatorLayout>

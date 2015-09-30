@@ -10,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import butterknife.Bind;
 import in.viato.app.R;
@@ -60,13 +61,15 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
                         //TODO use swtich case start apt activity
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home :
-                                Snackbar.make(mDrawerLayout,"Home", Snackbar.LENGTH_LONG);
-                                    break;
+                                Snackbar.make(new View(getApplicationContext()),"Home", Snackbar.LENGTH_LONG).show();
+                                break;
                             case R.id.nav_my_books :
                                 startActivity(new Intent(getApplicationContext(), BookDetailActivity.class));
+                                overridePendingTransition(R.anim.slide_in_from_right, android.R.anim.fade_out);
                                 break;
                             case R.id.nav_lends :
                                 break;
@@ -82,7 +85,6 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                             default:
                                 break;
                         }
-                        mDrawerLayout.closeDrawers();
                         return true;
                     }
                 });

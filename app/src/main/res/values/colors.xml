@@ -23,7 +23,7 @@
 
     <color name="hint_text">#61000000</color>
     <color name="disabled_text">#4B000000</color>
-    <color name="divider">#0C000000</color>
+    <color name="divider">#ffcdcdcd</color>
 
     <!-- theme colors -->
     <color name="primary">#00BCD4</color>

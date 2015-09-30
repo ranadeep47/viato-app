@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/img_header"
@@ -178,7 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <in.viato.app.ui.widgets.CustomTextView
                     android:layout_width="match_parent"
@@ -258,7 +258,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="?attr/selectableItemBackground"
                     android:focusable="true"
                     android:id="@+id/all_reviews">
                     <in.viato.app.ui.widgets.CustomTextView
@@ -270,12 +269,11 @@
                         android:textStyle="bold"
                         android:focusable="false"/>
 
-                    <android.support.v7.widget.RecyclerView
+                    <in.viato.app.ui.widgets.NoTouchRecyclerView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/review_list_small"
                         android:focusable="false"
-                        android:background="@color/light_grey"
                         />
 
                     <TextView

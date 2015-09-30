@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import butterknife.OnClick;
 import in.viato.app.R;
 import in.viato.app.models.Review;
 import in.viato.app.ui.activties.AbstractActivity;
+import in.viato.app.ui.activties.CheckoutActivity;
 import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
 import in.viato.app.ui.adapters.ReviewRVAdapter;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
@@ -104,10 +106,6 @@ public class BookDetailFragment extends AbstractFragment {
         return fragment;
     }
 
-    public BookDetailFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +115,7 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         mActivity = getHostingActivity();
+        setPalleteColors();
     }
 
     @Override
@@ -135,8 +134,6 @@ public class BookDetailFragment extends AbstractFragment {
 //        mCollapsingToolbarLayout.setTitle("");
         mSalePrice.setPaintFlags(mSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-        setPalleteColors();
-
         setListeners();
 
         setupRecyclerView(mRelatedBooksRV);
@@ -152,6 +149,22 @@ public class BookDetailFragment extends AbstractFragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_book_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_cart) {
+            startActivity(new Intent(mActivity, CheckoutActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -226,16 +239,17 @@ public class BookDetailFragment extends AbstractFragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Todo: Add to cart
-                Snackbar.make(v, "Added to cart", Snackbar.LENGTH_SHORT)
-                        .setAction("Undo", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Todo: Remove from cart
-                                Snackbar.make(v, "Removed from cart", Snackbar.LENGTH_SHORT).show();
-                            }
-                        })
-                        .show();
+//                //Todo: Add to cart
+                startActivity(new Intent(mActivity, CheckoutActivity.class));
+//                Snackbar.make(v, "Added to cart", Snackbar.LENGTH_SHORT)
+//                        .setAction("Undo", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                //Todo: Remove from cart
+//                                Snackbar.make(v, "Removed from cart", Snackbar.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .show();
             }
         });
     }

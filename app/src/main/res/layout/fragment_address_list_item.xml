@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:id="@+id/lv_addressList_item">
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:id="@+id/radio_select_address"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignLeft="@id/radio_select_address"
+        android:layout_marginLeft="40dp"
+        android:gravity="center"
+        android:layout_centerVertical="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_label_addressItem"
+            android:textColor="@color/text"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:text="Work"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_street_addressItem"
+            android:layout_below="@+id/tv_label_addressItem"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            android:layout_marginTop="6dp"
+            android:text="108, B Wing, Building No. 32, Sahyadri CHS, MHADA"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_locality_addressItem"
+            android:layout_below="@+id/tv_street_addressItem"
+            android:text="Chandivali, Mumbai - 400072"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            />
+    </LinearLayout>
+</RelativeLayout>

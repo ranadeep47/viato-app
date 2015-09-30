@@ -1,5 +1,6 @@
 package in.viato.app.ui.activties;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,10 @@ public class MainActivity extends AbstractNavDrawerActivity {
             return true;
         }
 
+        if (id == R.id.action_cart) {
+            startActivity(new Intent(this, CheckoutActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }
