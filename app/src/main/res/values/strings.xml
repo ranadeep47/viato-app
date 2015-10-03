@@ -92,12 +92,10 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_checkout">My Cart</string>
     <string name="title_activity_address_list">Address</string>
+    <string name="title_activity_book_detail">Book Details</string>
 
 
     <string name="lorem">Lorem ipsum <strike> crossed </strike> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="rating_dialog_title">Your Review</string>
     <!--Search-->
@@ -133,4 +131,23 @@
     <string name="resend">RESEND</string>
 
     <string name="book_id">book_id</string>
+    <string name="title_activity_previous_orders">Previous Orders</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Order status-->
+    <string name="order_placed">Order Placed</string>
+    <string name="order_delivered">Order Recieved</string>
+    <string name="order_canceled">Order Canceled</string>
+    <string name="order_extended">Order Extended</string>
+    <string name="order_returned">Order Fulfilled</string>
+
+    <!-- Important dates copy-->
+    <string name="order_delivery_date">Est. Delivery</string>
+    <string name="order_return_date">Return Date</string>
+    <string name="order_canceled_date">Canceled On</string>
+    <string name="order_returned_date">Returned On</string>
+
+
 </resources>

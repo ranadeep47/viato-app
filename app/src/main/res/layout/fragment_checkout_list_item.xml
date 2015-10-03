@@ -16,7 +16,7 @@
             android:id="@+id/checkout_list_image"
             android:layout_width="60dp"
             android:layout_height="75dp"
-            android:src="@drawable/img_placeholder"
+            android:src="@drawable/placeholder"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/activity_vertical_margin"
@@ -31,7 +31,7 @@
             android:layout_toRightOf="@+id/checkout_list_image"
             android:textColor="@color/text"
             android:layout_toLeftOf="@+id/checkout_list_price"
-            android:text="@{book.name}"
+            android:text="@{book.title}"
             />
 
         <TextView

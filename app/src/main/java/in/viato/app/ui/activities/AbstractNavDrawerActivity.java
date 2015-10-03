@@ -1,5 +1,6 @@
 package in.viato.app.ui.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -11,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import butterknife.Bind;
@@ -22,7 +22,7 @@ import in.viato.app.R;
  */
 public class AbstractNavDrawerActivity extends AbstractActivity {
 
-    @Bind(R.id.cover_image) ImageView coverImage;
+    ImageView coverImage;
     @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
     @Bind(R.id.navdrawer_layout) protected DrawerLayout mDrawerLayout;
     @Bind(R.id.nav_view) protected NavigationView mNavigationView;
@@ -62,19 +62,25 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
-                        //TODO use swtich case start apt activity
+                        mDrawerLayout.closeDrawers();
+                        Intent intent;
+                        
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home :
-                                Snackbar.make(mDrawerLayout,"Home", Snackbar.LENGTH_LONG);
-                                    break;
+                                intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                break;
                             case R.id.nav_my_books :
                                 break;
-                            case R.id.nav_lends :
+                            case R.id.nav_lends:
+                                intent = new Intent(getApplicationContext(), PreviousOrders.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                                 break;
-                            case R.id.nav_profile :
-                                break;
-                            case R.id.nav_wallet :
-                                break;
+//                            case R.id.nav_profile :
+//                                break;
+//                            case R.id.nav_wallet :
+//                                break;
                             case R.id.nav_notifications :
                                 break;
                             case R.id.nav_help :
@@ -83,7 +89,6 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                             default:
                                 break;
                         }
-                        mDrawerLayout.closeDrawers();
                         return true;
                     }
                 });

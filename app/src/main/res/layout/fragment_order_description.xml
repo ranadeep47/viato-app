@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/order_id"
+                    android:text="Order #12"
+                    android:textColor="@color/hint_text"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/order_status"
+                    android:text="Order Placed"
+                    android:textSize="20dp"
+                    android:textColor="@color/text"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date_desc"
+                    android:text="Est. Delivery"
+                    android:gravity="right"
+                    android:textColor="@color/hint_text"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date"
+                    android:text="12-sep-15"
+                    android:textSize="20dp"
+                    android:gravity="right"
+                    android:textColor="@color/text"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#333333"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            ></FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Order Items"></TextView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/order_items_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:background="@color/overlay_black_15p">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:textSize="20sp"
+                    android:textAllCaps="true"
+                    android:text="Order Total"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/order_value"
+                    android:text="Rs 245"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:gravity="end"
+                    android:textColor="@color/white"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel Order"
+            android:id="@+id/btn_cancel_order"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:visibility="gone"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Review Order"
+            android:id="@+id/btn_review_order"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:id="@+id/btns_order_delivered"
+            android:visibility="gone">
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_extend_order"
+                android:layout_gravity="start"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:text="Extend Order"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_return_order"
+                android:layout_gravity="right"
+                android:text="Return Books"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#333333"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            ></FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Payment Address"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:id="@+id/payment_status"
+                android:gravity="right"
+                android:text="Cash Recieved"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delivery Address"/>
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:id="@+id/lv_addressList_item1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_centerVertical="true">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_label_addressItem1"
+                        android:textColor="@color/text"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:text="Work"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_street_addressItem1"
+                        android:layout_below="@+id/tv_label_addressItem"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="12sp"
+                        android:layout_marginTop="6dp"
+                        android:text="108, B Wing, Building No. 32, Sahyadri CHS, MHADA"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_locality_addressItem1"
+                        android:layout_below="@+id/tv_street_addressItem"
+                        android:text="Chandivali, Mumbai - 400072"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"
+                        />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pickup Address"/>
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:paddingRight="@dimen/activity_vertical_margin"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:id="@+id/lv_addressList_item">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_centerVertical="true">
+                    w<TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_label_addressItem"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:text="Work"
+                    />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_street_addressItem"
+                        android:layout_below="@+id/tv_label_addressItem"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="12sp"
+                        android:layout_marginTop="6dp"
+                        android:text="108, B Wing, Building No. 32, Sahyadri CHS, MHADA"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_locality_addressItem"
+                        android:layout_below="@+id/tv_street_addressItem"
+                        android:text="Chandivali, Mumbai - 400072"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"
+                        />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

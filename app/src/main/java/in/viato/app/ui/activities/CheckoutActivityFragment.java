@@ -24,6 +24,8 @@ import in.viato.app.ui.fragments.AbstractFragment;
  * A placeholder fragment containing a simple view.
  */
 public class CheckoutActivityFragment extends AbstractFragment {
+    public static final String TAG = CheckoutActivityFragment.class.getSimpleName();
+
     @Bind(R.id.checkout_list) RecyclerView checkoutListRV;
 
     private AbstractActivity mActivity;
@@ -52,15 +54,20 @@ public class CheckoutActivityFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_checkout, container, false);
-        ButterKnife.bind(this, view);
+        return inflater.inflate(R.layout.fragment_checkout, container, false);
+//        ButterKnife.bind(this, view);
+//
+//        Toolbar mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+//        mToolbar.setTitle(R.string.title_activity_checkout);
+//        mToolbar.setTitleTextAppearance(getActivity(), R.style.Viato_ActionBar_Title);
+//
+//        mActivity.setSupportActionBar(mToolbar);
+//        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
-        Toolbar mToolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
-        mToolbar.setTitle(R.string.title_activity_checkout);
-        mToolbar.setTitleTextAppearance(getActivity(), R.style.Viato_ActionBar_Title);
-
-        mActivity.setSupportActionBar(mToolbar);
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         checkoutListRV.setHasFixedSize(true);
 
@@ -69,8 +76,6 @@ public class CheckoutActivityFragment extends AbstractFragment {
 
         CheckoutListAdapter checkoutListAdapter = new CheckoutListAdapter(DummyBooks.get(getContext()).getBooks());
         checkoutListRV.setAdapter(checkoutListAdapter);
-
-        return view;
     }
 
     @OnClick(R.id.card_view_address)

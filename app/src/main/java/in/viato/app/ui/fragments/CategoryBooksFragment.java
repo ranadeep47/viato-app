@@ -35,11 +35,16 @@ import rx.functions.Func1;
 
 public class CategoryBooksFragment extends AbstractFragment{
 
-    public static final String TAG = "CategoryBooksFragment";
-    private static final String ARG_CategoryId = "category_id";
+    public static final String TAG = CategoryBooksFragment.class.getSimpleName();
+
+    private static final String ARG_CATEGORY_ID = "categoryId";
+    private static final String ARG_CATEGORY_NAME = "categoryName";
+
     private final int mSpanCount = 3;
 
     private String mCategoryId;
+    private String mCategoryName;
+
     private int page = 0;
     private boolean isFull = false;
 
@@ -54,9 +59,10 @@ public class CategoryBooksFragment extends AbstractFragment{
     @Bind(R.id.error_title) TextView errorTitle;
     @Bind(R.id.error_message) TextView errorMessage;
 
-    public static CategoryBooksFragment newInstance(String CategoryId) {
+    public static CategoryBooksFragment newInstance(String categoryId, String categoryName) {
         Bundle args = new Bundle();
-        args.putString(ARG_CategoryId, CategoryId);
+        args.putString(ARG_CATEGORY_ID, categoryId);
+        args.putString(ARG_CATEGORY_NAME, categoryName);
         CategoryBooksFragment fragment = new CategoryBooksFragment();
         fragment.setArguments(args);
         return fragment;
@@ -72,7 +78,8 @@ public class CategoryBooksFragment extends AbstractFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         Bundle args = getArguments();
-        mCategoryId = args.getString(ARG_CategoryId);
+        mCategoryId = args.getString(ARG_CATEGORY_ID);
+        mCategoryName = args.getString(ARG_CATEGORY_NAME);
         return inflater.inflate(R.layout.fragment_category_books, container, false);
     }
 

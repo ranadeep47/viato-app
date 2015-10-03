@@ -14,8 +14,24 @@ import in.viato.app.model.Book;
 /**
  * Created by saiteja on 15/09/15.
  */
-public class CheckoutListAdapter extends RecyclerView.Adapter<CheckoutListViewHoler>{
+public class CheckoutListAdapter extends RecyclerView.Adapter<CheckoutListAdapter.ViewHolder>{
+    private static final String TAG = "CheckoutListAdapter";
+
     private List<Book> sBookList;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final FragmentCheckoutListItemBinding mBindinig;
+
+        public ViewHolder(FragmentCheckoutListItemBinding binding) {
+            super(binding.getRoot());
+
+            mBindinig = binding;
+        }
+
+        public void bindConnection(Book book ) {
+            mBindinig.setBook(book);
+        }
+    }
 
     public CheckoutListAdapter(List<Book> bookList) {
         super();
@@ -23,15 +39,15 @@ public class CheckoutListAdapter extends RecyclerView.Adapter<CheckoutListViewHo
     }
 
     @Override
-    public void onBindViewHolder(CheckoutListViewHoler holder, int position) {
-        holder.bindConnection(sBookList.get(position));
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        FragmentCheckoutListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.fragment_checkout_list_item, parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
-    public CheckoutListViewHoler onCreateViewHolder(ViewGroup parent, int viewType) {
-        FragmentCheckoutListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.fragment_checkout_list_item, parent, false);
-        return new CheckoutListViewHoler(binding);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bindConnection(sBookList.get(position));
     }
 
     @Override

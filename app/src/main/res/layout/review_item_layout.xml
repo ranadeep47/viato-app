@@ -16,7 +16,7 @@
         <in.viato.app.ui.widgets.RoundedImageView
             android:layout_width="@dimen/avatar_normal"
             android:layout_height="@dimen/avatar_normal"
-            android:src="@drawable/img_header"
+            android:src="@drawable/img_header1"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/activity_vertical_margin"

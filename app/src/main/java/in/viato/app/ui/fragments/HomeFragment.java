@@ -1,5 +1,6 @@
 package in.viato.app.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import java.util.List;
 import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.http.models.response.Category;
+import in.viato.app.ui.activities.CategoryBooksActivity;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import rx.Subscriber;
 
@@ -157,7 +159,12 @@ public class HomeFragment extends AbstractFragment {
                 @Override
                 public void onClick(View v) {
                     //TODO start an intent based on category information
-                    Toast.makeText(getActivity(), category.getTitle(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), category.getTitle(), Toast.LENGTH_SHORT).show();
+//                    loadFragment(R.id.frame_content, CategoryBooksFragment.newInstance(category.getId()), CategoryBooksFragment.TAG, true, CategoryBooksFragment.TAG);
+                    Intent intent = new Intent(getContext(), CategoryBooksActivity.class);
+                    intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_ID, category.getId());
+                    intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_NAME, category.getTitle());
+                    startActivity(intent);
                 }
             });
         }

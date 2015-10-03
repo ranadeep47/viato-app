@@ -8,15 +8,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <LinearLayout
+        <ImageView
+            android:id="@+id/book_cover"
+            android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/book_cover"
-                android:scaleType="fitXY"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/book_thumb" />
-        </LinearLayout>
+            android:layout_height="@dimen/book_thumb" />
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

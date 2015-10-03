@@ -38,4 +38,9 @@
     <color name="transparent">#00000000</color>
     <color name="overlay_black_15p">#26000000</color>
     <color name="transparent_scrim">#40000000</color>
+
+    <color name="test_red">#B03120</color>
+    <color name="test_green">#3FBF0C</color>
+    <color name="test_yellow">#E8AF00</color>
+    <color name="test_blue">#274CB6</color>
 </resources>

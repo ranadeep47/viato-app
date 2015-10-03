@@ -17,7 +17,7 @@ public class AddressListActivity extends AbstractActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitvity_no_drawer);
+        setContentView(R.layout.activity_no_drawer);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);

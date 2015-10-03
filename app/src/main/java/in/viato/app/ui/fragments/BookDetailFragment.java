@@ -56,26 +56,30 @@ import in.viato.app.ui.widgets.MyVerticalLlm;
  */
 public class BookDetailFragment extends AbstractFragment {
 
-    private final String TAG = this.getClass().getSimpleName();
+    public static final String TAG = BookDetailFragment.class.getSimpleName();
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String ARG_BOOK_ID = "bookId";
+    public static final String ARG_BOOK_TITLE = "bookTitle";
+    public static final String ARG_BOOK_AUTHOR = "bookAuthor";
+    public static final String ARG_BOOK_POSTER = "bookPoster";
 
     private static final String DIALOG_RATING = "dialog_rating";
 
     private static final int REQUEST_RATING = 0;
 
-    private String mParam1;
-    private String mParam2;
+    private String mBookId;
+    private String mBookTitle;
+    private String mBookAuthor;
+    private String mBookPoster;
 
     private static Boolean inWishlist = true;
     private static Boolean isFullDesc = true;
 
-    public static final String EXTRA_ID = "boook_id";
+    public static final String EXTRA_ID = "book_id";
 
     private AbstractActivity mActivity;
 
-    @Bind(R.id.anim_toolbar) Toolbar mToolbar;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
 
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
 
@@ -95,11 +99,13 @@ public class BookDetailFragment extends AbstractFragment {
     @Bind(R.id.all_reviews)
     LinearLayout allReviews;
 
-    public static BookDetailFragment newInstance(String param1, String param2) {
+    public static BookDetailFragment newInstance(String id, String title, String author, String poster) {
         BookDetailFragment fragment = new BookDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_BOOK_ID, id);
+        args.putString(ARG_BOOK_TITLE, title);
+        args.putString(ARG_BOOK_AUTHOR, author);
+        args.putString(ARG_BOOK_POSTER, poster);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,8 +114,10 @@ public class BookDetailFragment extends AbstractFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mBookId = getArguments().getString(ARG_BOOK_ID);
+            mBookTitle = getArguments().getString(ARG_BOOK_TITLE);
+            mBookAuthor = getArguments().getString(ARG_BOOK_AUTHOR);
+            mBookPoster = getArguments().getString(ARG_BOOK_POSTER);
         }
 
         mActivity = (AbstractActivity) getActivity();
@@ -120,16 +128,19 @@ public class BookDetailFragment extends AbstractFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_book_detail, container, false);
+        return inflater.inflate(R.layout.fragment_book_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         setHasOptionsMenu(true);
 
-        ButterKnife.bind(this, view);
-
-        mActivity.setSupportActionBar(mToolbar);
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+//        mActivity.setSupportActionBar(mToolbar);
+//        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        mCollapsingToolbarLayout.setTitle("");
+
         mSalePrice.setPaintFlags(mSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         setListeners();
@@ -137,8 +148,6 @@ public class BookDetailFragment extends AbstractFragment {
         setupRecyclerView(mRelatedBooksRV);
 
         setupReviewRecyclerView(mReviewList);
-
-        return view;
 
     }
 
@@ -292,12 +301,11 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         LinearLayoutManager layoutManager = new MyHorizantalLlm(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(getActivity(), links);
+        RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(R.layout.book_item_layout, links);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-//        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), LinearLayout.HORIZONTAL));
         recyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

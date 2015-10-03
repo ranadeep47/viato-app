@@ -43,12 +43,6 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
         HomeFragment fragment = HomeFragment.newInstance();
         loadFragment(R.id.frame_content, fragment, HomeFragment.TAG, true, HomeFragment.TAG);
-
-//        CategoryBooksFragment fragment = CategoryBooksFragment.newInstance("1");
-//        loadFragment(R.id.frame_content, fragment, CategoryBooksFragment.TAG, true, CategoryBooksFragment.TAG);
-
-
-
     }
 
     @Override

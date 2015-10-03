@@ -16,9 +16,9 @@ import java.util.UUID;
  * Created by saiteja on 15/09/15.
  */
 public class Book extends BaseObservable {
-    public final ObservableField<String> name = new ObservableField<String>();
+    public final ObservableField<String> title = new ObservableField<String>();
     public final ObservableField<String> author = new ObservableField<String>();
-    public final ObservableField<String> imgUrl = new ObservableField<String>();
+    public final ObservableField<String> cover = new ObservableField<String>();
     public final ObservableField<String> genre = new ObservableField<String>();
     public final ObservableField<String> description = new ObservableField<String>();
     public final ObservableField<String> publisher = new ObservableField<String>();
@@ -43,3 +43,10 @@ public class Book extends BaseObservable {
     public final ObservableField<UUID> _id = new ObservableField<UUID>();
 
 }
+
+//public String title;
+//public String subtitle;
+//public List<String> authors;
+//public String publisher;
+//public String description;
+//public ImageLinks imageLinks;

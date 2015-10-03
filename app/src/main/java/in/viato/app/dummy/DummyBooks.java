@@ -28,21 +28,24 @@ public class DummyBooks {
         this.sBooksList = new ArrayList<>();
 
         Book aBook = new Book();
-        aBook.name.set("The Busy Coder's Guide to Android Development");
+        aBook.title.set("The Busy Coder's Guide to Android Development");
         aBook.author.set("Mark L. Murphy");
         aBook.rentPrice.set("Rs 20.00");
+        aBook.cover.set("https://c1.staticflickr.com/1/751/21665490700_12180f62d2_n.jpg");
         sBooksList.add(aBook);
 
         Book bBook = new Book();
-        bBook.name.set("Fifty Shades of Grey");
+        bBook.title.set("Fifty Shades of Grey");
         bBook.author.set("E. L. James");
         bBook.rentPrice.set("Rs 40.00");
+        bBook.cover.set("http://c2.staticflickr.com/6/5705/21664857848_c8e6750b26_n.jpg");
         sBooksList.add(bBook);
 
         Book cBook = new Book();
-        cBook.name.set("Ikshvaku Ke Vanshaj");
+        cBook.title.set("Ikshvaku Ke Vanshaj");
         cBook.author.set("Amish Tripathi, Urmila Gupta");
         cBook.rentPrice.set("Rs 33.00");
+        cBook.cover.set("https://c1.staticflickr.com/1/592/21841433136_983544a079.jpg");
         sBooksList.add(cBook);
     }
 

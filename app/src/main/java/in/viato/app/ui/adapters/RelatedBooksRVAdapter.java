@@ -23,6 +23,7 @@ public class RelatedBooksRVAdapter
         extends RecyclerView.Adapter<RelatedBooksRVAdapter.ViewHolder> {
 
     private List<String> mValues;
+    private int mLayoutId;
     private Context mContext;
     private int id = 1;
 
@@ -37,15 +38,16 @@ public class RelatedBooksRVAdapter
         }
     }
 
-    public RelatedBooksRVAdapter(Context context, List<String> items) {
+    public RelatedBooksRVAdapter(int layoutId, List<String> items) {
         mValues = items;
-        mContext = context;
+        mLayoutId = layoutId;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.book_item_layout, parent, false);
+                .inflate(mLayoutId, parent, false);
         return new ViewHolder(view);
     }
 
