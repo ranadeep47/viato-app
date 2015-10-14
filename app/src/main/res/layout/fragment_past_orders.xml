@@ -1,55 +1,72 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin"
-    tools:context="in.viato.app.ui.fragments.PastOrdersFragment">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/order_id"
-        android:layout_alignParentTop="true"
-        android:textColor="@color/text"/>
-
-    <android.support.v7.widget.RecyclerView
+<layout>
+    <data>
+        <variable name="order" type="in.viato.app.model.OrderInShort" />
+    </data>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/book_covers"
-        android:layout_below="@+id/order_id"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        tools:context="in.viato.app.ui.fragments.PastOrdersFragment"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground">
+        <TextView
+            android:id="@+id/order_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/text"
+            android:text='@{"#" + order.orderId}'/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/order_status"
-        android:layout_below="@+id/book_covers"
-        android:layout_alignParentLeft="true"
-        android:textSize="14dp"
-        android:textColor="@color/text"
-        />
+        <in.viato.app.ui.widgets.NoTouchRecyclerView
+            android:id="@+id/book_covers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/order_id"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:items="@{order.covers}"
+            android:setAdapter='@{"RelatedBooksRVAdapter"}'>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/order_value"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/order_status"
-        android:gravity="right"
-        android:layout_below="@+id/book_covers"
-        android:textSize="24dp"
-        android:textColor="@color/text"
-        />
+        </in.viato.app.ui.widgets.NoTouchRecyclerView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12dp"
-        android:layout_below="@+id/order_status"
-        android:id="@+id/last_update"
-        android:textColor="@color/hint_text"
-        />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/order_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/book_covers"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textSize="14sp"
+            android:textColor="@color/text"
+            android:text="@{order.orderStatus}"
+            />
+
+        <TextView
+            android:id="@+id/order_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/order_status"
+            android:layout_toEndOf="@+id/order_status"
+            android:gravity="end"
+            android:layout_below="@+id/book_covers"
+            android:textSize="24sp"
+            android:textColor="@color/text"
+            android:text='@{"Rs. " + order.orderValue + "/-"}'
+            />
+
+        <TextView
+            android:id="@+id/last_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_below="@+id/order_status"
+            android:textColor="@color/hint_text"
+            android:text="@{order.updatedOn}"
+            />
+    </RelativeLayout>
+</layout>

@@ -16,7 +16,8 @@
             android:id="@+id/checkout_list_image"
             android:layout_width="60dp"
             android:layout_height="75dp"
-            android:src="@drawable/placeholder"
+            android:error="@{@drawable/placeholder}"
+            android:src="@{book.cover}"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/activity_vertical_margin"
@@ -63,7 +64,7 @@
             android:id="@+id/checkout_list_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{String.valueOf(book.rentPrice)}"
+            android:text='@{"" + book.rentPrice}'
             android:textSize="16sp"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             android:layout_alignParentRight="true"

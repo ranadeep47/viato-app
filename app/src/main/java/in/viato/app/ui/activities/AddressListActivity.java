@@ -1,38 +1,40 @@
 package in.viato.app.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import in.viato.app.R;
 import in.viato.app.ui.fragments.AddressListFragment;
+import in.viato.app.ui.fragments.EditAddressFragment;
 
 /**
  * Created by saiteja on 20/09/15.
  */
 public class AddressListActivity extends AbstractActivity {
-    Toolbar mToolbar;
+
+    public static final String ARG_ADDRESS_ID = "addressId";
+    private int selectedAddressId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_drawer);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
+        if(intent != null){
+            selectedAddressId = intent.getIntExtra(ARG_ADDRESS_ID, 0);
+        }
 
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                //         fragmentManager.popBackStack("Main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                //         fragmentManager.popBackStack();
-                onBackPressed();
-            }
-        });
+    }
 
-        loadFragment(R.id.frame_content, AddressListFragment.newInstance("abc", "def"), "AddressListFragment", false, "AddressListFragment");
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        if(selectedAddressId == 0){
+            loadFragment(R.id.frame_content, EditAddressFragment.newInstance(selectedAddressId), EditAddressFragment.TAG, false, EditAddressFragment.TAG);
+        } else {
+            loadFragment(R.id.frame_content, AddressListFragment.newInstance(selectedAddressId), AddressListFragment.TAG, false, AddressListFragment.TAG);
+        }
     }
 }

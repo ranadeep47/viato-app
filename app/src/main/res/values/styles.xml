@@ -7,8 +7,9 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
-        <item name="selectableItemBackground">@drawable/selector_click</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white</item>
+        <!--<item name="selectableItemBackground">@drawable/selector_click</item>-->
+        <item name="android:windowActionModeOverlay">true</item>
     </style>
 
     <style name="PopupAnimation" parent="android:Animation" mce_bogus="1">
@@ -75,5 +76,9 @@
         <item name="android:background">@color/transparent</item>
         <item name="android:textSize">@dimen/text_small</item>
         <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="TransparentText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/transparent</item>
     </style>
 </resources>

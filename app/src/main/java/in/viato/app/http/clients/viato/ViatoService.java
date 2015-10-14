@@ -25,29 +25,34 @@ public interface ViatoService {
 
     String baseUrl = "http://192.168.1.101:8080";
 
-    @POST("/accounts/login")
+    @POST("/accounts/login/")
     Observable<SimpleResponse> login(@Body LoginBody body); //TODO verify mime type
 
-    @GET("/categories")
+    @GET("/categories/")
     Observable<List<Category>> getCategories();
 
-    @GET("/categories/{categoryId}")
+    @GET("/categories/{categoryId}/")
     Observable<List<Book>> getBooksByCategory(
             @Path("categoryId") String categoryId,
             @Query("page") int page);
 
-    @GET("/search")
+    @GET("/search/")
     Observable<List<SearchResultItem>> search(@Query("query") String query);
 
-    @GET("/mybooks/home")
+    @GET("/mybooks/home/")
     Observable<List<CoverQuote>> getQuotes();
 
-    @GET("/mybooks/own")
+    @GET("/mybooks/own/")
     Observable<MyBooksOwnResponse> getOwned();
 
-    @GET("/mybooks/read")
+    @GET("/mybooks/read/")
     Observable<MyBooksReadResponse> getRead();
 
-    @GET("/mybooks/wishlist")
+    @GET("/mybooks/wishlist/")
     Observable<MyBooksWishlistResponse> getWishlist();
+
+    @GET("/book_detail/{bookId}/")
+    Observable<Book> getBookDetails(
+            @Path("bookId") String bookId
+    );
 }

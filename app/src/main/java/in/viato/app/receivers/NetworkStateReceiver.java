@@ -40,7 +40,7 @@ public class NetworkStateReceiver extends BroadcastReceiver {
     private boolean checkStateChanged() {
         boolean prev = mConnected;
         NetworkInfo activeNetwork = mManager.getActiveNetworkInfo();
-        mConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        mConnected = activeNetwork != null && activeNetwork.isConnected();
         return prev != mConnected;
     }
 

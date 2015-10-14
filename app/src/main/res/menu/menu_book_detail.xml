@@ -11,7 +11,7 @@
           android:title="@string/action_cart"
           android:orderInCategory="100"
           app:showAsAction="ifRoom"
-          android:icon="@drawable/ic_cart"/>
+          android:icon="@drawable/ic_cart_white"/>
 
     <item android:id="@+id/action_i_read"
         android:title="@string/not_in_read"

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/btn_add_address"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/activity_horizontal_margin">
+        <ImageView
+            android:id="@+id/icn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_black"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+        <TextView
+            android:id="@+id/add_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add New Address"
+            android:layout_toRightOf="@id/icn_add"
+            android:layout_centerVertical="true"
+            android:textColor="@color/text"/>
+    </RelativeLayout>
+</RelativeLayout>

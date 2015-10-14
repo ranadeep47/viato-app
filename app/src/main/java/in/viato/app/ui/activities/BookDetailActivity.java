@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import in.viato.app.R;
 import in.viato.app.ui.fragments.BookDetailFragment;
-import in.viato.app.ui.fragments.CategoryBooksFragment;
 
 public class BookDetailActivity extends AbstractActivity {
 
@@ -13,11 +12,12 @@ public class BookDetailActivity extends AbstractActivity {
     public static final String ARG_BOOK_TITLE = "BookTitle";
     public static final String ARG_BOOK_AUTHOR = "BookAuthor";
     public static final String ARG_BOOK_POSTER = "BookPoster";
+    public static final String ARG_RATE_BOOK = "RateBook";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_no_drawer);
+        setContentView(R.layout.activity_bare);
 
         Intent intent = getIntent();
         String id = intent.getStringExtra(ARG_BOOK_ID);

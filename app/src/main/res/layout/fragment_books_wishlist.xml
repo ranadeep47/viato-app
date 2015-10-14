@@ -1,102 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
-    android:orientation="vertical"
+<in.viato.app.ui.widgets.BetterViewAnimator
+    android:id="@+id/books_wishlist_animator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <in.viato.app.ui.widgets.BetterViewAnimator
-        android:id="@+id/books_wishlist_animator"
+    android:layout_height="match_parent"
+    android:inAnimation="@android:anim/fade_in"
+    android:outAnimation="@android:anim/fade_out"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <include layout="@layout/c_progress_bar"
+             android:id="@+id/books_wishlist_loading" />
+    <RelativeLayout
+        android:id="@+id/books_wishlist_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:inAnimation="@android:anim/fade_in"
-        android:outAnimation="@android:anim/fade_out"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-        <ProgressBar
-            android:layout_gravity="center"
-            android:id="@+id/books_wishlist_loading"
-            style="@android:style/Widget.ProgressBar.Inverse"
+        android:orientation="vertical"
+        android:padding="48dp"
+        >
+        <ImageView
+            android:id="@+id/error_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RelativeLayout
-            android:id="@+id/books_wishlist_error"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="48dp"
-            >
-            <ImageView
-                android:id="@+id/error_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"
-                android:src="@drawable/error"
-                />
-            <TextView
-                android:id="@+id/error_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/error_image"
-                android:gravity="center_horizontal"
-                android:textSize="34sp"
-                android:textColor="?android:attr/textColorPrimary"
-                android:text="Please try again"
-                />
-            <TextView
-                android:id="@+id/error_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/error_image"
-                android:gravity="center_horizontal"
-                android:text="Problem with your internet connection."
-                />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/books_wishlist_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="48dp"
-            >
-            <ImageView
-                android:id="@+id/empty_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"
-                android:src="@drawable/empty"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/empty_image"
-                android:gravity="center_horizontal"
-                android:textSize="34sp"
-                android:textColor="?android:attr/textColorPrimary"
-                android:text="Its empty here"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/empty_image"
-                android:gravity="center_horizontal"
-                android:text="Just press add button and add your books to the shelf"
-                />
-        </RelativeLayout>
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/books_wishlist_container"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/error"
+            />
+        <TextView
+            android:id="@+id/error_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/books_wishlist_grid"
-                android:padding="@dimen/spacing_medium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </android.support.v4.widget.NestedScrollView>
-    </in.viato.app.ui.widgets.BetterViewAnimator>
-</FrameLayout>
+            android:layout_above="@id/error_image"
+            android:gravity="center_horizontal"
+            android:textSize="34sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:text="Please try again"
+            />
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/error_image"
+            android:gravity="center_horizontal"
+            android:text="Problem with your internet connection."
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/books_wishlist_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="48dp"
+        >
+        <ImageView
+            android:id="@+id/empty_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/empty"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/empty_image"
+            android:gravity="center_horizontal"
+            android:textSize="34sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:text="Its empty here"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/empty_image"
+            android:gravity="center_horizontal"
+            android:text="Just press add button and add your books to the shelf"
+            />
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/books_wishlist_grid"
+        android:padding="@dimen/spacing_medium"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="48dp"/>
+</in.viato.app.ui.widgets.BetterViewAnimator>

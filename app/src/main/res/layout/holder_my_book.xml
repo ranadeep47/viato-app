@@ -8,25 +8,43 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <LinearLayout
+        <ImageView
+            android:id="@+id/mybook_cover"
+            android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/mybook_cover"
-                android:scaleType="fitXY"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/book_thumb" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
+            android:layout_height="@dimen/book_thumb"
+            android:contentDescription="@string/cover_image"/>
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/mybook_title"
                 android:ellipsize="end"
-                android:padding="@dimen/spacing_tiny"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/icn_more"
+                android:layout_toLeftOf="@+id/icn_more"
+                android:layout_alignParentLeft="true"
+                android:maxLines="2"
+                android:minLines="2"
+                android:paddingLeft="4dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"/>
+            <ImageView
+                android:id="@+id/icn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_more_vert_black"
+                android:contentDescription="icon more"
+                android:padding="4dp"/>
+        </RelativeLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

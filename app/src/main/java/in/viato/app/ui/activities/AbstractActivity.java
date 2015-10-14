@@ -1,10 +1,10 @@
 package in.viato.app.ui.activities;
 
 import android.content.pm.PackageManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -30,14 +32,13 @@ import in.viato.app.ui.fragments.AbstractFragment;
 import in.viato.app.ui.fragments.FragmentTransition;
 import in.viato.app.utils.RxUtils;
 import rx.subscriptions.CompositeSubscription;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by ranadeep on 11/09/15.
  */
 public class AbstractActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener{
 
-    private final static String TAG = "AbstractActivity";
+    public final static String TAG = "AbstractActivity";
 
     private ProgressDialog mProgressDialog;
     private static boolean mMainActivityIsOpen;
@@ -48,8 +49,8 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
     protected NetworkStateReceiver mNetworkReceiver;
 
     @Bind(R.id.retry) Button retry;
-    @Bind(R.id.toolbar) protected Toolbar mToolbar;
-    @Bind(R.id.activity_title) TextView mTitle;
+    @Nullable @Bind(R.id.toolbar) protected Toolbar mToolbar;
+    @Nullable @Bind(R.id.activity_title) TextView mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +64,13 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
         super.onPostCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        setDefaultTitle();
-        setSupportActionBar(mToolbar);
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(null);
-
+        if(mToolbar != null && mTitle != null) {
+            setDefaultTitle();
+            setSupportActionBar(mToolbar);
+            final ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(null);
+        }
         mNetworkReceiver = new NetworkStateReceiver(this);
         mNetworkReceiver.addListener(this);
     }
@@ -107,6 +109,9 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        unbindDrawables(((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0));
     }
 
     @Override
@@ -134,15 +139,13 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
 
         }
 
-        return handled;
-
-
+        return true;
     }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
+//    @Override
+//    protected void attachBaseContext(Context newBase) {
+//        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+//    }
 
     private void doUpNavigation() {
         final Intent upIntent = NavUtils.getParentActivityIntent(this);
@@ -280,7 +283,9 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
     }
 
     protected void setTitle(String title){
-        mTitle.setText(title);
+        if(mTitle != null) {
+            mTitle.setText(title);
+        }
     }
 
     private void setDefaultTitle(){
@@ -296,5 +301,17 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
         mTitle.setText(label);
     }
 
+    public void unbindDrawables(View view) {
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+        }
 
+        if (view instanceof ViewGroup && !(view instanceof AdapterView)) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
+    }
 }

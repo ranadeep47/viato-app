@@ -25,6 +25,7 @@ import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ranadeep on 13/09/15.
@@ -54,8 +55,8 @@ public class ViatoAPI {
     public Observable<SimpleResponse> login(String mobile){
         return mViatoService
                 .login(new LoginBody(mobile))
-                .observeOn(AndroidSchedulers.mainThread());
-//              .subscribeOn(Schedulers.io()) Unncessary since retrofit already uses a thread executor pool
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
 
     }
 

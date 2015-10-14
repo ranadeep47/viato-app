@@ -1,13 +1,9 @@
 package in.viato.app;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.AppConstants.UserInfo;
@@ -16,16 +12,13 @@ import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import com.squareup.okhttp.internal.Util;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import in.viato.app.http.clients.viato.ViatoAPI;
 import in.viato.app.receivers.NetworkStateReceiver;
-import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.MiscUtils;
 import in.viato.app.utils.SharedPrefHelper;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
 /**
@@ -42,9 +35,6 @@ public class ViatoApplication extends Application implements NetworkStateReceive
 
     private ViatoAPI mViatoAPI;
 
-    public static Typeface roboto;
-    public static Typeface robotoCondensed;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -59,13 +49,10 @@ public class ViatoApplication extends Application implements NetworkStateReceive
 //        built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
 
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build());
-
-        roboto = Typeface.createFromAsset(getAssets(), "fonts/roboto/Roboto-Black.ttf");
-        robotoCondensed = Typeface.createFromAsset(getAssets(), "fonts/roboto/RobotoCondensed-Bold.ttf");
+//        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+//                .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
+//                .setFontAttrId(R.attr.fontPath)
+//                .build());
 
         Logger.init(mTAG);
 

@@ -46,7 +46,7 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
 
         holder.title.setText(book.getTitle());
         holder.author.setText(book.getAuthor());
-        holder.rent.setText(book.getRent());
+//        holder.rent.setText(book.getRent());
         holder.itemView.setTag(R.string.book_id, book.getBookId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +80,7 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
         @Bind(R.id.book_cover) ImageView cover;
         @Bind(R.id.book_title) TextView title;
         @Bind(R.id.book_author) TextView author;
-        @Bind(R.id.book_rent_price) TextView rent;
+//        @Bind(R.id.book_rent_price) TextView rent;
 
         public CategoryBookItemHolder(View itemView) {
             super(itemView);

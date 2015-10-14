@@ -1,18 +1,30 @@
 package in.viato.app.ui.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.IdRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import in.viato.app.R;
@@ -23,15 +35,23 @@ import in.viato.app.R;
 public class AbstractNavDrawerActivity extends AbstractActivity {
 
     ImageView coverImage;
-    @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
     @Bind(R.id.navdrawer_layout) protected DrawerLayout mDrawerLayout;
     @Bind(R.id.nav_view) protected NavigationView mNavigationView;
+    @Bind(R.id.main_container) CoordinatorLayout mCoordinatorLayout ;
 
-//    @Bind(R.id.collapsing_toolbar) protected CollapsingToolbarLayout mCollapseToolbar;
+    private final Context mContext = this;
+    private Handler mHandler = new Handler();
+
+    // delay to launch nav drawer item, to allow close animation to play
+    private static final int NAVDRAWER_LAUNCH_DELAY = 250;
+
+    private FragmentManager mFragmentManager;
+    // @Bind(R.id.collapsing_toolbar) protected CollapsingToolbarLayout mCollapseToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFragmentManager = this.getSupportFragmentManager();
     }
 
     @Override
@@ -39,10 +59,8 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
         super.onPostCreate(savedInstanceState);
         //Initialise here, because ButterKnife.bind is called in AbstractActivity
         //Set overflow icon, menu, menu click listener, logo drawable ..
-//        mCollapseToolbar.setTitle(mToolbar.getTitle());
-//        mCollapseToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent))
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        // mCollapseToolbar.setTitle(mToolbar.getTitle());
+        // mCollapseToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent))
         setupDrawerContent(mNavigationView);
     }
 
@@ -50,59 +68,68 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                if(mFragmentManager.getBackStackEntryCount() >0){
+                    getSupportFragmentManager().popBackStack();
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
                 return true; //Return here because AbstractActivity catches the same android.R.id.home for doing upNavigation
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
+    private void setupDrawerContent(final NavigationView navigationView) {
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(final MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                return mHandler.postDelayed(new Runnable() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        Intent intent;
-                        
+                    public void run() {
+                        Intent intent = null;
+
                         switch (menuItem.getItemId()) {
-                            case R.id.nav_home :
-                                intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                break;
-                            case R.id.nav_my_books :
-                                break;
-                            case R.id.nav_lends:
-                                intent = new Intent(getApplicationContext(), PreviousOrders.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            case R.id.nav_home:
+                                intent = new Intent(mContext, HomeActivity.class);
                                 startActivity(intent);
                                 break;
-//                            case R.id.nav_profile :
-//                                break;
-//                            case R.id.nav_wallet :
-//                                break;
-                            case R.id.nav_notifications :
+                            case R.id.nav_my_books:
+                                intent = new Intent(mContext, MyBooksActivity.class);
+                                startActivity(intent);
+                                finish();
                                 break;
-                            case R.id.nav_help :
+                            case R.id.nav_lends:
+                                intent = new Intent(mContext, PreviousOrders.class);
+                                startActivity(intent);
+                                finish();
                                 break;
-
-                            default:
+                            case R.id.nav_notifications:
+                                intent = new Intent(mContext, NotificationsActivity.class);
+                                startActivity(intent);
+                                finish();
+                                break;
+                            case R.id.nav_help:
+                                Snackbar.make(mCoordinatorLayout, R.string.coming_soon, Snackbar.LENGTH_SHORT).show();
                                 break;
                         }
-                        return true;
                     }
-                });
+                }, NAVDRAWER_LAUNCH_DELAY);
+            }
+        });
+
+        mFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (mFragmentManager.getBackStackEntryCount() > 0) {
+                    ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+                } else {
+                    ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+                }
+            }
+        });
     }
-
-    protected void showCoverImage(){
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-
-        View coverContainer = stubCoverImage.inflate();
-        coverImage = (ImageView) coverContainer.findViewById(R.id.cover_image);
-        coverImage.setVisibility(View.VISIBLE);
-    }
-
 }

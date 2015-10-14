@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable name="address" type="in.viato.app.model.Address"></variable>
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/activity_vertical_margin"
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:textColor="@color/text"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:text="@{address.mLabel}"
+                android:fontFamily="sans-serif-medium"
+                android:id="@+id/tv_label_addressItem"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:gravity="end"
+                android:textColor="@color/hint_text"
+                android:textSize="12sp"
+                android:text="@string/change"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{address.mAddress}"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/street_addressItem"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{address.mLocality}"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/locality_tv"
+            />
+    </LinearLayout>
+</layout>
+    <!--108, B Wing, Building No. 32, Sahyadri CHS, MHADA-->
+    <!--Chandivali, Mumbai - 400072-->

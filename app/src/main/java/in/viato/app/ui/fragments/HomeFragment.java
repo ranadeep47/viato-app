@@ -8,9 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
@@ -138,8 +138,10 @@ public class HomeFragment extends AbstractFragment {
             Picasso
                     .with(getActivity())
                     .load(category.getImage())
+                    .placeholder(R.drawable.placeholder)
                     .transform(new ColorFilterTransformation(R.color.black))
                     .networkPolicy(NetworkPolicy.OFFLINE)
+                    .error(R.drawable.placeholder)
                     .into(holder.imageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -191,4 +193,6 @@ public class HomeFragment extends AbstractFragment {
             imageView = (ImageView) itemView.findViewById(R.id.category_image);
         }
     }
+
+
 }

@@ -1,8 +1,11 @@
 package in.viato.app.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import in.viato.app.R;
+import in.viato.app.http.models.response.MyBook;
 import in.viato.app.http.models.response.MyBooksReadResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
@@ -27,10 +31,10 @@ public class BooksReadFragment extends AbstractFragment {
 
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
 
-    @Bind(R.id.books_read_container) LinearLayout readContainer;
-    @Bind(R.id.books_reading_container) LinearLayout readingContainer;
+//    @Bind(R.id.books_read_container) LinearLayout readContainer;
+//    @Bind(R.id.books_reading_grid) RecyclerView readingContainer;
 
-    @Bind(R.id.books_read_grid) RecyclerView readGrid;
+//    @Bind(R.id.books_read_grid) RecyclerView readGrid;
     @Bind(R.id.books_reading_grid) RecyclerView readingGrid;
 
     @Nullable
@@ -69,28 +73,37 @@ public class BooksReadFragment extends AbstractFragment {
         }
         else {
             if(myBooksReadResponse.getReading().size() == 0){
-                readingContainer.setVisibility(View.GONE);
+                readingGrid.setVisibility(View.GONE);
             }
             else {
-                MyBooksGirdAdapter readingAdapter = new MyBooksGirdAdapter();
+                final MyBooksGirdAdapter readingAdapter = new MyBooksGirdAdapter();
                 readingAdapter.addAll(myBooksReadResponse.getReading());
+                readingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onChanged() {
+                        super.onChanged();
+                        if (readingAdapter.getItemCount() == 0) {
+                            container.setDisplayedChildId(R.id.books_read_empty);
+                        }
+                    }
+                });
 
-                readingGrid.setLayoutManager(new WrappableGridLayoutManager(getContext(), 3, 100));
+                readingGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
                 readingGrid.setAdapter(readingAdapter);
             }
 
-            if(myBooksReadResponse.getRead().size() == 0) {
-                readContainer.setVisibility(View.GONE);
-            }
-            else {
-                MyBooksGirdAdapter readAdapter = new MyBooksGirdAdapter();
-                readAdapter.addAll(myBooksReadResponse.getRead());
+//            if(myBooksReadResponse.getRead().size() == 0) {
+//                readContainer.setVisibility(View.GONE);
+//            }
+//            else {
+//                MyBooksGirdAdapter readAdapter = new MyBooksGirdAdapter();
+//                readAdapter.addAll(myBooksReadResponse.getRead());
+//
+//                readGrid.setLayoutManager(new WrappableGridLayoutManager(getContext(), 3, 200));
+//                readGrid.setAdapter(readAdapter);
+//            }
 
-                readGrid.setLayoutManager(new WrappableGridLayoutManager(getContext(), 3, 200));
-                readGrid.setAdapter(readAdapter);
-            }
-
-            container.setDisplayedChildId(R.id.books_read_grids_container);
+            container.setDisplayedChildId(R.id.books_reading_grid);
         }
     }
 
@@ -102,5 +115,13 @@ public class BooksReadFragment extends AbstractFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) readingGrid.getAdapter();
+        adapter.add(new MyBook());
+        adapter.notifyDataSetChanged();
+        readingGrid.scrollToPosition(adapter.getItemCount());
     }
 }

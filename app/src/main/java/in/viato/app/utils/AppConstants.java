@@ -213,4 +213,12 @@ public class AppConstants {
     public static interface Keys {
         public static final String UP_NAVIGATION_TAG = "up_navigation_tag";
     }
+
+    public static interface ORDER_STATUS {
+        public static final int ORDER_PLACED = 0;
+        public static final int ORDER_CANCELED = 1;
+        public static final int ORDER_DELIVERED = 2;
+        public static final int ORDER_EXTENDED = 3;
+        public static final int ORDER_RETURNED = 4;
+    }
 }

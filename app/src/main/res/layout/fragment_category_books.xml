@@ -6,12 +6,8 @@
     android:inAnimation="@android:anim/fade_in"
     android:outAnimation="@android:anim/fade_out"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <ProgressBar
-        android:id="@+id/category_books_loading"
-        android:layout_gravity="center"
-        style="@android:style/Widget.ProgressBar.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/c_progress_bar"
+             android:id="@+id/category_books_loading" />
     <RelativeLayout
         android:id="@+id/category_books_error"
         android:layout_width="match_parent"

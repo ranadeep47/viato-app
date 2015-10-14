@@ -1,6 +1,8 @@
 package in.viato.app.ui.activities;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -10,9 +12,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
@@ -25,7 +27,6 @@ import java.util.List;
 import in.viato.app.R;
 import in.viato.app.http.models.response.CoverQuote;
 
-import in.viato.app.ui.fragments.BooksOwnFragment;
 import in.viato.app.ui.fragments.BooksReadFragment;
 import in.viato.app.ui.fragments.BooksWishlistFragment;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
@@ -37,7 +38,6 @@ import rx.Subscriber;
 public class MyBooksActivity extends AbstractNavDrawerActivity {
 
     private ViewPager mViewPager;
-    private Adapter mAdapter;
     private TabLayout mTabs;
 
     private ImageView cover;
@@ -45,6 +45,9 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
     private TextView quoter;
 
     private FloatingActionButton fab;
+
+    private static final int REQUEST_BOOK_ID = 0;
+    private static final String ARG_CURRENT_FRAGMENT = "currentFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,26 +111,27 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
     }
 
     private void setupViewPager(){
-        mAdapter = new Adapter(getSupportFragmentManager());
-        mAdapter.add(new BooksOwnFragment(), "I Own");
+        Adapter mAdapter = new Adapter(getSupportFragmentManager());
         mAdapter.add(new BooksReadFragment(), "I Read");
         mAdapter.add(new BooksWishlistFragment(), "Wishlist");
+//        mAdapter.add(new BooksOwnFragment(), "I Own");
         mViewPager.setAdapter(mAdapter);
         mTabs.setupWithViewPager(mViewPager);
+//        mTabs.setSelectedTabIndicatorColor(getResources().getColor(R.color.white));
     }
 
     private String getFragmentName(int position){
         String name = "";
         switch (position) {
             case 0 :
-                name = BooksOwnFragment.TAG;
-                break;
-            case 1 :
                 name = BooksReadFragment.TAG;
                 break;
-            case 2 :
+            case 1 :
                 name = BooksWishlistFragment.TAG;
                 break;
+//            case 2 :
+//                name = BooksOwnFragment.TAG;
+//                break;
         }
 
         return name;
@@ -138,7 +142,12 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MyBooksActivity.this, fragmentName, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);
+                intent.putExtra(BookSearchActivity.ARG_ACTION_TO_ADD, true);
+                intent.putExtra(SearchManager.QUERY, "");
+                intent.putExtra(ARG_CURRENT_FRAGMENT, mViewPager.getCurrentItem());
+                intent.setAction("android.intent.action.SEARCH");
+                startActivityForResult(intent, REQUEST_BOOK_ID);
             }
         });
     }
@@ -199,7 +208,18 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Adapter adapter = (Adapter) mViewPager.getAdapter();
 
-
-
+        if (resultCode == RESULT_OK) {
+            if(requestCode == REQUEST_BOOK_ID) {
+                int currentFragment = data.getIntExtra(ARG_CURRENT_FRAGMENT, 0);
+                mViewPager.setCurrentItem(currentFragment);
+                Fragment fragment = adapter.getItem(currentFragment);
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
 }

@@ -31,12 +31,8 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
-    <ProgressBar
-        android:layout_gravity="center"
-        android:id="@+id/search_books_loading"
-        style="@android:style/Widget.ProgressBar.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/c_progress_bar"
+             android:id="@+id/search_books_loading" />
     <RelativeLayout
         android:id="@+id/search_books_error"
         android:layout_width="match_parent"

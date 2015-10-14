@@ -3,7 +3,7 @@
     android:id="@+id/fab"
     app:layout_anchor="@id/main_container"
     app:layout_anchorGravity="bottom|right|end"
-    android:src="@drawable/ic_add"
+    android:src="@drawable/ic_add_white"
     style="@style/FabStyle"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" />

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProgressBar
+    android:id="@+id/books_detail_loading"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:indeterminateTint="@color/primary"
+    android:indeterminateTintMode="src_in"
+    xmlns:android="http://schemas.android.com/apk/res/android"/>

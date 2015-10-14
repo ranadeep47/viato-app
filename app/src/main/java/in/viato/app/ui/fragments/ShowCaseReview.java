@@ -61,7 +61,7 @@ public class ShowCaseReview extends ShowcaseFragment {
 
     @Override
     protected ReviewRVAdapter getAdapter() {
-        return new ReviewRVAdapter(Review.get());
+        return new ReviewRVAdapter((new Review()).get());
     }
 
     @Override

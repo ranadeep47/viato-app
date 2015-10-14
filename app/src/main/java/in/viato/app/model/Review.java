@@ -1,5 +1,7 @@
 package in.viato.app.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class Review {
     private String mDpLink;
     private float mRating;
 
-    private static List<Review> mReviewList;
+    private List<Review> mReviewList;
 
     public Review(String userName, String date, float rating, String reviewText, String dpLink) {
         mUserName = userName;
@@ -23,7 +25,10 @@ public class Review {
         mDpLink = dpLink;
     }
 
-    public static List<Review> get() {
+    public Review() {
+    }
+
+    public List<Review> get() {
         if(mReviewList == null) {
             List<Review> reviews = new ArrayList<Review>();
             for (int i = 0; i < 3; i++) {
@@ -31,10 +36,8 @@ public class Review {
                 reviews.add(review);
             }
             mReviewList = reviews;
-            return mReviewList;
-        } else {
-            return mReviewList;
         }
+        return mReviewList;
     }
 
     public Review getItem(int pos){

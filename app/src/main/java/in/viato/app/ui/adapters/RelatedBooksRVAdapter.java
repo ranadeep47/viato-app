@@ -26,6 +26,7 @@ public class RelatedBooksRVAdapter
     private int mLayoutId;
     private Context mContext;
     private int id = 1;
+    private Boolean mClickable;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
@@ -38,9 +39,10 @@ public class RelatedBooksRVAdapter
         }
     }
 
-    public RelatedBooksRVAdapter(int layoutId, List<String> items) {
+    public RelatedBooksRVAdapter(int layoutId, List<String> items, Boolean clickable) {
         mValues = items;
         mLayoutId = layoutId;
+        mClickable = clickable;
     }
 
     @Override
@@ -53,17 +55,18 @@ public class RelatedBooksRVAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if(mClickable){
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, BookDetailActivity.class);
+                    intent.putExtra(BookDetailFragment.EXTRA_ID, id);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, BookDetailActivity.class);
-                intent.putExtra(BookDetailFragment.EXTRA_ID, id);
-
-                context.startActivity(intent);
-            }
-        });
+                    context.startActivity(intent);
+                }
+            });
+        }
 
         Picasso.with(mContext)
                 .load(mValues.get(position))

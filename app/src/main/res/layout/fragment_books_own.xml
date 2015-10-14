@@ -12,12 +12,8 @@
         android:inAnimation="@android:anim/fade_in"
         android:outAnimation="@android:anim/fade_out"
         xmlns:android="http://schemas.android.com/apk/res/android">
-        <ProgressBar
-            android:layout_gravity="center"
-            android:id="@+id/books_own_loading"
-            style="@android:style/Widget.ProgressBar.Inverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <include layout="@layout/c_progress_bar"
+                 android:id="@+id/books_own_loading" />
         <RelativeLayout
             android:id="@+id/books_own_error"
             android:layout_width="match_parent"

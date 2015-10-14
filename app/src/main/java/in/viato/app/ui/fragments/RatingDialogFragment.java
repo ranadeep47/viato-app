@@ -9,13 +9,11 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
-
-import java.util.Date;
+import android.support.v7.app.AlertDialog;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,10 +21,10 @@ import in.viato.app.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RaingDialogFragment#newInstance} factory method to
+ * Use the {@link RatingDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RaingDialogFragment extends DialogFragment {
+public class RatingDialogFragment extends DialogFragment {
 
     private static final String ARG_RATING = "rating";
     private static final String ARG_REVIEW = "review";
@@ -43,8 +41,8 @@ public class RaingDialogFragment extends DialogFragment {
     @Bind(R.id.review)
     EditText mReview;
 
-    public static RaingDialogFragment newInstance(float rating, String review) {
-        RaingDialogFragment fragment = new RaingDialogFragment();
+    public static RatingDialogFragment newInstance(float rating, String review) {
+        RatingDialogFragment fragment = new RatingDialogFragment();
         Bundle args = new Bundle();
         args.putFloat(ARG_RATING, rating);
         args.putString(ARG_REVIEW, review);
@@ -52,7 +50,7 @@ public class RaingDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    public RaingDialogFragment() {
+    public RatingDialogFragment() {
         // Required empty public constructor
     }
 
@@ -72,7 +70,7 @@ public class RaingDialogFragment extends DialogFragment {
             mReview.setText(review);
         }
 
-        return new android.support.v7.app.AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .setTitle(R.string.rating_dialog_title)
                 .setPositiveButton(R.string.submit,
@@ -82,14 +80,12 @@ public class RaingDialogFragment extends DialogFragment {
                                 float rating = mRatingBar.getRating();
                                 String review =String.valueOf(mReview.getText());
                                 sendResult(Activity.RESULT_OK, rating, review);
-                                dialog.dismiss();
                             }
                         })
                 .setNegativeButton(R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
                             }
                         })
                 .create();

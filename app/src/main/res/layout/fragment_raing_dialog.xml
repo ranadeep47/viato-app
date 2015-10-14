@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="in.viato.app.ui.fragments.RaingDialogFragment"
+    tools:context="in.viato.app.ui.fragments.RatingDialogFragment"
     android:padding="@dimen/activity_horizontal_margin">
 
     <android.support.v4.widget.NestedScrollView

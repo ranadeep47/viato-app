@@ -14,11 +14,11 @@ import android.app.Fragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,7 +73,7 @@ public class BookDetailFragment extends AbstractFragment {
     private String mBookPoster;
 
     private static Boolean inWishlist = true;
-    private static Boolean isFullDesc = true;
+    private static Boolean isFullDesc = false;
 
     public static final String EXTRA_ID = "book_id";
 
@@ -113,6 +113,7 @@ public class BookDetailFragment extends AbstractFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mBookId = getArguments().getString(ARG_BOOK_ID);
             mBookTitle = getArguments().getString(ARG_BOOK_TITLE);
@@ -127,7 +128,6 @@ public class BookDetailFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_book_detail, container, false);
     }
 
@@ -137,9 +137,9 @@ public class BookDetailFragment extends AbstractFragment {
 
         setHasOptionsMenu(true);
 
-//        mActivity.setSupportActionBar(mToolbar);
-//        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        mCollapsingToolbarLayout.setTitle("");
+        mActivity.setSupportActionBar(mToolbar);
+        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mCollapsingToolbarLayout.setTitle("Windows 10 all-in-one for Dummies");
 
         mSalePrice.setPaintFlags(mSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
@@ -165,13 +165,18 @@ public class BookDetailFragment extends AbstractFragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_cart) {
-            startActivity(new Intent(mActivity, CheckoutActivity.class));
-            return true;
+        switch(id) {
+            case R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+            case R.id.action_cart:
+                startActivity(new Intent(mActivity, CheckoutActivity.class));
+                break;
+            case R.id.action_share:
+                letShare();
+                break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -187,8 +192,8 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         if (requestCode == REQUEST_RATING) {
-            Float rating = data.getFloatExtra(RaingDialogFragment.EXTRA_RATING, 0);
-            String review = data.getStringExtra(RaingDialogFragment.EXTRA_REVIEW).replaceAll("\\s+", " ");;
+            Float rating = data.getFloatExtra(RatingDialogFragment.EXTRA_RATING, 0);
+            String review = data.getStringExtra(RatingDialogFragment.EXTRA_REVIEW).replaceAll("\\s+", " ");
             mUserRating.setRating(rating);
             mUserReview.setText(review);
         }
@@ -196,17 +201,19 @@ public class BookDetailFragment extends AbstractFragment {
 
     @TargetApi(21)
     public void setPalleteColors() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded()) {
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_header2);
 
             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(Palette palette) {
+                    if(!isAdded()){
+                        return;
+                    }
                     int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary));
                     int darkMutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.primary_light));
                     mCollapsingToolbarLayout.setBackgroundColor(mutedColor);
                     mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
-
 
                     mFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
 
@@ -236,7 +243,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                 FragmentManager fm = mActivity.getSupportFragmentManager();
 
-                RaingDialogFragment dialog = RaingDialogFragment
+                RatingDialogFragment dialog = RatingDialogFragment
                         .newInstance(rating, review);
                 dialog.setTargetFragment(BookDetailFragment.this, REQUEST_RATING);
                 dialog.show(fm, DIALOG_RATING);
@@ -286,7 +293,6 @@ public class BookDetailFragment extends AbstractFragment {
 
     @OnClick(R.id.all_reviews)
     public void showAllReviews(LinearLayout layout) {
-        Log.d(TAG, "clicked");
         FragmentManager fm = mActivity.getSupportFragmentManager();
         fm.beginTransaction()
                 .add(R.id.frame_content, ShowCaseReview.newInstance("abc", "abc"), "ShowCaseReviewFragment")
@@ -295,13 +301,13 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        List<String> links = new ArrayList<String>();
+        List<String> links = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             links.add("http://i.imgur.com/DvpvklR.png");
         }
 
         LinearLayoutManager layoutManager = new MyHorizantalLlm(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(R.layout.book_item_layout, links);
+        RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(R.layout.book_item_layout, links, true);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -328,8 +334,18 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     public void setupReviewRecyclerView(RecyclerView mRecyclerView) {
-        List<Review> reviews = Review.get();
+        List<Review> reviews = ((new Review()).get());
         mRecyclerView.setLayoutManager(new MyVerticalLlm(mRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(new ReviewRVAdapter(reviews));
+    }
+
+
+    public void letShare(){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "EXTRA_TEXT");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "EXTRA_SUBJECT");
+//        intent = Intent.createChooser(intent, getString(R.string.send_report));
+        startActivity(intent);
     }
 }

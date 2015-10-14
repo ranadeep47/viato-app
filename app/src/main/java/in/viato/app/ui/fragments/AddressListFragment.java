@@ -1,54 +1,50 @@
 package in.viato.app.ui.fragments;
 
-import android.app.Activity;
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.dummy.Addresses;
 import in.viato.app.model.Address;
-import in.viato.app.ui.adapters.AddressAdapter;
+import in.viato.app.ui.activities.AbstractActivity;
 
 public class AddressListFragment extends AbstractFragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
+    public static final String TAG = AddressListFragment.class.getSimpleName();
 
-    private ActionBar mActionBar;
+    public static final String ARG_SELECTED_ADDR = "selected_address";
 
-    private AppCompatActivity mActivity;
+    private static List<Address> addresses;
 
-    @Bind(R.id.listView_addressList) ListView listView;
+    private AbstractActivity mActivity;
+    private ListView listView;
+    private int mSelectedAddress;
+
     @Bind(R.id.coordinatorLayout_addressList) CoordinatorLayout mCoordinatorLayout;
 
-    public static AddressListFragment newInstance(String param1, String param2) {
+    public static AddressListFragment newInstance(int mSelectedAddress) {
         AddressListFragment fragment = new AddressListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_SELECTED_ADDR, mSelectedAddress);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,45 +53,51 @@ public class AddressListFragment extends AbstractFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mSelectedAddress = getArguments().getInt(ARG_SELECTED_ADDR, 1);
         }
+
         setHasOptionsMenu(true);
-        mActivity = ((AppCompatActivity) getActivity());
+
+        mActivity = ((AbstractActivity) getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_address_list, container, false);
 
-        ButterKnife.bind(this, v);
+        View view = inflater.inflate(R.layout.fragment_list_view, container, false);
+        listView = (ListView) view.findViewById(R.id.listView);
 
-        mActionBar = mActivity.getSupportActionBar();
-        mActionBar.setTitle("Select Address");
+        View footerView =  ((LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.p_add_address, null, false);
+        listView.addFooterView(footerView);
 
-        List<Address> addresses = new ArrayList<>();
-        addresses.add(new Address("1-5-144, Siricilla Road", "Kamareddy - 503111", "House"));
-        addresses.add(new Address("108, B Wing, Building No. 32, Sahyadri CHS, MHADA", "Chandivali, Mumbai - 400072", "Home"));
-        addresses.add(new Address("602, Toppr, Powai Plaza, Hirandani Gardens", "Powai, Mumbai - 400076", "Work"));
-
-        listView.setAdapter(new AddressAdapter(mActivity, addresses));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(mActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return v;
+        return view;
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        ButterKnife.unbind(this);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        addresses = (new Addresses()).get();
+        listView.setAdapter(new AddressAdapter(addresses));
+    }
+
+    @OnClick(R.id.btn_add_address)
+    public void addNewAddress() {
+        editAddress(0);
+    }
+
+    public void editAddress(int addressId) {
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+        android.support.v4.app.Fragment fragment = EditAddressFragment.newInstance(addressId);
+        fm.beginTransaction()
+                .replace(R.id.frame_content, fragment)
+                .addToBackStack("EditAddressFragment")
+                .commit();
     }
 
     @Override
@@ -106,20 +108,11 @@ public class AddressListFragment extends AbstractFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_edit:
-                FragmentManager fm = mActivity.getSupportFragmentManager();
-                android.support.v4.app.Fragment fragment = EditAddressFragment.newInstance("abc", "as");
-                fm.beginTransaction()
-                        .replace(R.id.frame_content, fragment)
-                        .addToBackStack("EditAddressFragment")
-                        .commit();
+                editAddress(mSelectedAddress);
                 return true;
 
             case R.id.action_delete:
@@ -128,6 +121,69 @@ public class AddressListFragment extends AbstractFragment {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class AddressAdapter extends BaseAdapter {
+        List<Address> addresses;
+
+        @Bind(R.id.radio_select_address) RadioButton radioButton;
+        @Bind(R.id.tv_label_addressItem) TextView textViewLabel;
+        @Bind(R.id.tv_street_addressItem) TextView textViewAddress;
+        @Bind(R.id.tv_locality_addressItem) TextView textViewLocality;
+
+        public AddressAdapter(List<Address> addressList) {
+            this.addresses = addressList;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            if(convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_address_list_item, null);
+            }
+
+            ButterKnife.bind(this, convertView);
+
+            Address address = getItem(position);
+            textViewLabel.setText(address.mLabel.get());
+            textViewAddress.setText(address.mAddress.get());
+            textViewLocality.setText(address.mLocality.get());
+
+            if(position == mSelectedAddress) {
+                radioButton.setChecked(true);
+            }else {
+                radioButton.setChecked(false);
+            }
+            radioButton.setTag(position);
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelectedAddress = (Integer) v.getTag();
+                    notifyDataSetChanged();
+                }
+            });
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    radioButton.performClick();
+                }
+            });
+            return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return addresses.size();
+        }
+
+        @Override
+        public Address getItem(int position) {
+            return addresses.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
         }
     }
 }

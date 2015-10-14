@@ -1,8 +1,12 @@
 package in.viato.app.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,7 @@ import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import in.viato.app.R;
+import in.viato.app.http.models.response.MyBook;
 import in.viato.app.http.models.response.MyBooksWishlistResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
@@ -61,12 +66,21 @@ public class BooksWishlistFragment extends AbstractFragment {
             container.setDisplayedChildId(R.id.books_wishlist_empty);
         }
         else {
-            MyBooksGirdAdapter adapter = new MyBooksGirdAdapter();
+            final MyBooksGirdAdapter adapter = new MyBooksGirdAdapter();
             adapter.addAll(myBooksWishlistResponse.getWishlist());
+            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if(adapter.getItemCount() == 0) {
+                        container.setDisplayedChildId(R.id.books_wishlist_empty);
+                    }
+                }
+            });
 
-            grid.setLayoutManager(new WrappableGridLayoutManager(getContext(), 3, 200));
+            grid.setLayoutManager(new GridLayoutManager(getContext(), 3));
             grid.setAdapter(adapter);
-            container.setDisplayedChildId(R.id.books_wishlist_container);
+            container.setDisplayedChildId(R.id.books_wishlist_grid);
         }
     }
 
@@ -78,5 +92,14 @@ public class BooksWishlistFragment extends AbstractFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) grid.getAdapter();
+        adapter.add(new MyBook());
+        adapter.notifyDataSetChanged();
+        grid.scrollToPosition(adapter.getItemCount());
     }
 }

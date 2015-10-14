@@ -13,6 +13,9 @@
     <!--Menu-->
     <string name="menu_search">Title, Author, ISBN</string>
     <string name="menu_barcode">Scan barcode</string>
+    <string name="menu_rate">Rate</string>
+    <string name="menu_move_to">Move to list</string>
+    <string name="menu_remove">Remove from list</string>
 
     <!--Sharing-->
     <string name="share">Share</string>
@@ -21,6 +24,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="action_cart">My Cart</string>
+    <string name="action_done">Done</string>
     <string name="action_favorite">Add to Wishlist</string>
     <string name="action_share">Share</string>
     <string name="action_help_and_support">Help</string>
@@ -51,6 +55,12 @@
     <string name="address">Address</string>
     <string name="city">City</string>
 
+    <string name="try_again">Try Again</string>
+    <string name="error">Error</string>
+
+    <string name="cover_image">Cover Image</string>
+
+    <string name="change">Change</string>
     <string name="update">Update</string>
     <string name="add">Add</string>
     <string name="submit">Submit</string>
@@ -105,6 +115,7 @@
     <string name="title_activity_search">Search</string>
     <string name="title_activity_test">Test</string>
     <string name="title_activity_my_books">My Books</string>
+    <string name="title_activity_notifications">Notifications</string>
 
 
     <!--Fragments & Activities specific-->
@@ -149,5 +160,10 @@
     <string name="order_canceled_date">Canceled On</string>
     <string name="order_returned_date">Returned On</string>
 
+    <string name="share_string_template">Checkout the book, %1$s on %2$s. %3$s</string>
 
+    <string name="coming_soon">Coming Soon!</string>
+    <string name="title_activity_success">Success</string>
+
+    <string name="trending">Trending</string>
 </resources>

@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +16,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,11 +35,15 @@ import in.viato.app.R;
 import in.viato.app.http.models.response.SearchResultItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by ranadeep on 23/09/15.
  */
 public class BookSearchActivity extends AbstractActivity {
+
+    public static final String TAG = BookSearchActivity.class.getSimpleName();
 
     private View mResultsView;
     private SearchView mSearchView;
@@ -46,6 +55,13 @@ public class BookSearchActivity extends AbstractActivity {
     private static final int REQUEST_SCAN_BARCODE = 1;
     private SearchResultAdapter mAdapter;
 
+    public static final String ARG_SEARCH_ACTION = "search_action";
+    public static final String ARG_ACTION_TO_ADD = "to_add";
+
+    private Boolean isSearchToAdd = false;
+
+    private String query;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,14 +71,14 @@ public class BookSearchActivity extends AbstractActivity {
         container = (BetterViewAnimator) mResultsView;
         scanButton = (CardView) mResultsView.findViewById(R.id.button_scan_barcode);
         list = (RecyclerView) mResultsView.findViewById(R.id.search_results_list);
-
+        Log.d(TAG, "onCreate");
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        mAdapter = new SearchResultAdapter();
+        mAdapter = new SearchResultAdapter(isSearchToAdd);
         list.setAdapter(mAdapter);
         list.setLayoutManager(new LinearLayoutManager(this));
 
@@ -72,41 +88,39 @@ public class BookSearchActivity extends AbstractActivity {
                 scanBarcode();
             }
         });
+        Log.d(TAG, "onPostCreate");
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        handleIntent(getIntent());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Log.d(TAG, "onResume");
+//        handleIntent(getIntent());
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        // Inflate menu to add items to action bar if it is present.
         inflater.inflate(R.menu.menu_search, menu);
+
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView =
-                (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        mSearchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        /*final int textViewID = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text",null, null);
+        final AutoCompleteTextView searchTextView = (AutoCompleteTextView) mSearchView.findViewById(textViewID);
+        try {
+            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+            mCursorDrawableRes.setAccessible(true);
+            mCursorDrawableRes.set(searchTextView, "#FFFFFF"); //This sets the cursor resource ID to 0 or @null which will make it visible on white background
+        } catch (Exception e) {}*/
 
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setFocusable(true);
         mSearchView.setIconified(false);
         mSearchView.requestFocusFromTouch();
+        Log.d(TAG, "onCreateOptionsMenu");
 
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
@@ -116,55 +130,46 @@ public class BookSearchActivity extends AbstractActivity {
             }
         });
 
-        //TODO Listen to query text change, debounce and provide realtime search
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                Logger.d("Entered : %s", query);
-//
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                Logger.d("Typing : %s", newText);
-//                return false;
-//            }
-//        });
-
+        mRxSubs.add(RxSearchView.queryTextChanges(mSearchView)
+                .debounce(100, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence c) {
+                            query = (String) c;
+                            Logger.d(query);
+                            Log.d(TAG, "1");
+                            performQuery(query);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Logger.e(throwable.getMessage() + " due to " +
+                                throwable.getCause());
+                    }
+                }));
+        mSearchView.setQuery(query, true);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-
-        if(item.getItemId() == R.id.menu_barcode){
-            scanBarcode();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.menu_barcode:
+                scanBarcode();
+                break;
         }
-
         return true;
-
     }
 
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search
-
-            Logger.d("Query is %s", query);
-            performQuery(query);
-        }
-        else {
-
-        }
-    }
-
-    private void scanBarcode(){
-        startActivityForResult(new Intent(this, BarcodeScannerActivity.class), REQUEST_SCAN_BARCODE);
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -172,15 +177,53 @@ public class BookSearchActivity extends AbstractActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_SCAN_BARCODE && resultCode == RESULT_OK){
-            String isbn = data.getStringExtra("isbn");
-            mSearchView.setQuery(isbn, true);
-            Logger.d("ISBN received : %s", isbn);
+            query = data.getStringExtra("isbn");
+//            performQuery(isbn);
+            Log.d(TAG, "onActivityResult");
+            mSearchView.setIconified(false);
+            mSearchView.setQuery(query, true);
+            Logger.d("ISBN received : %s", query);
         }
     }
 
-    private void performQuery(String query){
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "6");
+        Log.d(TAG, "onNewIntent");
+        handleIntent(intent);
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            query = intent.getStringExtra(SearchManager.QUERY);
+            isSearchToAdd = intent.getBooleanExtra(ARG_ACTION_TO_ADD, false);
+            Logger.d("Query is %s", query);
+            Log.d(TAG, "handleIntent");
+            performQuery(query);
+        }
+    }
+
+    private void scanBarcode(){
+        startActivityForResult(new Intent(this, BarcodeScannerActivity.class), REQUEST_SCAN_BARCODE);
+    }
+
+
+    private void performQuery(String query){
+        Log.d(TAG, "performQuery");
         container.setDisplayedChildId(R.id.search_books_loading);
+        int len = query.length();
+        if(len == 0) {
+            mAdapter.clear();
+            return;
+        } else if (len < 3 && len > 0){
+            return;
+        }
         mViatoAPI
                 .search(query)
                 .subscribe(new Subscriber<List<SearchResultItem>>() {
@@ -203,12 +246,16 @@ public class BookSearchActivity extends AbstractActivity {
                         } else container.setDisplayedChildId(R.id.search_books_empty);
                     }
                 });
-
     }
 
     public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ResultItemHolder>{
 
         private List<SearchResultItem> results = new ArrayList<>();
+        private Boolean toAdd;
+
+        public SearchResultAdapter(Boolean toAdd) {
+            this.toAdd = toAdd;
+        }
 
         public void setItems(List<SearchResultItem> items){
             this.results = items;
@@ -226,11 +273,29 @@ public class BookSearchActivity extends AbstractActivity {
         }
 
         @Override
-        public void onBindViewHolder(ResultItemHolder holder, int position) {
-            SearchResultItem result = results.get(position);
+        public void onBindViewHolder(ResultItemHolder holder, final int position) {
+            final SearchResultItem result = results.get(position);
             holder.title.setText(result.getTitle());
             holder.author.setText(result.getAuthor());
+            holder.mButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent data = getIntent();
+                    data.putExtra("id", result.getBookId());
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
+            });
 
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplication(), BookDetailActivity.class);
+                    intent.putExtra(BookDetailActivity.ARG_BOOK_ID, result.getBookId());
+                    startActivity(intent);
+                }
+            });
+            holder.mLinearLayout.setVisibility(isSearchToAdd ? View.VISIBLE : View.GONE);
             Picasso.with(holder.itemView.getContext())
                     .load(result.getCover())
                     .into(holder.cover);
@@ -249,6 +314,8 @@ public class BookSearchActivity extends AbstractActivity {
             @Bind(R.id.search_result_cover) ImageView cover;
             @Bind(R.id.search_result_title) TextView title;
             @Bind(R.id.search_result_author) TextView author;
+            @Bind(R.id.btn_action) Button mButton;
+            @Bind(R.id.btn_action_wrapper) LinearLayout mLinearLayout;
 
             public ResultItemHolder(View itemView) {
                 super(itemView);
