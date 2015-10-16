@@ -2,26 +2,28 @@ package in.viato.app.http.models.response;
 
 import java.util.List;
 
+import in.viato.app.http.models.old.MyBook;
+
 /**
  * Created by ranadeep on 25/09/15.
  */
 public class MyBooksReadResponse {
-    private List<BookItem> read;
-    private List<BookItem> reading;
+    private List<MyBook> read;
+    private List<MyBook> reading;
 
-    public List<BookItem> getRead() {
+    public List<MyBook> getRead() {
         return read;
     }
 
-    public void setRead(List<BookItem> read) {
+    public void setRead(List<MyBook> read) {
         this.read = read;
     }
 
-    public List<BookItem> getReading() {
+    public List<MyBook> getReading() {
         return reading;
     }
 
-    public void setReading(List<BookItem> reading) {
+    public void setReading(List<MyBook> reading) {
         this.reading = reading;
     }
 }

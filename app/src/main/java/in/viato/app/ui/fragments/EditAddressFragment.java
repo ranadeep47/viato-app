@@ -80,7 +80,7 @@ public class EditAddressFragment extends AbstractFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((AbstractActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+        ((AbstractActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
     }
 
@@ -97,9 +97,9 @@ public class EditAddressFragment extends AbstractFragment {
             case R.id.action_done:
                 mValidator.validate();
                 return true;
+            default:
+                return false;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void setValidation(Context context) {
