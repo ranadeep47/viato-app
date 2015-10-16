@@ -2,18 +2,15 @@ package in.viato.app.http.clients.viato;
 
 import java.util.List;
 
-import in.viato.app.http.models.response.Book;
-import in.viato.app.http.models.response.Category;
-import in.viato.app.http.models.response.CoverQuote;
-import in.viato.app.http.models.response.MyBooksOwnResponse;
-import in.viato.app.http.models.response.MyBooksReadResponse;
-import in.viato.app.http.models.response.MyBooksWishlistResponse;
-import in.viato.app.http.models.response.SearchResultItem;
-import in.viato.app.http.models.request.LoginBody;
-import in.viato.app.http.models.response.SimpleResponse;
-import retrofit.http.Body;
+import in.viato.app.http.models.old.Book;
+import in.viato.app.http.models.old.CoverQuote;
+import in.viato.app.http.models.old.MyBooksOwnResponse;
+import in.viato.app.http.models.old.MyBooksReadResponse;
+import in.viato.app.http.models.old.MyBooksWishlistResponse;
+import in.viato.app.http.models.old.SearchResultItem;
+import in.viato.app.http.models.response.CategoryGrid;
+import in.viato.app.http.models.response.CategoryItem;
 import retrofit.http.GET;
-import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -23,17 +20,17 @@ import rx.Observable;
  */
 public interface ViatoService {
 
-    String baseUrl = "http://192.168.1.101:8080";
+    String baseUrl = "http://viato.in";
 
-    @GET("/categories/")
-    Observable<List<Category>> getCategories();
+    @GET("/api/feed/home")
+    Observable<List<CategoryItem>> getCategories();
 
-    @GET("/categories/{categoryId}/")
-    Observable<List<Book>> getBooksByCategory(
+    @GET("/api/feed/category/{categoryId}")
+    Observable<CategoryGrid> getBooksByCategory(
             @Path("categoryId") String categoryId,
             @Query("page") int page);
 
-    @GET("/search/")
+    @GET("/search")
     Observable<List<SearchResultItem>> search(@Query("query") String query);
 
     @GET("/mybooks/home/")

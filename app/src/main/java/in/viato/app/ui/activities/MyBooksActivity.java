@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.viato.app.R;
-import in.viato.app.http.models.response.CoverQuote;
+import in.viato.app.http.models.old.CoverQuote;
 
 import in.viato.app.ui.fragments.BooksReadFragment;
 import in.viato.app.ui.fragments.BooksWishlistFragment;

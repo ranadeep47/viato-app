@@ -1,4 +1,4 @@
-package in.viato.app.http.models.response;
+package in.viato.app.http.models.old;
 
 import java.util.List;
 

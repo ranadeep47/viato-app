@@ -171,7 +171,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(HomeFragment.newInstance(), "Category");
         adapter.addFrag(
-                CategoryBooksFragment.newInstance("1", getResources().getString(R.string.trending)),
+                CategoryBooksFragment.newInstance("trending"),
                 getResources().getString(R.string.trending)
         );
 

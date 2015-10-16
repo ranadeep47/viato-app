@@ -4,19 +4,19 @@ import com.squareup.okhttp.OkHttpClient;
 
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
-import in.viato.app.http.clients.ToStringConverterFactory;
+import in.viato.app.http.models.response.CategoryGrid;
+import in.viato.app.http.models.response.CategoryItem;
 import retrofit.MoshiConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import java.util.List;
 
-import in.viato.app.http.models.response.Book;
-import in.viato.app.http.models.response.Category;
-import in.viato.app.http.models.response.CoverQuote;
-import in.viato.app.http.models.response.MyBooksOwnResponse;
-import in.viato.app.http.models.response.MyBooksReadResponse;
-import in.viato.app.http.models.response.MyBooksWishlistResponse;
-import in.viato.app.http.models.response.SearchResultItem;
+import in.viato.app.http.models.old.Book;
+import in.viato.app.http.models.old.CoverQuote;
+import in.viato.app.http.models.old.MyBooksOwnResponse;
+import in.viato.app.http.models.old.MyBooksReadResponse;
+import in.viato.app.http.models.old.MyBooksWishlistResponse;
+import in.viato.app.http.models.old.SearchResultItem;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -47,7 +47,7 @@ public class ViatoAPI {
     }
 
 
-    public Observable<List<Category>> getCategories(){
+    public Observable<List<CategoryItem>> getCategories(){
         return mViatoService
                 .getCategories()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -55,9 +55,9 @@ public class ViatoAPI {
 
     }
 
-    public Observable<List<Book>> getBooksByCategory(String category, int page){
+    public Observable<CategoryGrid> getBooksByCategory(String categoryId, int page){
         return mViatoService
-                .getBooksByCategory(category, page)
+                .getBooksByCategory(categoryId, page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
 

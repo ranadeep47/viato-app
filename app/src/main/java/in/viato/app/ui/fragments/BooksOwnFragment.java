@@ -12,7 +12,7 @@ import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.response.MyBooksOwnResponse;
+import in.viato.app.http.models.old.MyBooksOwnResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.utils.ui.WrappableGridLayoutManager;

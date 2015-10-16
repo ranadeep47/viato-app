@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +21,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.response.Category;
+import in.viato.app.http.models.old.Category;
+import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.ui.activities.CategoryBooksActivity;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import rx.Subscriber;
@@ -67,7 +67,7 @@ public class HomeFragment extends AbstractFragment {
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
 
-        mViatoAPI.getCategories().subscribe(new Subscriber<List<Category>>() {
+        mViatoAPI.getCategories().subscribe(new Subscriber<List<CategoryItem>>() {
             @Override
             public void onCompleted() {
 
@@ -80,7 +80,7 @@ public class HomeFragment extends AbstractFragment {
             }
 
             @Override
-            public void onNext(List<Category> categories) {
+            public void onNext(List<CategoryItem> categories) {
                 adapter.setCategories(categories);
             }
         });
@@ -111,13 +111,13 @@ public class HomeFragment extends AbstractFragment {
     private class CategoryListAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
 
         private final LayoutInflater inflater;
-        private List<Category> categories = Collections.emptyList();
+        private List<CategoryItem> categories = Collections.emptyList();
 
         public CategoryListAdapter() {
             inflater = LayoutInflater.from(getActivity());
         }
 
-        public void setCategories(List<Category> categories){
+        public void setCategories(List<CategoryItem> categories){
             this.categories = categories;
             notifyDataSetChanged();
         }
@@ -132,12 +132,12 @@ public class HomeFragment extends AbstractFragment {
 
         @Override
         public void onBindViewHolder(final CategoryViewHolder holder, int position) {
-            final Category category = categories.get(position);
+            final CategoryItem category = categories.get(position);
             //TODO load cateogry into imageView
             holder.titleView.setText(category.getTitle());
             Picasso
                     .with(getActivity())
-                    .load(category.getImage())
+                    .load(category.getImages().getCover())
                     .placeholder(R.drawable.placeholder)
                     .transform(new ColorFilterTransformation(R.color.black))
                     .networkPolicy(NetworkPolicy.OFFLINE)
@@ -151,7 +151,7 @@ public class HomeFragment extends AbstractFragment {
                         @Override
                         public void onError() {
                             Picasso.with(getActivity())
-                                    .load(category.getImage())
+                                    .load(category.getImages().getCover())
                                     .transform(new ColorFilterTransformation(R.color.black))
                                     .into(holder.imageView);
                         }
@@ -164,7 +164,7 @@ public class HomeFragment extends AbstractFragment {
 //                    Toast.makeText(getActivity(), category.getTitle(), Toast.LENGTH_SHORT).show();
 //                    loadFragment(R.id.frame_content, CategoryBooksFragment.newInstance(category.getId()), CategoryBooksFragment.TAG, true, CategoryBooksFragment.TAG);
                     Intent intent = new Intent(getContext(), CategoryBooksActivity.class);
-                    intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_ID, category.getId());
+                    intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_ID, category.get_id());
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_NAME, category.getTitle());
                     startActivity(intent);
                 }

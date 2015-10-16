@@ -18,7 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.response.Book;
+import in.viato.app.http.models.old.Book;
+import in.viato.app.http.models.response.BookItem;
+import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.ui.adapters.CategoryBooksGridAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Observable;
@@ -38,12 +40,11 @@ public class CategoryBooksFragment extends AbstractFragment{
     public static final String TAG = CategoryBooksFragment.class.getSimpleName();
 
     private static final String ARG_CATEGORY_ID = "categoryId";
-    private static final String ARG_CATEGORY_NAME = "categoryName";
+
 
     private final int mSpanCount = 3;
 
     private String mCategoryId;
-    private String mCategoryName;
 
     private int page = 0;
     private boolean isFull = false;
@@ -59,10 +60,9 @@ public class CategoryBooksFragment extends AbstractFragment{
     @Bind(R.id.error_title) TextView errorTitle;
     @Bind(R.id.error_message) TextView errorMessage;
 
-    public static CategoryBooksFragment newInstance(String categoryId, String categoryName) {
+    public static CategoryBooksFragment newInstance(String categoryId) {
         Bundle args = new Bundle();
         args.putString(ARG_CATEGORY_ID, categoryId);
-        args.putString(ARG_CATEGORY_NAME, categoryName);
         CategoryBooksFragment fragment = new CategoryBooksFragment();
         fragment.setArguments(args);
         return fragment;
@@ -79,7 +79,6 @@ public class CategoryBooksFragment extends AbstractFragment{
         super.onCreateView(inflater, container, savedInstanceState);
         Bundle args = getArguments();
         mCategoryId = args.getString(ARG_CATEGORY_ID);
-        mCategoryName = args.getString(ARG_CATEGORY_NAME);
         return inflater.inflate(R.layout.fragment_category_books, container, false);
     }
 
@@ -135,7 +134,7 @@ public class CategoryBooksFragment extends AbstractFragment{
         super.onDestroy();
     }
 
-    private Observable<List<Book>> getBooks(int page){
+    private Observable<CategoryGrid> getBooks(int page){
         return mViatoAPI.getBooksByCategory(mCategoryId, page);
     }
 
@@ -144,7 +143,7 @@ public class CategoryBooksFragment extends AbstractFragment{
 
         return  getBooks(page)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Book>>() {
+                .subscribe(new Subscriber<CategoryGrid>() {
                     @Override
                     public void onCompleted() {
                         Logger.d("First page loading completed");
@@ -158,7 +157,8 @@ public class CategoryBooksFragment extends AbstractFragment{
                     }
 
                     @Override
-                    public void onNext(List<Book> books) {
+                    public void onNext(CategoryGrid categoryGrid) {
+                        List<BookItem> books = categoryGrid.getList();
                         if(books == null || books.size() == 0){
                             container.setDisplayedChildId(R.id.category_books_empty);
                         }
@@ -172,9 +172,9 @@ public class CategoryBooksFragment extends AbstractFragment{
 
     private void setupInfiniteLoader(){
         mRxSubs.add(pageDetector
-                .flatMap(new Func1<Void, Observable<List<Book>>>() {
+                .flatMap(new Func1<Void, Observable<CategoryGrid>>() {
                              @Override
-                             public Observable<List<Book>> call(Void aVoid) {
+                             public Observable<CategoryGrid> call(Void aVoid) {
                                  if (!isFull) {
                                      ++page;
                                      return getBooks(page);
@@ -183,7 +183,7 @@ public class CategoryBooksFragment extends AbstractFragment{
                              }
                          }
                 )
-                .subscribe(new Subscriber<List<Book>>() {
+                .subscribe(new Subscriber<CategoryGrid>() {
                     @Override
                     public void onCompleted() {
                         Logger.d("Books loaded for page %i", page);
@@ -195,7 +195,8 @@ public class CategoryBooksFragment extends AbstractFragment{
                     }
 
                     @Override
-                    public void onNext(List<Book> books) {
+                    public void onNext(CategoryGrid categoryGrid) {
+                        List<BookItem> books = categoryGrid.getList();
                         if (books.size() == 0) {
                             isFull = true;
                             return;

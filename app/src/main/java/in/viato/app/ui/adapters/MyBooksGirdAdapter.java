@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
-import in.viato.app.http.models.response.MyBook;
+import in.viato.app.http.models.old.MyBook;
 import in.viato.app.ui.activities.BookDetailActivity;
 
 /**

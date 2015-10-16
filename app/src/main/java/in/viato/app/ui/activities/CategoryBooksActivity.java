@@ -1,6 +1,5 @@
 package in.viato.app.ui.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import in.viato.app.R;
-import in.viato.app.http.models.response.Category;
 import in.viato.app.ui.fragments.CategoryBooksFragment;
 
 public class CategoryBooksActivity extends AbstractActivity {
@@ -28,8 +26,7 @@ public class CategoryBooksActivity extends AbstractActivity {
 
         Intent intent = getIntent();
         String id = intent.getStringExtra(ARG_CATEGORY_ID);
-        String title = intent.getStringExtra(ARG_CATEGORY_NAME);
-        CategoryBooksFragment fragment = CategoryBooksFragment.newInstance(id, title);
+        CategoryBooksFragment fragment = CategoryBooksFragment.newInstance(id);
         loadFragment(R.id.frame_content, fragment, CategoryBooksFragment.TAG, false, CategoryBooksFragment.TAG);
     }
 

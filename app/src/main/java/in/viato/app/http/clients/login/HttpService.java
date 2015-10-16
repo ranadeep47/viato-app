@@ -3,7 +3,6 @@ package in.viato.app.http.clients.login;
 import in.viato.app.http.models.request.EmailBody;
 import in.viato.app.http.models.request.LoginBody;
 import in.viato.app.http.models.request.OtpBody;
-import in.viato.app.http.models.response.SimpleResponse;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import rx.Observable;

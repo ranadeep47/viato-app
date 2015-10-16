@@ -1,6 +1,5 @@
 package in.viato.app.http.models.request;
 
-import java.util.List;
 
 /**
  * Created by saiteja on 16/10/15.

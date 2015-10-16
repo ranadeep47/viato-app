@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,10 @@ import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.response.MyBook;
-import in.viato.app.http.models.response.MyBooksWishlistResponse;
+import in.viato.app.http.models.old.MyBook;
+import in.viato.app.http.models.old.MyBooksWishlistResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
-import in.viato.app.utils.ui.WrappableGridLayoutManager;
 import rx.Subscriber;
 
 /**
