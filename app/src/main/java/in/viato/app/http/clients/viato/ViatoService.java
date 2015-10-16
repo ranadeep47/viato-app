@@ -20,12 +20,12 @@ import rx.Observable;
  */
 public interface ViatoService {
 
-    String baseUrl = "http://viato.in";
+    String baseUrl = "http://viato.in/api/";
 
-    @GET("/api/feed/home")
+    @GET("feed/home")
     Observable<List<CategoryItem>> getCategories();
 
-    @GET("/api/feed/category/{categoryId}")
+    @GET("feed/category/{categoryId}")
     Observable<CategoryGrid> getBooksByCategory(
             @Path("categoryId") String categoryId,
             @Query("page") int page);
