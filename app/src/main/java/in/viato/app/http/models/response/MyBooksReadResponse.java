@@ -1,6 +1,8 @@
-package in.viato.app.http.models.old;
+package in.viato.app.http.models.response;
 
 import java.util.List;
+
+import in.viato.app.http.models.old.MyBook;
 
 /**
  * Created by ranadeep on 25/09/15.

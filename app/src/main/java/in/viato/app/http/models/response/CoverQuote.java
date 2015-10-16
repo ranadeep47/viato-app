@@ -1,4 +1,4 @@
-package in.viato.app.http.models.old;
+package in.viato.app.http.models.response;
 
 /**
  * Created by ranadeep on 24/09/15.
