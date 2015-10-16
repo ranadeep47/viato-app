@@ -31,7 +31,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
-import in.viato.app.http.models.old.SearchResultItem;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;

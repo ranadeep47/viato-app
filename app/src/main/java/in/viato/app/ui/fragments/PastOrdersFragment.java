@@ -22,9 +22,7 @@ import in.viato.app.ui.widgets.DividerItemDecoration;
 public class PastOrdersFragment extends AbstractFragment {
 
     public static final String TAG = PastOrdersFragment.class.getSimpleName();
-
     RecyclerView recyclerView;
-
     private List<OrderInShort> mOrders = new ArrayList<>();
 
     public static PastOrdersFragment newInstance() {

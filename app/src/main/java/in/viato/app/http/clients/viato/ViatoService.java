@@ -2,15 +2,12 @@ package in.viato.app.http.clients.viato;
 
 import java.util.List;
 
-import in.viato.app.http.models.old.Book;
-import in.viato.app.http.models.old.CoverQuote;
-import in.viato.app.http.models.old.MyBooksOwnResponse;
-import in.viato.app.http.models.old.MyBooksReadResponse;
-import in.viato.app.http.models.old.MyBooksWishlistResponse;
-import in.viato.app.http.models.old.SearchResultItem;
+import in.viato.app.http.models.response.BookDetail;
+import in.viato.app.http.models.response.CoverQuote;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
+import in.viato.app.http.models.response.MyBooksReadResponse;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -34,20 +31,17 @@ public interface ViatoService {
     @GET("search")
     Observable<List<BookItem>> search(@Query("q") String query);
 
-    @GET("/mybooks/home/")
+    @GET("user/mybooks/home")
     Observable<List<CoverQuote>> getQuotes();
 
-    @GET("/mybooks/own/")
-    Observable<MyBooksOwnResponse> getOwned();
-
-    @GET("/mybooks/read/")
+    @GET("user/mybooks/read")
     Observable<MyBooksReadResponse> getRead();
 
-    @GET("/mybooks/wishlist/")
-    Observable<MyBooksWishlistResponse> getWishlist();
+    @GET("user/mybooks/wishlist")
+    Observable<List<BookItem>> getWishlist();
 
-    @GET("/book_detail/{bookId}/")
-    Observable<Book> getBookDetails(
+    @GET("books/{bookId}/")
+    Observable<BookDetail> getBookDetails(
             @Path("bookId") String bookId
     );
 }

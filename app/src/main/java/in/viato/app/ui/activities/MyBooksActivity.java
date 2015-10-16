@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.viato.app.R;
-import in.viato.app.http.models.old.CoverQuote;
+import in.viato.app.http.models.response.CoverQuote;
 
 import in.viato.app.ui.fragments.BooksReadFragment;
 import in.viato.app.ui.fragments.BooksWishlistFragment;
@@ -128,9 +128,6 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
             case 1 :
                 name = BooksWishlistFragment.TAG;
                 break;
-//            case 2 :
-//                name = BooksOwnFragment.TAG;
-//                break;
         }
 
         return name;

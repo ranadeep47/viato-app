@@ -13,8 +13,8 @@ import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.old.MyBook;
-import in.viato.app.http.models.old.MyBooksReadResponse;
+import in.viato.app.http.models.response.BookItem;
+import in.viato.app.http.models.response.MyBooksReadResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
@@ -28,10 +28,6 @@ public class BooksReadFragment extends AbstractFragment {
 
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
 
-//    @Bind(R.id.books_read_container) LinearLayout readContainer;
-//    @Bind(R.id.books_reading_grid) RecyclerView readingContainer;
-
-//    @Bind(R.id.books_read_grid) RecyclerView readGrid;
     @Bind(R.id.books_reading_grid) RecyclerView readingGrid;
 
     @Nullable
@@ -89,17 +85,6 @@ public class BooksReadFragment extends AbstractFragment {
                 readingGrid.setAdapter(readingAdapter);
             }
 
-//            if(myBooksReadResponse.getRead().size() == 0) {
-//                readContainer.setVisibility(View.GONE);
-//            }
-//            else {
-//                MyBooksGirdAdapter readAdapter = new MyBooksGirdAdapter();
-//                readAdapter.addAll(myBooksReadResponse.getRead());
-//
-//                readGrid.setLayoutManager(new WrappableGridLayoutManager(getContext(), 3, 200));
-//                readGrid.setAdapter(readAdapter);
-//            }
-
             container.setDisplayedChildId(R.id.books_reading_grid);
         }
     }
@@ -117,7 +102,7 @@ public class BooksReadFragment extends AbstractFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) readingGrid.getAdapter();
-        adapter.add(new MyBook());
+        adapter.add(new BookItem()); //TODO
         adapter.notifyDataSetChanged();
         readingGrid.scrollToPosition(adapter.getItemCount());
     }

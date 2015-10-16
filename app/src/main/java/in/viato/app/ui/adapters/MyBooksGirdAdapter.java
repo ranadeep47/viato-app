@@ -20,7 +20,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
-import in.viato.app.http.models.old.MyBook;
+
+import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.activities.BookDetailActivity;
 
 /**
@@ -28,7 +29,7 @@ import in.viato.app.ui.activities.BookDetailActivity;
  */
 public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.MyBooksItemHolder> {
 
-    private List<MyBook> books = new ArrayList<>();
+    private List<BookItem> books = new ArrayList<>();
     private String redirectType;
     private Context mContext;
 
@@ -41,24 +42,24 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
         return books.size();
     }
 
-    public void addAll(List<MyBook> books){
+    public void addAll(List<BookItem> books){
         this.books = books;
         notifyDataSetChanged();
 
     }
 
-    public void add(MyBook book) {
+    public void add(BookItem book) {
         books.add(books.size(), book);
         notifyItemInserted(books.size());
     }
 
     public String getStringId(int position) {
-        return books.get(position).getBookId();
+        return books.get(position).getCatalogueId();
     }
 
     @Override
     public void onBindViewHolder(final MyBooksItemHolder holder, final int position) {
-        final MyBook book = books.get(position);
+        final BookItem book = books.get(position);
 
         holder.title.setText(book.getTitle());
         Picasso.with(holder.itemView.getContext())
@@ -106,7 +107,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, BookDetailActivity.class);
-                intent.putExtra(BookDetailActivity.ARG_BOOK_ID, book.getBookId());
+                intent.putExtra(BookDetailActivity.ARG_BOOK_ID, book.getCatalogueId());
                 mContext.startActivity(intent);
             }
         });

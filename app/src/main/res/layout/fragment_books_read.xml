@@ -82,39 +82,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!--<LinearLayout-->
-            <!--android:orientation="vertical"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-            <!--<LinearLayout-->
-                <!--android:id="@+id/books_reading_container"-->
-                <!--android:orientation="vertical"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
-                <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:text="Reading Now"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:layout_height="wrap_content" />&ndash;&gt;-->
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/books_reading_grid"-->
-                    <!--android:padding="@dimen/spacing_medium"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content" />-->
-            <!--</LinearLayout>-->
-            <!--<LinearLayout-->
-                <!--android:id="@+id/books_read_container"-->
-                <!--android:orientation="vertical"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
-                <!--<TextView-->
-                    <!--android:text="Read"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/books_read_grid"-->
-                    <!--android:padding="@dimen/spacing_medium"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content" />-->
-            <!--</LinearLayout>-->
-        <!--</LinearLayout>-->
 </in.viato.app.ui.widgets.BetterViewAnimator>
