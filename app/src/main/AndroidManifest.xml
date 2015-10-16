@@ -158,8 +158,7 @@
                 android:value="in.viato.app.ui.activities.HomeActivity" />
         </activity>
         <!-- Receivers -->
-        <receiver android:name=".receivers.SMSReceiver" >
-        </receiver>
+        <!--<receiver android:name=".receivers.SMSReceiver" ></receiver>-->
 
         <meta-data
             android:name="com.google.android.gms.version"

@@ -32,6 +32,7 @@ public class HttpClient {
                 .Builder()
                 .baseUrl(HttpService.baseUrl)
                 .client(client)
+                .validateEagerly()
                 .addConverterFactory(new ToStringConverterFactory())
                 .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -52,6 +53,7 @@ public class HttpClient {
                 .verifyOtp(new OtpBody(otp, mobile))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
+
     }
 
     public Observable<String> submitEmail(String email, String token) {
@@ -59,5 +61,6 @@ public class HttpClient {
                 .submitEmail(new EmailBody(email, token))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
+
     }
 }

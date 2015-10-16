@@ -22,8 +22,8 @@ public class RegistrationActivity extends AbstractActivity {
         setContentView(R.layout.activity_bare);
 
         LoginFragment loginFragment = LoginFragment.newInstance();
-//        loadFragment(R.id.frame_content, loginFragment, LoginFragment.TAG, false, LoginFragment.TAG);
-        loadFragment(R.id.frame_content, LoginConfirmFragment.newInstance(), LoginConfirmFragment.TAG, false, LoginConfirmFragment.TAG);
+        loadFragment(R.id.frame_content, loginFragment, LoginFragment.TAG, false, LoginFragment.TAG);
+//        loadFragment(R.id.frame_content, LoginConfirmFragment.newInstance(), LoginConfirmFragment.TAG, false, LoginConfirmFragment.TAG);
 
         //Prevent keybaord from automatically popping up when there is only EditText in LoginFragment
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);

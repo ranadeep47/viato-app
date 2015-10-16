@@ -4,12 +4,9 @@ package in.viato.app.ui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +18,7 @@ import android.widget.EditText;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -82,32 +80,26 @@ public class EditAddressFragment extends AbstractFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((AbstractActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
         setHasOptionsMenu(true);
-        ((AbstractActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
         inflater.inflate(R.menu.menu_edit_address, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         switch(id) {
-            case R.id.home:
-                NavUtils.navigateUpFromSameTask(getActivity());
-                break;
-//                getActivity().getSupportFragmentManager().popBackStack();
             case R.id.action_done:
                 mValidator.validate();
-                break;
+                return true;
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     public void setValidation(Context context) {

@@ -68,7 +68,6 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
         setupViewPager();
-
         handleIntent(getIntent());
     }
 

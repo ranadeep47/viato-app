@@ -35,7 +35,6 @@ public class AddressListFragment extends AbstractFragment {
 
     private static List<Address> addresses;
 
-    private AbstractActivity mActivity;
     private ListView listView;
     private int mSelectedAddress;
 
@@ -59,8 +58,6 @@ public class AddressListFragment extends AbstractFragment {
         }
 
         setHasOptionsMenu(true);
-
-        mActivity = ((AbstractActivity) getActivity());
     }
 
     @Override
@@ -92,12 +89,8 @@ public class AddressListFragment extends AbstractFragment {
     }
 
     public void editAddress(int addressId) {
-        FragmentManager fm = mActivity.getSupportFragmentManager();
-        android.support.v4.app.Fragment fragment = EditAddressFragment.newInstance(addressId);
-        fm.beginTransaction()
-                .replace(R.id.frame_content, fragment)
-                .addToBackStack("EditAddressFragment")
-                .commit();
+        EditAddressFragment fragment = EditAddressFragment.newInstance(addressId);
+        loadFragment(R.id.frame_content, fragment, EditAddressFragment.TAG, true, EditAddressFragment.TAG);
     }
 
     @Override

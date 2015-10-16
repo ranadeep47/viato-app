@@ -25,9 +25,6 @@ public interface ViatoService {
 
     String baseUrl = "http://192.168.1.101:8080";
 
-    @POST("/accounts/login/")
-    Observable<SimpleResponse> login(@Body LoginBody body); //TODO verify mime type
-
     @GET("/categories/")
     Observable<List<Category>> getCategories();
 

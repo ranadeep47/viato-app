@@ -75,11 +75,9 @@ public class CheckoutFragment extends AbstractFragment {
 
     @OnClick(R.id.card_view_address)
     public void onAddressClicked() {
-        Logger.d("Clicked");
         Intent intent = new Intent(getActivity(), AddressListActivity.class);
         intent.putExtra(AddressListActivity.ARG_ADDRESS_ID, mSelectedAddress);
         Bundle bundle = new Bundle();
-//        bundle.putParcelable(TAG, Parcels.wrap(address));
         getActivity().startActivityForResult(intent, REQUEST_ADDRESS);
     }
 

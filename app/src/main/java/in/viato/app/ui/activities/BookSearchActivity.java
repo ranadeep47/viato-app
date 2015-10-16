@@ -21,13 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,9 +33,7 @@ import in.viato.app.R;
 import in.viato.app.http.models.response.SearchResultItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
+
 
 /**
  * Created by ranadeep on 23/09/15.
@@ -128,27 +124,6 @@ public class BookSearchActivity extends AbstractActivity {
                 return false;
             }
         });
-
-        mRxSubs.add(RxSearchView.queryTextChanges(mSearchView)
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence c) {
-                        query = (String) c;
-                        Logger.d(query);
-                        Log.d(TAG, "1");
-                        performQuery(query);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Logger.e(throwable.getMessage() + " due to " +
-                                throwable.getCause());
-                    }
-                }));
-        mSearchView.setQuery(query, true);
         return true;
     }
 
@@ -187,7 +162,6 @@ public class BookSearchActivity extends AbstractActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d(TAG, "6");
         Log.d(TAG, "onNewIntent");
         handleIntent(intent);
     }
