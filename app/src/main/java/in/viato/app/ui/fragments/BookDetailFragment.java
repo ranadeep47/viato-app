@@ -163,18 +163,18 @@ public class BookDetailFragment extends AbstractFragment {
         int id = item.getItemId();
 
         switch(id) {
-            case R.id.home:
-                getActivity().getSupportFragmentManager().popBackStack();
-                break;
+            case android.R.id.home :
+                onBackPressed();
+                return true;
             case R.id.action_cart:
                 startActivity(new Intent(mActivity, CheckoutActivity.class));
-                break;
+                return true;
             case R.id.action_share:
                 letShare();
-                break;
+                return true;
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
