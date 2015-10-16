@@ -175,10 +175,10 @@ public class BookSearchActivity extends AbstractActivity {
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            query = intent.getStringExtra(SearchManager.QUERY);
             isSearchToAdd = intent.getBooleanExtra(ARG_ACTION_TO_ADD, false);
+            query = intent.getStringExtra(SearchManager.QUERY);
+            if(query == null || query == "") return;
             Logger.d("Query is %s", query);
-            Log.d(TAG, "handleIntent");
             performQuery(query);
         }
     }
