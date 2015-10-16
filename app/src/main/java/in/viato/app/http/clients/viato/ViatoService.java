@@ -8,6 +8,7 @@ import in.viato.app.http.models.old.MyBooksOwnResponse;
 import in.viato.app.http.models.old.MyBooksReadResponse;
 import in.viato.app.http.models.old.MyBooksWishlistResponse;
 import in.viato.app.http.models.old.SearchResultItem;
+import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import retrofit.http.GET;
@@ -30,8 +31,8 @@ public interface ViatoService {
             @Path("categoryId") String categoryId,
             @Query("page") int page);
 
-    @GET("/search")
-    Observable<List<SearchResultItem>> search(@Query("query") String query);
+    @GET("search")
+    Observable<List<BookItem>> search(@Query("q") String query);
 
     @GET("/mybooks/home/")
     Observable<List<CoverQuote>> getQuotes();

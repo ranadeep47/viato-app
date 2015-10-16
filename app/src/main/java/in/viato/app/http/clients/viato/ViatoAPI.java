@@ -4,6 +4,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
+import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import retrofit.MoshiConverterFactory;
@@ -63,7 +64,7 @@ public class ViatoAPI {
 
     }
 
-    public Observable<List<SearchResultItem>> search(String query){
+    public Observable<List<BookItem>> search(String query){
         return mViatoService
                 .search(query)
                 .observeOn(AndroidSchedulers.mainThread())

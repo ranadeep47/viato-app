@@ -1,13 +1,11 @@
 package in.viato.app.ui.fragments;
 
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -100,7 +98,7 @@ public class ModifyOrderFragment extends DialogFragment {
                                     @Override
                                     public void onCompleted() {
                                         mContainer.setDisplayedChildView(mSuccess);
-//                                        dialog.dismiss();
+
                                     }
 
                                     @Override

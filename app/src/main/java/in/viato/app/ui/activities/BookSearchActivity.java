@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
 import in.viato.app.http.models.old.SearchResultItem;
+import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
 
@@ -195,12 +197,10 @@ public class BookSearchActivity extends AbstractActivity {
         if(len == 0) {
             mAdapter.clear();
             return;
-        } else if (len < 3 && len > 0){
-            return;
         }
         mViatoAPI
                 .search(query)
-                .subscribe(new Subscriber<List<SearchResultItem>>() {
+                .subscribe(new Subscriber<List<BookItem>>() {
                     @Override
                     public void onCompleted() {
                         Logger.d("Query completed");
@@ -213,7 +213,7 @@ public class BookSearchActivity extends AbstractActivity {
                     }
 
                     @Override
-                    public void onNext(List<SearchResultItem> searchResultItems) {
+                    public void onNext(List<BookItem> searchResultItems) {
                         if (searchResultItems != null && searchResultItems.size() != 0) {
                             container.setDisplayedChildId(R.id.search_results_list);
                             mAdapter.setItems(searchResultItems);
@@ -224,14 +224,14 @@ public class BookSearchActivity extends AbstractActivity {
 
     public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ResultItemHolder>{
 
-        private List<SearchResultItem> results = new ArrayList<>();
+        private List<BookItem> results = new ArrayList<>();
         private Boolean toAdd;
 
         public SearchResultAdapter(Boolean toAdd) {
             this.toAdd = toAdd;
         }
 
-        public void setItems(List<SearchResultItem> items){
+        public void setItems(List<BookItem> items){
             this.results = items;
             notifyDataSetChanged();
         }
@@ -248,14 +248,14 @@ public class BookSearchActivity extends AbstractActivity {
 
         @Override
         public void onBindViewHolder(ResultItemHolder holder, final int position) {
-            final SearchResultItem result = results.get(position);
+            final BookItem result = results.get(position);
             holder.title.setText(result.getTitle());
-            holder.author.setText(result.getAuthor());
+            holder.author.setText(TextUtils.join(",", result.getAuthors()));
             holder.mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent data = getIntent();
-                    data.putExtra("id", result.getBookId());
+                    data.putExtra("id", result.getCatalogueId());
                     setResult(RESULT_OK, data);
                     finish();
                 }
@@ -265,7 +265,7 @@ public class BookSearchActivity extends AbstractActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplication(), BookDetailActivity.class);
-                    intent.putExtra(BookDetailActivity.ARG_BOOK_ID, result.getBookId());
+                    intent.putExtra(BookDetailActivity.ARG_BOOK_ID, result.getCatalogueId());
                     startActivity(intent);
                 }
             });
