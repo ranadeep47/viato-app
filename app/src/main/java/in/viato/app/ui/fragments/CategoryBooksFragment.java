@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.old.Book;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.ui.adapters.CategoryBooksGridAdapter;

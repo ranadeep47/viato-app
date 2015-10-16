@@ -21,7 +21,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.old.Category;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.ui.activities.CategoryBooksActivity;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;

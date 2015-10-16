@@ -12,12 +12,8 @@ import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import java.util.List;
 
-import in.viato.app.http.models.old.Book;
-import in.viato.app.http.models.old.CoverQuote;
-import in.viato.app.http.models.old.MyBooksOwnResponse;
-import in.viato.app.http.models.old.MyBooksReadResponse;
-import in.viato.app.http.models.old.MyBooksWishlistResponse;
-import in.viato.app.http.models.old.SearchResultItem;
+import in.viato.app.http.models.response.CoverQuote;
+import in.viato.app.http.models.response.MyBooksReadResponse;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -80,14 +76,6 @@ public class ViatoAPI {
 
     }
 
-    public Observable<MyBooksOwnResponse> getOwned(){
-        return mViatoService
-                .getOwned()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io());
-
-    }
-
     public Observable<MyBooksReadResponse> getRead(){
         return mViatoService
                 .getRead()
@@ -96,7 +84,7 @@ public class ViatoAPI {
 
     }
 
-    public Observable<MyBooksWishlistResponse> getWishlist(){
+    public Observable<List<BookItem>> getWishlist(){
         return mViatoService
                 .getWishlist()
                 .observeOn(AndroidSchedulers.mainThread())
