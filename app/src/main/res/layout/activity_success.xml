@@ -68,6 +68,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/spacing_xx_largee"
-            android:text="Browse More ooks"/>
+            android:text="Browse More Books"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="or"
+            android:gravity="center_horizontal"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Tell your friends"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

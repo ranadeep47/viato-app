@@ -22,7 +22,7 @@ public class AppConstants {
     public static final String ANDROID_APP = "android_app";
     public static final String CHECK_THIS_OUT = "check_this_out";
 
-    public static final String SMS_VERIFY_FORMAT = "Viato SMS Verification Code : ";
+    public static final String SMS_VERIFY_FORMAT = "VIATO OTP Code : ";
 
     public static final String TRUE = "true";
     public static final String FALSE = "false";
@@ -75,7 +75,6 @@ public class AppConstants {
             mAccessToken = "";
             mEmail = "";
             mId = "";
-
             mName = "";
             mMobileNumber = "";
             mAppVersion = MiscUtils.getPackageInfo().versionCode;

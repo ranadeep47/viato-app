@@ -3,6 +3,7 @@ package in.viato.app.ui.fragments;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 
 import android.support.design.widget.TextInputLayout;
@@ -18,10 +19,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.http.models.response.SimpleResponse;
+import in.viato.app.ViatoApplication;
+import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.ui.widgets.CirclePageIndicator;
+import in.viato.app.utils.SharedPrefHelper;
 import rx.functions.Action1;
 
 /**
@@ -29,8 +36,10 @@ import rx.functions.Action1;
  */
 public class LoginFragment extends AbstractFragment implements ViewPager.OnPageChangeListener{
 
-    public static final String TAG = "LoginFragment";
+    public static final String TAG = LoginFragment.class.getSimpleName();
+
     private static final long SWITCH_INTERVAL = 4000L;
+    private final HttpClient mHttpClient = ViatoApplication.get().getHttpClient();
 
     private PagerAdapter mPagerAdapter;
 
@@ -41,6 +50,7 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
 
     private CountDownTimer mImageSlideTimer;
     private boolean mReverse;
+    private String device_id;
 
     @Bind(R.id.imagePager) ViewPager mImagePager;
     @Bind(R.id.imagePagerIndicator) CirclePageIndicator mCirclePageIndicator;
@@ -61,8 +71,13 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         mImagesTitles = getActivity().getResources().getStringArray(R.array.title_array);
         mImagesSubTitles = getActivity().getResources().getStringArray(R.array.subtitle_array);
+
+        device_id = Settings.Secure.getString(getContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -107,37 +122,38 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
     private void validateAndSubmit(){
         //Check if the phone number has 10 chars
         String mobile_number = mMobileInput.getText().toString();
-        if(mobile_number.length() != getActivity().getResources().getInteger(R.integer.phone_number_length)){
+        if(!mobile_number.matches(getString(R.string.regex_mobile_number))){
             //Show error
             mMobileInputLabel.setError(getString(R.string.error_mobile_input));
             mMobileInputLabel.setErrorEnabled(true);
-        }
-        else {
+        } else {
             mMobileInputLabel.setErrorEnabled(false);
-            //Got a valid mobile, send to server
-            mViatoAPI
-                    .login(mobile_number)
-                    .subscribe(new Action1<SimpleResponse>() {
+
+            //save phone number and device id in shared preferences
+            SharedPrefHelper.set(R.string.pref_mobile_number, mobile_number);
+            SharedPrefHelper.set(R.string.pref_device_id, device_id);
+
+            mHttpClient.login(mobile_number, device_id, new ArrayList<String>())
+                    .subscribe(new Action1<String>() {
                         @Override
-                        public void call(SimpleResponse simpleResponse) {
-                            if(simpleResponse.isSuccess()){
-                                hideKeyboard(mMobileInput);
-                                loadFragment(R.id.frame_content,
-                                        LoginConfirmFragment.newInstance(),
-                                        LoginConfirmFragment.TAG,
-                                        true,
-                                        LoginConfirmFragment.TAG
-                                );
-                            }
-                            else {
-                                String error = simpleResponse.getMessage();
-                                Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
-                            }
+                        public void call(String s) {
+                            hideKeyboard(mMobileInput);
+                            loadFragment(R.id.frame_content,
+                                    LoginConfirmFragment.newInstance(),
+                                    LoginConfirmFragment.TAG,
+                                    true,
+                                    LoginConfirmFragment.TAG
+                            );
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Logger.d(throwable.getMessage() + " due to " + throwable.getCause());
+                            Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+
                         }
                     });
         }
-
-
     }
 
     private void startSlideShow() {
@@ -216,7 +232,6 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
             return mImagesArray.length;
         }
     }
-
 }
 
 //TODO store the mobile number in shared prefs

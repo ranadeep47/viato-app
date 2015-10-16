@@ -4,13 +4,12 @@ import com.squareup.okhttp.OkHttpClient;
 
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
+import in.viato.app.http.clients.ToStringConverterFactory;
 import retrofit.MoshiConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import java.util.List;
 
-import in.viato.app.ViatoApplication;
-import in.viato.app.http.clients.ClientUtils;
 import in.viato.app.http.models.response.Book;
 import in.viato.app.http.models.response.Category;
 import in.viato.app.http.models.response.CoverQuote;
@@ -18,14 +17,8 @@ import in.viato.app.http.models.response.MyBooksOwnResponse;
 import in.viato.app.http.models.response.MyBooksReadResponse;
 import in.viato.app.http.models.response.MyBooksWishlistResponse;
 import in.viato.app.http.models.response.SearchResultItem;
-import in.viato.app.http.models.request.LoginBody;
-import in.viato.app.http.models.response.SimpleResponse;
-import retrofit.MoshiConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by ranadeep on 13/09/15.
@@ -44,6 +37,7 @@ public class ViatoAPI {
                 .Builder()
                 .baseUrl(ViatoService.baseUrl)
                 .client(client)
+                .addConverterFactory(new ToStringConverterFactory())
                 .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
@@ -52,13 +46,13 @@ public class ViatoAPI {
     }
 
     //All the api methods go here
-    public Observable<SimpleResponse> login(String mobile){
-        return mViatoService
-                .login(new LoginBody(mobile))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io());
-
-    }
+//    public Observable<SimpleResponse> login(String mobile){
+//        return mViatoService
+//                .login(new LoginBody(mobile))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io());
+//
+//    }
 
     public Observable<List<Category>> getCategories(){
         return mViatoService

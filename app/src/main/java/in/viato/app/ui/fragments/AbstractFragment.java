@@ -10,6 +10,7 @@ import android.content.ClipboardManager;
 
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -116,10 +117,9 @@ public abstract class AbstractFragment extends Fragment{
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-
             case android.R.id.home: {
-                getActivity().finish();
-
+//                getActivity().finish();
+                NavUtils.navigateUpFromSameTask(getActivity());
                 return true;
             }
 

@@ -7,9 +7,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.databinding.FragmentCheckoutBinding;
 import in.viato.app.databinding.PAddressItemBinding;
 import in.viato.app.dummy.Addresses;
 import in.viato.app.dummy.Books;
@@ -38,15 +42,14 @@ public class CheckoutFragment extends AbstractFragment {
 
     private static final int REQUEST_ADDRESS = 0;
 
-    private AbstractActivity mActivity;
-    private int mSelectedAddress = 0;
-    private Address addressItem;
+    private int mSelectedAddress = 1;
     private List<Address> addresses;
+    private FragmentCheckoutBinding mBinding;
 
     @Bind(R.id.checkout_list) RecyclerView checkoutListRV;
     @Bind(R.id.lv_addressList) BetterViewAnimator container;
 
-    public static CheckoutFragment newInstance(String param1, String param2) {
+    public static CheckoutFragment newInstance() {
         CheckoutFragment fragment = new CheckoutFragment();
         return fragment;
     }
@@ -54,30 +57,27 @@ public class CheckoutFragment extends AbstractFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mActivity = (AbstractActivity) getActivity();
         addresses = (new Addresses()).get();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_checkout, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_checkout, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setupBooksList();
-
-        setupAddress((ViewGroup) view);
+        setupAddress();
     }
 
     @OnClick(R.id.card_view_address)
     public void onAddressClicked() {
+        Logger.d("Clicked");
         Intent intent = new Intent(getActivity(), AddressListActivity.class);
-        intent.putExtra(AddressListActivity.ARG_ADDRESS_ID, 1);
+        intent.putExtra(AddressListActivity.ARG_ADDRESS_ID, mSelectedAddress);
         Bundle bundle = new Bundle();
 //        bundle.putParcelable(TAG, Parcels.wrap(address));
         getActivity().startActivityForResult(intent, REQUEST_ADDRESS);
@@ -115,17 +115,13 @@ public class CheckoutFragment extends AbstractFragment {
         checkoutListRV.setAdapter(checkoutListAdapter);
     }
     
-    public void setupAddress(ViewGroup view) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View addressView;
+    public void setupAddress() {
         if(mSelectedAddress < 0) {
             container.setDisplayedChildId(R.id.add_address);
-//            addressView =  ((ViewStub) view.findViewById(R.id.stub_add_address)).inflate();
+            mBinding.setAddress(new Address());
         } else {
-//            addressView =  ((ViewStub) view.findViewById(R.id.stub_add_address)).inflate();
             container.setDisplayedChildId(R.id.already_aaddress);
-            PAddressItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.p_address_item, view, false);
-            binding.setAddress(addresses.get(mSelectedAddress));
+            mBinding.setAddress(addresses.get(mSelectedAddress));
         }
     }
 }

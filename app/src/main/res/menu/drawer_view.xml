@@ -24,11 +24,11 @@
             <!--android:title="@string/nav_profile" />-->
         <item
             android:id="@+id/nav_notifications"
-            android:icon="@drawable/ic_notifications"
+            android:icon="@drawable/ic_notifications_black"
             android:title="@string/nav_notifications" />
         <item
             android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help"
+            android:icon="@drawable/ic_help_black"
             android:title="@string/nav_help" />
     </group>
 </menu>

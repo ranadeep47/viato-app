@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_medium"
             android:paddingRight="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium"
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/spacing_large">
             <android.support.design.widget.TextInputLayout

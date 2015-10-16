@@ -37,6 +37,7 @@ import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by ranadeep on 23/09/15.
@@ -72,6 +73,11 @@ public class BookSearchActivity extends AbstractActivity {
         scanButton = (CardView) mResultsView.findViewById(R.id.button_scan_barcode);
         list = (RecyclerView) mResultsView.findViewById(R.id.search_results_list);
         Log.d(TAG, "onCreate");
+
+        Intent intent = getIntent();
+        if (intent != null){
+            handleIntent(getIntent());
+        }
     }
 
     @Override
@@ -90,13 +96,6 @@ public class BookSearchActivity extends AbstractActivity {
         });
         Log.d(TAG, "onPostCreate");
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Log.d(TAG, "onResume");
-//        handleIntent(getIntent());
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,10 +136,10 @@ public class BookSearchActivity extends AbstractActivity {
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence c) {
-                            query = (String) c;
-                            Logger.d(query);
-                            Log.d(TAG, "1");
-                            performQuery(query);
+                        query = (String) c;
+                        Logger.d(query);
+                        Log.d(TAG, "1");
+                        performQuery(query);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -218,6 +217,7 @@ public class BookSearchActivity extends AbstractActivity {
         Log.d(TAG, "performQuery");
         container.setDisplayedChildId(R.id.search_books_loading);
         int len = query.length();
+        Logger.d(String.valueOf(len));
         if(len == 0) {
             mAdapter.clear();
             return;

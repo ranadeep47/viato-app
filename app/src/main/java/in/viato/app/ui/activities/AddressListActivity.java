@@ -22,16 +22,15 @@ public class AddressListActivity extends AbstractActivity {
 
         Intent intent = getIntent();
         if(intent != null){
-            selectedAddressId = intent.getIntExtra(ARG_ADDRESS_ID, 0);
+            selectedAddressId = intent.getIntExtra(ARG_ADDRESS_ID, -1);
         }
-
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        if(selectedAddressId == 0){
+        if(selectedAddressId < 0){
             loadFragment(R.id.frame_content, EditAddressFragment.newInstance(selectedAddressId), EditAddressFragment.TAG, false, EditAddressFragment.TAG);
         } else {
             loadFragment(R.id.frame_content, AddressListFragment.newInstance(selectedAddressId), AddressListFragment.TAG, false, AddressListFragment.TAG);

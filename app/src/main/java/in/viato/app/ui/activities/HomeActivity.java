@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.ui.fragments.CategoryBooksFragment;
 import in.viato.app.ui.fragments.HomeFragment;
+import in.viato.app.utils.SharedPrefHelper;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 
 /**
@@ -44,15 +46,30 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     private TabLayout mTabs;
     @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
 
+    public static final int TAB_CATEGORIES = '0';
+    public static final int TAB_TRENDING = '1';
+
+    public static final String EXTRA_SETECT_TAB = "select_tab";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
+        String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
+
+        if(access_token == "") {
+            startActivity(new Intent(this, RegistrationActivity.class));
+            finish();
+            return;
+        }
+
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
         setupViewPager();
+
+        handleIntent(getIntent());
     }
 
     @Override
@@ -107,6 +124,13 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     @Override
     public boolean onSearchRequested() {
         return super.onSearchRequested();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        handleIntent(intent);
     }
 
     static class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -199,5 +223,13 @@ public class HomeActivity extends AbstractNavDrawerActivity {
                 return false;
             }
         });
+    }
+
+    public void handleIntent(Intent intent) {
+        if(intent == null){ return; }
+        if(intent.hasExtra(EXTRA_SETECT_TAB)){
+            int index = intent.getIntExtra(EXTRA_SETECT_TAB, 0);
+            mViewPager.setCurrentItem(index);
+        }
     }
 }

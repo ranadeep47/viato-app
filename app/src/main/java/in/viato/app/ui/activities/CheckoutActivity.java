@@ -12,6 +12,6 @@ public class CheckoutActivity extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_drawer);
 
-        loadFragment(R.id.frame_content, CheckoutFragment.newInstance("abc", "def"), CheckoutFragment.TAG, false, CheckoutFragment.TAG);
+        loadFragment(R.id.frame_content, CheckoutFragment.newInstance(), CheckoutFragment.TAG, false, CheckoutFragment.TAG);
     }
 }

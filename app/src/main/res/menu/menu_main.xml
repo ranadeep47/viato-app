@@ -12,7 +12,7 @@
     <item
         android:id="@+id/menu_search"
         android:title="@string/menu_search"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_search_white"
         android:orderInCategory="1"
         app:showAsAction="always"/>
 

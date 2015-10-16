@@ -4,15 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".ViatoApplication"
@@ -59,33 +57,40 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.activities.BarcodeScannerActivity"
-            android:label="Book Scanner"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            android:name=".ui.activities.CategoryBooksActivity"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.HomeActivity" />
         </activity>
         <activity
             android:name=".ui.activities.BookDetailActivity"
             android:label="@string/title_activity_book_detail"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.HomeActivity" />
         </activity>
         <activity
             android:name=".ui.activities.CheckoutActivity"
             android:label="@string/title_activity_checkout"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.HomeActivity" />
         </activity>
         <activity
             android:name=".ui.activities.AddressListActivity"
             android:label="@string/title_activity_address_list"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activities.CheckoutActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.CheckoutActivity" />
-        </activity>
-        <activity
-            android:name=".ui.activities.CategoryBooksActivity"
-            android:label="@string/title_activity_home"
-            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.activities.MyBooksActivity"
@@ -134,21 +139,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
         </activity>
-
-        <!-- Receivers -->
-        <receiver android:name=".receivers.SMSReceiver" >
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode" />
-
+        <activity
+            android:name=".ui.activities.BarcodeScannerActivity"
+            android:label="Book Scanner"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:parentActivityName=".ui.activities.BookSearchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.BookSearchActivity" />
+        </activity>
         <activity
             android:name=".ui.activities.SuccessActivity"
             android:label="@string/title_activity_success"
@@ -157,6 +157,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.viato.app.ui.activities.HomeActivity" />
         </activity>
+        <!-- Receivers -->
+        <receiver android:name=".receivers.SMSReceiver" >
+        </receiver>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
     </application>
 
 </manifest>

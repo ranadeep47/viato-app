@@ -49,6 +49,8 @@
     <color name="overlay_black_15p">#26000000</color>
     <color name="transparent_scrim">#40000000</color>
 
+    <color name="green">#4CAF50</color>
+
     <color name="test_red">#B03120</color>
     <color name="test_green">#3FBF0C</color>
     <color name="test_yellow">#E8AF00</color>

@@ -1,12 +1,8 @@
 package in.viato.app.ui.activities;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -15,16 +11,10 @@ import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewStub;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import in.viato.app.R;
@@ -80,7 +70,7 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
 
     private void setupDrawerContent(final NavigationView navigationView) {
         final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu_white);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -96,6 +86,7 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                             case R.id.nav_home:
                                 intent = new Intent(mContext, HomeActivity.class);
                                 startActivity(intent);
+                                finish();
                                 break;
                             case R.id.nav_my_books:
                                 intent = new Intent(mContext, MyBooksActivity.class);
@@ -127,7 +118,7 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                 if (mFragmentManager.getBackStackEntryCount() > 0) {
                     ab.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
                 } else {
-                    ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+                    ab.setHomeAsUpIndicator(R.drawable.ic_menu_white);
                 }
             }
         });

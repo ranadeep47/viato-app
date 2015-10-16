@@ -133,6 +133,9 @@
 
     <string name="enter_mobile_number">Mobile Number</string>
     <string name="error_mobile_input">Enter a 10 digit indian mobile number</string>
+    <string name="error_email_input">Enter a valid email</string>
+    <string name="error_otp_input">Enter a 4 digit otp sent to your mobile</string>
+
     <!--LoginConfirm Fragment-->
     <string name="valid_email">Select your email</string>
     <string name="set_email">Your Email address</string>
@@ -166,4 +169,10 @@
     <string name="title_activity_success">Success</string>
 
     <string name="trending">Trending</string>
+
+
+    <!--Regex-->
+    <string name="regex_mobile_number">^[0-9]{10}$</string>
+    <string name="regex_otp">^[0-9]{4}$</string>
+    <string name="regex_email">android.util.Patterns.EMAIL_ADDRESS</string>
 </resources>

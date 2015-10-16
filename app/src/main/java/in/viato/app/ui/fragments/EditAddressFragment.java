@@ -8,8 +8,8 @@ import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +22,6 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -35,7 +34,7 @@ import in.viato.app.ui.activities.AbstractActivity;
 public class EditAddressFragment extends AbstractFragment {
 
     public static final String TAG = EditAddressFragment.class.getSimpleName();
-    public static final String ARG_SELECTEED_ADDRESS = "selectedAddress";
+    public static final String ARG_SELECTED_ADDRESS = "selectedAddress";
 
     @NotEmpty @Bind(R.id.editText_address) EditText address;
     @NotEmpty @Bind(R.id.editText_label) EditText label;
@@ -50,7 +49,7 @@ public class EditAddressFragment extends AbstractFragment {
     public static EditAddressFragment newInstance (int selectedAddressId){
         EditAddressFragment fragment = new EditAddressFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SELECTEED_ADDRESS, selectedAddressId);
+        args.putInt(ARG_SELECTED_ADDRESS, selectedAddressId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,46 +59,31 @@ public class EditAddressFragment extends AbstractFragment {
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
-        if(args != null) {
-            mSelectedAddress = args.getInt(ARG_SELECTEED_ADDRESS, 0);
-        }
-
-        setValidation(getContext());
-
+        mSelectedAddress = args.getInt(ARG_SELECTED_ADDRESS, -1);
         addresses = (new Addresses()).get();
+        setValidation(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         FragmentEditAddressBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_address, container, false);
 
-        if(mSelectedAddress > addresses.size() || mSelectedAddress <= 0) {
+        if(mSelectedAddress < 0) {
             addressItem = new Address();
         } else {
             addressItem = addresses.get(mSelectedAddress);
         }
 
         binding.setAddress(addressItem);
-        ((AbstractActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white);
-
         return binding.getRoot();
-    }
-
-    public static float convertPixelsToDp(float px, Context context){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        ((AbstractActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white);
         setHasOptionsMenu(true);
+        ((AbstractActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white);
     }
 
     @Override
@@ -114,12 +98,16 @@ public class EditAddressFragment extends AbstractFragment {
         int id = item.getItemId();
 
         switch(id) {
+            case R.id.home:
+                NavUtils.navigateUpFromSameTask(getActivity());
+                break;
+//                getActivity().getSupportFragmentManager().popBackStack();
             case R.id.action_done:
                 mValidator.validate();
                 break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public void setValidation(Context context) {
@@ -130,7 +118,7 @@ public class EditAddressFragment extends AbstractFragment {
                 isValid = true;
 
                 Intent intent = new Intent();
-                intent.putExtra(ARG_SELECTEED_ADDRESS, mSelectedAddress); //addressItem
+                intent.putExtra(ARG_SELECTED_ADDRESS, mSelectedAddress); //addressItem
                 if (getParentFragment() != null) {
                     getParentFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
                 } else {
@@ -156,15 +144,22 @@ public class EditAddressFragment extends AbstractFragment {
     }
 
     @Override
-    public boolean onBackPressed() {
-        return super.onBackPressed();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
 
         mValidator = null;
+    }
+
+    public void sendResult(){
+        if (getTargetFragment() == null) {
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(AddressListFragment.ARG_SELECTED_ADDR, mSelectedAddress);
+
+        getTargetFragment()
+                .onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     }
 }
 

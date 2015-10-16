@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<layout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
+        <variable name="address" type="in.viato.app.model.Address"/>
     </data>
     <in.viato.app.ui.widgets.BetterViewAnimator
         android:id="@+id/books_wishlist_animator"
@@ -43,11 +45,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
-                            <FrameLayout
+                            <View
                                 android:layout_width="match_parent"
-                                android:layout_height="1px"
-                                android:background="@color/divider"
-                                android:id="@+id/checkout_list_divider"></FrameLayout>
+                                android:layout_height="1dp"
+                                android:background="@color/divider"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -97,9 +98,10 @@
                             <include
                                 layout="@layout/p_add_address"
                                 android:id="@+id/add_address"/>
-                            <include
-                                layout="@layout/p_address_item"
-                                android:id="@+id/already_aaddress"/>
+
+                            <include layout="@layout/p_address_item"
+                                     android:id="@+id/already_aaddress"
+                                     bind:address="@{address}"/>
                         </in.viato.app.ui.widgets.BetterViewAnimator>
                     </android.support.v7.widget.CardView>
 

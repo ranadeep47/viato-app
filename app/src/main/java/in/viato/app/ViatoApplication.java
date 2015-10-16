@@ -3,8 +3,8 @@ package in.viato.app;
 import android.app.Application;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
-import android.graphics.Typeface;
 
+import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.AppConstants.UserInfo;
 
@@ -34,6 +34,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
     private NetworkStateReceiver mNetworkStateReceiver;
 
     private ViatoAPI mViatoAPI;
+    private HttpClient mHttpClient;
 
     @Override
     public void onCreate() {
@@ -70,6 +71,13 @@ public class ViatoApplication extends Application implements NetworkStateReceive
     private void initAPI() {
         //Initialise APIs with access_tokens from sprefs.
         mViatoAPI = new ViatoAPI();
+    }
+
+    public HttpClient getHttpClient() {
+        if(mHttpClient == null){
+            mHttpClient = new HttpClient();
+        }
+        return mHttpClient;
     }
 
     public static RefWatcher getRefWatcher(){

@@ -1,7 +1,6 @@
 package in.viato.app.ui.activities;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
@@ -21,7 +20,7 @@ public class PreviousOrders extends AbstractNavDrawerActivity {
         super.onPostCreate(savedInstanceState);
 
         loadFragment(R.id.frame_content, PastOrdersFragment.newInstance(), PastOrdersFragment.TAG, false, PastOrdersFragment.TAG);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white);
         //Listen for changes in the back stack
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
@@ -30,7 +29,7 @@ public class PreviousOrders extends AbstractNavDrawerActivity {
                 if (canback) {
                     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
                 } else {
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white);
                 }
             }
         });
