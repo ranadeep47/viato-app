@@ -114,22 +114,6 @@ public abstract class AbstractFragment extends Fragment{
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-//                getActivity().finish();
-                NavUtils.navigateUpFromSameTask(getActivity());
-                return true;
-            }
-
-
-            default: {
-                return super.onOptionsItemSelected(item);
-            }
-        }
-    }
-
     /**
      * Every fragment has to inflate a layout in the onCreateView method. We have added this method to
      * avoid duplicate all the inflate code in every fragment. You only have to return the layout to

@@ -1,6 +1,7 @@
 package in.viato.app.ui.activities;
 
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -219,9 +220,14 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     }
 
     private void sendISBN(String isbn){
-        Intent data = new Intent();
-        data.putExtra("isbn", isbn);
-        setResult(RESULT_OK, data);
+//        Intent data = new Intent();
+//        data.putExtra("isbn", isbn);
+//        setResult(RESULT_OK, data);
+        String query = isbn;
+        Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);
+        intent.putExtra(SearchManager.QUERY, query);
+        intent.setAction("android.intent.action.SEARCH");
+        startActivity(intent);
         finish();
     }
 

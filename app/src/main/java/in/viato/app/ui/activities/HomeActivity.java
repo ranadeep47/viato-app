@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentManager;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,9 +26,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +48,12 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     private TabLayout mTabs;
     @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
 
+    private AbstractActivity mActivity;
+
     public static final int TAB_CATEGORIES = '0';
     public static final int TAB_TRENDING = '1';
+
+    private EditText searchBar;
 
     public static final String EXTRA_SETECT_TAB = "select_tab";
 
@@ -57,6 +63,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         setContentView(R.layout.activity_drawer);
 
         String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
+
+        mActivity = this;
 
         if(access_token == "") {
             startActivity(new Intent(this, RegistrationActivity.class));
@@ -188,20 +196,39 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         coverImage = (ImageView) coverContainer.findViewById(R.id.cover_image);
         coverImage.setVisibility(View.VISIBLE);
 
-        final EditText searchBar = (EditText) coverContainer.findViewById(R.id.search_bar);
+        searchBar = (EditText) coverContainer.findViewById(R.id.search_bar);
 
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String query = v.getText().toString();
-                    Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);
+                    Intent intent = new Intent(mActivity, BookSearchActivity.class);
                     intent.putExtra(SearchManager.QUERY, query);
                     intent.setAction("android.intent.action.SEARCH");
                     startActivity(intent);
+                    searchBar.setText("");
                     return true;
                 }
                 return false;
+            }
+        });
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Logger.d("start setSearchBarDrawables");
+                setSearchBarDrawables();
             }
         });
 
@@ -215,7 +242,15 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getRawX() >= (searchBar.getRight() - searchBar.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        searchBar.getText().clear();
+                        setSearchBarDrawables();
+                        if(searchBar.getText().length() > 0){
+                            //clear search bar
+                            searchBar.setText("");
+                        } else {
+                            //start barcode activity
+                            Logger.d("start setSearchBarDrawables");
+                            startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
+                        }
                         return true;
                     }
                 }
@@ -229,6 +264,22 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         if(intent.hasExtra(EXTRA_SETECT_TAB)){
             int index = intent.getIntExtra(EXTRA_SETECT_TAB, 0);
             mViewPager.setCurrentItem(index);
+        }
+    }
+
+    public void setSearchBarDrawables() {
+        Logger.d(searchBar.getText().toString());
+        if(searchBar.getText().toString().length() > 0) {
+            searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
+                    null,
+                    mActivity.getResources().getDrawable(R.drawable.ic_close_black),
+                    null);
+        } else {
+            searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
+                    null,
+                    mActivity.getResources().getDrawable(R.drawable.barcode),
+                    null);
+
         }
     }
 }

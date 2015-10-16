@@ -19,9 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_search_black"
-        android:drawableRight="@drawable/ic_close_black"
         android:drawableStart="@drawable/ic_search_black"
-        android:drawableEnd="@drawable/ic_close_black"
+        android:drawableRight="@drawable/barcode"
+        android:drawableEnd="@drawable/barcode"
         android:background="@drawable/bg_white_rounded"
         android:hint="@string/search_hint"
         android:textColorHint="@color/hint_text"
@@ -34,4 +34,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="96dp" />
+
+    <!--android:drawableRight="@drawable/ic_close_black"-->
+    <!--android:drawableEnd="@drawable/ic_close_black"-->
 </FrameLayout>

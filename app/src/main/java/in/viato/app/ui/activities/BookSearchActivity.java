@@ -59,7 +59,7 @@ public class BookSearchActivity extends AbstractActivity {
 
     private Boolean isSearchToAdd = false;
 
-    private String query;
+    private String query = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,6 @@ public class BookSearchActivity extends AbstractActivity {
         container = (BetterViewAnimator) mResultsView;
         scanButton = (CardView) mResultsView.findViewById(R.id.button_scan_barcode);
         list = (RecyclerView) mResultsView.findViewById(R.id.search_results_list);
-        Log.d(TAG, "onCreate");
 
         Intent intent = getIntent();
         if (intent != null){
@@ -92,7 +91,6 @@ public class BookSearchActivity extends AbstractActivity {
                 scanBarcode();
             }
         });
-        Log.d(TAG, "onPostCreate");
     }
 
     @Override
@@ -117,8 +115,7 @@ public class BookSearchActivity extends AbstractActivity {
         mSearchView.setFocusable(true);
         mSearchView.setIconified(false);
         mSearchView.requestFocusFromTouch();
-        Log.d(TAG, "onCreateOptionsMenu");
-
+        mSearchView.setQuery(query, true);
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
@@ -133,19 +130,15 @@ public class BookSearchActivity extends AbstractActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
+//            case android.R.id.home:
+//                onBackPressed();
+//                break;
             case R.id.menu_barcode:
                 scanBarcode();
-                break;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return true;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -154,10 +147,9 @@ public class BookSearchActivity extends AbstractActivity {
 
         if(requestCode == REQUEST_SCAN_BARCODE && resultCode == RESULT_OK){
             query = data.getStringExtra("isbn");
-//            performQuery(isbn);
-            Log.d(TAG, "onActivityResult");
             mSearchView.setIconified(false);
             mSearchView.setQuery(query, true);
+            performQuery(query);
             Logger.d("ISBN received : %s", query);
         }
     }
@@ -179,7 +171,6 @@ public class BookSearchActivity extends AbstractActivity {
             query = intent.getStringExtra(SearchManager.QUERY);
             isSearchToAdd = intent.getBooleanExtra(ARG_ACTION_TO_ADD, false);
             Logger.d("Query is %s", query);
-            Log.d(TAG, "handleIntent");
             performQuery(query);
         }
     }
@@ -190,11 +181,10 @@ public class BookSearchActivity extends AbstractActivity {
 
 
     private void performQuery(String query){
-        Log.d(TAG, "performQuery");
         container.setDisplayedChildId(R.id.search_books_loading);
         int len = query.length();
         Logger.d(String.valueOf(len));
-        if(len == 0) {
+        if(len == 0 && mAdapter != null) {
             mAdapter.clear();
             return;
         }
@@ -271,7 +261,7 @@ public class BookSearchActivity extends AbstractActivity {
             });
             holder.mLinearLayout.setVisibility(isSearchToAdd ? View.VISIBLE : View.GONE);
             Picasso.with(holder.itemView.getContext())
-                    .load(result.getCover())
+                    .load(result.getThumbs()[0])
                     .into(holder.cover);
         }
 

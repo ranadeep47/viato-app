@@ -34,6 +34,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,20 +163,17 @@ public class BookDetailFragment extends AbstractFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        Logger.d(String.valueOf(id));
         switch(id) {
-            case android.R.id.home :
-                onBackPressed();
-                return true;
             case R.id.action_cart:
                 startActivity(new Intent(mActivity, CheckoutActivity.class));
                 return true;
             case R.id.action_share:
                 letShare();
                 return true;
+            default:
+                return false;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
