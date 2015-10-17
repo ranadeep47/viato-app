@@ -29,12 +29,16 @@ import in.viato.app.ui.activities.BookDetailActivity;
  */
 public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.MyBooksItemHolder> {
 
+    AdapterListener listener;
+
     private List<BookItem> books = new ArrayList<>();
     private String redirectType;
     private Context mContext;
+    private String listType;
 
-    public MyBooksGirdAdapter() {
+    public MyBooksGirdAdapter(AdapterListener listener) {
         super();
+        this.listener = listener;
     }
 
     @Override
@@ -48,13 +52,33 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
 
     }
 
+    public BookItem get(int index) {
+        return this.books.get(index);
+    }
+
     public void add(BookItem book) {
-        books.add(0, book); //Adds the book to the front
-        notifyItemInserted(books.size());
+        books.add(book); //Adds the book to the front
+        notifyItemInserted(books.size() - 1);
+    }
+
+    public void addToFront(BookItem book) {
+        books.add(0, book);
+        notifyItemInserted(0);
+    }
+
+    public void replace(int index, BookItem book) {
+        books.remove(index);
+        books.add(index, book);
+        notifyItemChanged(0);
     }
 
     public String getStringId(int position) {
         return books.get(position).getCatalogueId();
+    }
+
+    public void remove(int index) {
+        books.remove(index);
+        notifyItemRemoved(index);
     }
 
     @Override
@@ -86,13 +110,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
                             case R.id.menu_move_to:
                                 break;
                             case R.id.menu_remove:
-                                Toast.makeText(mContext, position + " removed from" + books.size(), Toast.LENGTH_SHORT).show();
-                                if (position >= books.size()) {
-                                    break;
-                                }
-                                books.remove(position);
-                                notifyItemRemoved(position);
-                                notifyDataSetChanged();
+                                listener.onBookRemove(position);
                                 break;
                         }
                         return false;
@@ -133,5 +151,9 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface AdapterListener {
+        public void onBookRemove(int position);
     }
 }

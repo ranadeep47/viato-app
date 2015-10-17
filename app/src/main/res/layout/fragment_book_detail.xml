@@ -1,7 +1,6 @@
 <layout>
     <data>
         <import type="java.util.List"/>
-
         <variable
             name="book"
             type="in.viato.app.http.models.response.BookDetail" />
@@ -77,8 +76,7 @@
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingBottom="56dp"
-                    android:focusable="true">
+                    android:paddingBottom="56dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -186,12 +184,12 @@
                             android:text="Description"
                             android:layout_marginBottom="@dimen/activity_horizontal_margin"
                             android:textStyle="bold"/>
-                        <me.biubiubiu.justifytext.library.JustifyTextView                            android:layout_width="wrap_content"
+                        <me.biubiubiu.justifytext.library.JustifyTextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxLines="8"
                             android:id="@+id/desc"
-                            android:text="@{book.description}"
-                            android:visibility="visible" />
+                            android:text="@{book.description}" />
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

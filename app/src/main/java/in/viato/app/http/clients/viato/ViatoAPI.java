@@ -4,6 +4,8 @@ import com.squareup.okhttp.OkHttpClient;
 
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
+import in.viato.app.http.clients.ToStringConverterFactory;
+import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
@@ -37,6 +39,7 @@ public class ViatoAPI {
                 .baseUrl(ViatoService.baseUrl)
                 .client(client)
                 .validateEagerly()
+                .addConverterFactory(new ToStringConverterFactory())
                 .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
@@ -85,9 +88,42 @@ public class ViatoAPI {
 
     }
 
+    public Observable<BookItem> addToRead(String catalogueId){
+        BookCatalogueId book = new BookCatalogueId();
+        book.setCatalogueId(catalogueId);
+
+        return mViatoService
+                .addToRead(book)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<String> removeFromRead(String readId){
+        return mViatoService
+                .removeFromRead(readId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
     public Observable<List<BookItem>> getWishlist(){
         return mViatoService
                 .getWishlist()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BookItem> addToWishlist(String catalogueId) {
+        BookCatalogueId book = new BookCatalogueId();
+        book.setCatalogueId(catalogueId);
+
+        return mViatoService.addToWishlist(book)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<String> removeFromWishlist(String wishlistId) {
+        return mViatoService
+                .removeFromWishlist(wishlistId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
