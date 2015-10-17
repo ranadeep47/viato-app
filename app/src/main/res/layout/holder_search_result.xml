@@ -8,65 +8,66 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/search_result_cover"
-                android:scaleType="fitXY"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignBottom="@+id/contentPanel"
-                android:contentDescription="@string/cover_image"/>
+        <ImageView
+            android:id="@+id/search_result_cover"
+            android:scaleType="fitXY"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBottom="@+id/contentPanel"
+            android:contentDescription="@string/cover_image"
+            android:src="@drawable/img_header1"/>
+        <LinearLayout
+            android:id="@+id/contentPanel"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/search_result_cover">
             <LinearLayout
-                android:id="@+id/contentPanel"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/search_result_cover">
-                <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin">
+                <TextView
+                    android:id="@+id/search_result_title"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="First and only irst and only irst and only irst and only irst and only irst and only"
+                    android:ellipsize="end"
+                    android:maxLines="2"/>
+                <TextView
+                    android:id="@+id/search_result_author"
+                    android:textColor="@color/hint_text"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin">
-                    <TextView
-                        android:id="@+id/search_result_title"
-                        android:textSize="18sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        android:minLines="2"/>
-                    <TextView
-                        android:id="@+id/search_result_author"
-                        android:textColor="@color/hint_text"
-                        android:layout_marginTop="4dp"
-                        android:textSize="14sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        android:minLines="2"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/btn_action_wrapper">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider"/>
-                    <Button
-                        android:id="@+id/btn_action"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Add to list"
-                        android:gravity="center_vertical|start"
-                        style="?android:attr/borderlessButtonStyle"/>
-                </LinearLayout>
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Peter Flanery"/>
             </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/btn_action_wrapper"
+            android:layout_below="@+id/contentPanel">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"/>
+            <Button
+                android:id="@+id/btn_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add to list"
+                style="?android:attr/borderlessButtonStyle"/>
+        </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

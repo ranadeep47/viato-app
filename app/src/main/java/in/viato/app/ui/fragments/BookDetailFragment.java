@@ -60,54 +60,37 @@ public class BookDetailFragment extends AbstractFragment {
 
     public static final String TAG = BookDetailFragment.class.getSimpleName();
 
+    public static final String EXTRA_ID = "book_id";
+
     public static final String ARG_BOOK_ID = "bookId";
-    public static final String ARG_BOOK_TITLE = "bookTitle";
-    public static final String ARG_BOOK_AUTHOR = "bookAuthor";
-    public static final String ARG_BOOK_POSTER = "bookPoster";
 
     private static final String DIALOG_RATING = "dialog_rating";
 
     private static final int REQUEST_RATING = 0;
 
     private String mBookId;
-    private String mBookTitle;
-    private String mBookAuthor;
-    private String mBookPoster;
 
     private static Boolean inWishlist = true;
     private static Boolean isFullDesc = false;
 
-    public static final String EXTRA_ID = "book_id";
-
     private AbstractActivity mActivity;
 
-    @Bind(R.id.toolbar) Toolbar mToolbar;
-
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
-
-    @Bind(R.id.img_header) ImageView mImageView;
-
-    @Bind(R.id.fab) FloatingActionButton mFloatingActionButton;
-
-    @Bind(R.id.user_review) TextView mUserReview;
-    @Bind(R.id.desc) TextView mDescription;
-    @Bind(R.id.sale_price) TextView mSalePrice;
-
-    @Bind(R.id.user_rating) RatingBar mUserRating;
-
     @Bind(R.id.related_books_list) RecyclerView mRelatedBooksRV;
     @Bind(R.id.review_list_small) RecyclerView mReviewList;
+    @Bind(R.id.img_header) ImageView mImageView;
+    @Bind(R.id.user_review) TextView mUserReview;
+    @Bind(R.id.sale_price) TextView mSalePrice;
+    @Bind(R.id.desc) TextView mDescription;
+    @Bind(R.id.user_rating) RatingBar mUserRating;
+    @Bind(R.id.all_reviews) LinearLayout allReviews;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
+    @Bind(R.id.fab) FloatingActionButton mFloatingActionButton;
 
-    @Bind(R.id.all_reviews)
-    LinearLayout allReviews;
-
-    public static BookDetailFragment newInstance(String id, String title, String author, String poster) {
+    public static BookDetailFragment newInstance(String id) {
         BookDetailFragment fragment = new BookDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_BOOK_ID, id);
-        args.putString(ARG_BOOK_TITLE, title);
-        args.putString(ARG_BOOK_AUTHOR, author);
-        args.putString(ARG_BOOK_POSTER, poster);
         fragment.setArguments(args);
         return fragment;
     }
@@ -118,9 +101,6 @@ public class BookDetailFragment extends AbstractFragment {
 
         if (getArguments() != null) {
             mBookId = getArguments().getString(ARG_BOOK_ID);
-            mBookTitle = getArguments().getString(ARG_BOOK_TITLE);
-            mBookAuthor = getArguments().getString(ARG_BOOK_AUTHOR);
-            mBookPoster = getArguments().getString(ARG_BOOK_POSTER);
         }
 
         mActivity = (AbstractActivity) getActivity();
@@ -141,7 +121,7 @@ public class BookDetailFragment extends AbstractFragment {
 
         mActivity.setSupportActionBar(mToolbar);
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mCollapsingToolbarLayout.setTitle("Windows 10 all-in-one for Dummies");
+//        mCollapsingToolbarLayout.setTitle("Windows 10 all-in-one for Dummies");
 
         mSalePrice.setPaintFlags(mSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 

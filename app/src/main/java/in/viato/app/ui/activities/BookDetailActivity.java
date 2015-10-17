@@ -9,10 +9,7 @@ import in.viato.app.ui.fragments.BookDetailFragment;
 public class BookDetailActivity extends AbstractActivity {
 
     public static final String ARG_BOOK_ID = "BookId";
-    public static final String ARG_BOOK_TITLE = "BookTitle";
-    public static final String ARG_BOOK_AUTHOR = "BookAuthor";
-    public static final String ARG_BOOK_POSTER = "BookPoster";
-    public static final String ARG_RATE_BOOK = "RateBook";
+    public static final String ARG_RATE_BOOK = "BookRating";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +18,8 @@ public class BookDetailActivity extends AbstractActivity {
 
         Intent intent = getIntent();
         String id = intent.getStringExtra(ARG_BOOK_ID);
-        String title = intent.getStringExtra(ARG_BOOK_TITLE);
-        String author = intent.getStringExtra(ARG_BOOK_AUTHOR);
-        String poster = intent.getStringExtra(ARG_BOOK_POSTER);
 
-        BookDetailFragment fragment = BookDetailFragment.newInstance(id, title, author, poster);
+        BookDetailFragment fragment = BookDetailFragment.newInstance(id);
         loadFragment(R.id.frame_content, fragment, BookDetailFragment.TAG, false, BookDetailFragment.TAG);
     }
 }

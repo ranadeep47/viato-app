@@ -277,7 +277,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         } else {
             searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
                     null,
-                    mActivity.getResources().getDrawable(R.drawable.barcode),
+                    mActivity.getResources().getDrawable(R.drawable.ic_barcode_black_18dp),
                     null);
 
         }
