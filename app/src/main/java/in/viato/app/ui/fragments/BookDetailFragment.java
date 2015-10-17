@@ -9,6 +9,9 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -37,6 +40,10 @@ import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +102,7 @@ public class BookDetailFragment extends AbstractFragment {
     @Bind(R.id.all_reviews) LinearLayout allReviews;
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.fab) FloatingActionButton mFloatingActionButton;
+    @Bind(R.id.book_rating) RatingBar bookRating;
 
     public static BookDetailFragment newInstance(String id) {
         BookDetailFragment fragment = new BookDetailFragment();
@@ -113,7 +121,6 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         mActivity = (AbstractActivity) getActivity();
-        setPalleteColors();
     }
 
     @Override
@@ -130,11 +137,18 @@ public class BookDetailFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // LayerDrawable was added in lollipop
+            LayerDrawable stars = (LayerDrawable) bookRating.getProgressDrawable();
+            stars.getDrawable(2).setColorFilter(getActivity().getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_ATOP);
+        }
+
         mViatoAPI.getBookDetail(mBookId)
                 .subscribe(new Action1<BookDetail>() {
                     @Override
                     public void call(BookDetail bookDetail) {
-                        mBookDetail = bookDetail;
+                        binding.setBook(bookDetail);
+                        setPalleteColors(bookDetail.getThumbs().get(0));
                         mAnimator.setDisplayedChildId(R.id.book_container);
                     }
                 }, new Action1<Throwable>() {
@@ -204,14 +218,28 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     @TargetApi(21)
-    public void setPalleteColors() {
+    public void setPalleteColors(String src) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded()) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_header2);
+            Bitmap myBitmap;// = BitmapFactory.decodeResource(getResources(), R.drawable.img_header2);
 
-            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            try {
+                URL url = new URL(src);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                myBitmap = BitmapFactory.decodeStream(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+//            Bitmap bitmap = getBitmapFromURL(src);
+
+            Palette.from(myBitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(Palette palette) {
-                    if(!isAdded()){
+                    if (!isAdded()) {
                         return;
                     }
                     int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary));
@@ -285,7 +313,6 @@ public class BookDetailFragment extends AbstractFragment {
 
     @OnClick(R.id.desc_more)
     public void toggleDesc(TextView view) {
-        isFullDesc = ! isFullDesc;
         if(isFullDesc) {
             mDescription.setMaxLines(8);
             view.setText("Show More");
@@ -293,6 +320,7 @@ public class BookDetailFragment extends AbstractFragment {
             mDescription.setMaxLines(Integer.MAX_VALUE);
             view.setText("Show Less");
         }
+        isFullDesc = ! isFullDesc;
     }
 
     @OnClick(R.id.all_reviews)
@@ -351,5 +379,20 @@ public class BookDetailFragment extends AbstractFragment {
         intent.putExtra(Intent.EXTRA_SUBJECT, "EXTRA_SUBJECT");
 //        intent = Intent.createChooser(intent, getString(R.string.send_report));
         startActivity(intent);
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

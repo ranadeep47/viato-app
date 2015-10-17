@@ -174,25 +174,25 @@
                 </LinearLayout>
 
             </android.support.v4.widget.NestedScrollView>
-            <RelativeLayout
+            <FrameLayout
+                android:id="@+id/place_order_wrapper"
+                android:background="@color/primary"
+                android:padding="@dimen/spacing_medium"
+                android:layout_alignParentBottom="true"
+                android:elevation="4dp"
+                android:layout_gravity="bottom"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/place_order_wrapper"
-                android:elevation="4dp"
-                android:background="@color/white"
-                android:padding="16dp">
-                    <Button
-                        android:id="@+id/place_order"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Place Order"
-                        android:textStyle="bold"
-                        android:padding="@dimen/activity_horizontal_margin"
-                        android:textColor="@color/white"
-                        android:background="@color/primary"/>
-                    <!--#FE7A4C-->
-            </RelativeLayout>
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+                <TextView
+                    android:id="@+id/place_order"
+                    android:text="Place Order"
+                    style="@style/BoldButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
         </RelativeLayout>
         <include layout="@layout/c_progress_bar"
                  android:id="@+id/books_wishlist_loading" />

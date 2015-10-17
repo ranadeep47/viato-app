@@ -220,14 +220,17 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     }
 
     private void sendISBN(String isbn){
-//        Intent data = new Intent();
-//        data.putExtra("isbn", isbn);
-//        setResult(RESULT_OK, data);
-        String query = isbn;
-        Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);
-        intent.putExtra(SearchManager.QUERY, query);
-        intent.setAction("android.intent.action.SEARCH");
-        startActivity(intent);
+        if (getCallingActivity() == null) {
+            String query = isbn;
+            Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);
+            intent.putExtra(SearchManager.QUERY, query);
+            intent.setAction("android.intent.action.SEARCH");
+            startActivity(intent);
+        } else{
+            Intent data = new Intent();
+            data.putExtra("isbn", isbn);
+            setResult(RESULT_OK, data);
+        }
         finish();
     }
 

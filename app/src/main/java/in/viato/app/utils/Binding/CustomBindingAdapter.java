@@ -22,7 +22,10 @@ import in.viato.app.ui.widgets.MyVerticalLlm;
 public class CustomBindingAdapter extends BaseObservable {
     @BindingAdapter({"android:src", "android:error"})
     public static void loadImage(ImageView view, String url, Drawable error) {
-        Picasso.with(view.getContext()).load(url).error(error).into(view);
+        Picasso.with(view.getContext())
+                .load(url)
+                .error(error)
+                .into(view);
     }
 
     @BindingAdapter({"android:items", "android:setAdapter"})
