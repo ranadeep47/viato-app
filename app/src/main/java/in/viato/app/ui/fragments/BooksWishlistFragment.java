@@ -62,7 +62,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     }
 
     private void setupGrid(List<BookItem> books){
-searchh        grid.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        grid.setLayoutManager(new GridLayoutManager(getContext(), 3));
         grid.setAdapter(adapter);
 
         if(books.size() == 0){
