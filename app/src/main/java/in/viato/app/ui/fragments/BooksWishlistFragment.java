@@ -26,6 +26,7 @@ import rx.Subscriber;
 public class BooksWishlistFragment extends AbstractFragment {
 
     public static final String TAG = "BooksWishlistFragment";
+    private final MyBooksGirdAdapter adapter = new MyBooksGirdAdapter();
 
     @Bind(R.id.books_wishlist_animator) BetterViewAnimator container;
     @Bind(R.id.books_wishlist_grid) RecyclerView grid;
@@ -60,25 +61,33 @@ public class BooksWishlistFragment extends AbstractFragment {
     }
 
     private void setupGrid(List<BookItem> books){
+        grid.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        grid.setAdapter(adapter);
+
         if(books.size() == 0){
             container.setDisplayedChildId(R.id.books_wishlist_empty);
+            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if (adapter.getItemCount() > 0) {
+                        container.setDisplayedChildId(R.id.books_wishlist_grid);
+                    }
+                }
+            });
         }
         else {
-            final MyBooksGirdAdapter adapter = new MyBooksGirdAdapter();
+            container.setDisplayedChildId(R.id.books_wishlist_grid);
             adapter.addAll(books);
             adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
                 public void onChanged() {
                     super.onChanged();
-                    if(adapter.getItemCount() == 0) {
+                    if (adapter.getItemCount() == 0) {
                         container.setDisplayedChildId(R.id.books_wishlist_empty);
                     }
                 }
             });
-
-            grid.setLayoutManager(new GridLayoutManager(getContext(), 3));
-            grid.setAdapter(adapter);
-            container.setDisplayedChildId(R.id.books_wishlist_grid);
         }
     }
 
@@ -95,9 +104,9 @@ public class BooksWishlistFragment extends AbstractFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) grid.getAdapter();
-        adapter.add(new BookItem()); //TODO
+        BookItem item = data.getParcelableExtra("book"); //TODO , replace the string with a resource
+        adapter.add(item);
         adapter.notifyDataSetChanged();
-        grid.scrollToPosition(adapter.getItemCount());
+        grid.scrollToPosition(0);
     }
 }

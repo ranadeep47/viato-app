@@ -25,6 +25,7 @@ import rx.Subscriber;
 public class BooksReadFragment extends AbstractFragment {
 
     public static final String TAG = "BooksReadFragment";
+    private final MyBooksGirdAdapter adapter = new MyBooksGirdAdapter();
 
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
     @Bind(R.id.books_reading_grid) RecyclerView readGrid;
@@ -59,25 +60,33 @@ public class BooksReadFragment extends AbstractFragment {
     }
 
     private void setupGrids(MyBooksReadResponse myBooksReadResponse){
+        readGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        readGrid.setAdapter(adapter);
+
         if(myBooksReadResponse.getRead().size() == 0){
             container.setDisplayedChildId(R.id.books_read_empty);
-        }
-        else {
-            final MyBooksGirdAdapter readingAdapter = new MyBooksGirdAdapter();
-            readingAdapter.addAll(myBooksReadResponse.getRead());
-            readingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
                 public void onChanged() {
                     super.onChanged();
-                    if (readingAdapter.getItemCount() == 0) {
+                    if (adapter.getItemCount() >  0) {
+                        container.setDisplayedChildId(R.id.books_reading_grid);
+                    }
+                }
+            });
+        }
+        else {
+            adapter.addAll(myBooksReadResponse.getRead());
+            container.setDisplayedChildId(R.id.books_reading_grid);
+            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if (adapter.getItemCount() == 0) {
                         container.setDisplayedChildId(R.id.books_read_empty);
                     }
                 }
             });
-
-            readGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
-            readGrid.setAdapter(readingAdapter);
-            container.setDisplayedChildId(R.id.books_reading_grid);
         }
     }
 
@@ -93,9 +102,9 @@ public class BooksReadFragment extends AbstractFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) readGrid.getAdapter();
-        adapter.add(new BookItem()); //TODO
+        BookItem item = data.getParcelableExtra("book"); //TODO , replace the string with a resource
+        adapter.add(item);
         adapter.notifyDataSetChanged();
-        readGrid.scrollToPosition(adapter.getItemCount());
+        readGrid.scrollToPosition(0); //Scroll to top
     }
 }

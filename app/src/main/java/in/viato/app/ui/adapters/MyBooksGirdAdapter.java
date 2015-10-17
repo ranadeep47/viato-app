@@ -49,7 +49,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
     }
 
     public void add(BookItem book) {
-        books.add(books.size(), book);
+        books.add(0, book); //Adds the book to the front
         notifyItemInserted(books.size());
     }
 
@@ -63,7 +63,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
 
         holder.title.setText(book.getTitle());
         Picasso.with(holder.itemView.getContext())
-                .load(book.getCover())
+                .load(book.getThumbs()[0])
                 .into(holder.cover);
 
         holder.more.setTag(getStringId(position));

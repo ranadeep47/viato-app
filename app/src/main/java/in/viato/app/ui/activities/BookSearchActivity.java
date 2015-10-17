@@ -246,7 +246,7 @@ public class BookSearchActivity extends AbstractActivity {
                 @Override
                 public void onClick(View v) {
                     Intent data = getIntent();
-                    data.putExtra("id", result.getCatalogueId());
+                    data.putExtra("book", result); //Pass the BookItem as a result to the calling Activity
                     setResult(RESULT_OK, data);
                     finish();
                 }
