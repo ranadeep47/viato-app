@@ -2,13 +2,17 @@ package in.viato.app.http.clients.viato;
 
 import java.util.List;
 
+import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.CoverQuote;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
+import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -37,8 +41,20 @@ public interface ViatoService {
     @GET("user/mybooks/read")
     Observable<MyBooksReadResponse> getRead();
 
+    @POST("user/mybooks/read")
+    Observable<BookItem> addToRead(@Body BookCatalogueId book);
+
+    @DELETE("user/mybooks/read/{readId}")
+    Observable<String> removeFromRead(@Path("readId") String readId);
+
     @GET("user/mybooks/wishlist")
     Observable<List<BookItem>> getWishlist();
+
+    @POST("user/mybooks/wishlist")
+    Observable<BookItem> addToWishlist(@Body BookCatalogueId book);
+
+    @DELETE("user/mybooks/wishlist/{wishlistId}")
+    Observable<String> removeFromWishlist(@Path("wishlistId") String wishlistId);
 
     @GET("books/{bookId}/")
     Observable<BookDetail> getBookDetail(

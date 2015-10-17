@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
@@ -23,10 +24,10 @@ import rx.Subscriber;
 /**
  * Created by ranadeep on 24/09/15.
  */
-public class BooksWishlistFragment extends AbstractFragment {
+public class BooksWishlistFragment extends AbstractFragment implements MyBooksGirdAdapter.AdapterListener{
 
     public static final String TAG = "BooksWishlistFragment";
-    private final MyBooksGirdAdapter adapter = new MyBooksGirdAdapter();
+    private final MyBooksGirdAdapter adapter = new MyBooksGirdAdapter(this);
 
     @Bind(R.id.books_wishlist_animator) BetterViewAnimator container;
     @Bind(R.id.books_wishlist_grid) RecyclerView grid;
@@ -89,6 +90,7 @@ public class BooksWishlistFragment extends AbstractFragment {
                 }
             });
         }
+
     }
 
     @Override
@@ -105,8 +107,59 @@ public class BooksWishlistFragment extends AbstractFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         BookItem item = data.getParcelableExtra("book"); //TODO , replace the string with a resource
-        adapter.add(item);
-        adapter.notifyDataSetChanged();
+        mViatoAPI
+                .addToWishlist(item.getCatalogueId())
+                .subscribe(new Subscriber<BookItem>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.e(e.getMessage());
+                        Toast.makeText(getActivity(), "Problem adding book.", Toast.LENGTH_SHORT).show();
+                        adapter.remove(0);
+                    }
+
+                    @Override
+                    public void onNext(BookItem bookItem) {
+                        Logger.d("Actual : %s", bookItem.getCatalogueId());
+                        adapter.replace(0, bookItem);
+                    }
+                });
+
+        Logger.d("Temporary : %s", item.get_id());
+        adapter.addToFront(item);
         grid.scrollToPosition(0);
+    }
+
+    @Override
+    public void onBookRemove(int position) {
+        removeFromList(adapter.get(position), position);
+
+    }
+
+    private void removeFromList(BookItem book, final int position) {
+        mViatoAPI
+                .removeFromWishlist(book.get_id())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("Error removing from wishlist");
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Logger.d("Removed from wishlist");
+                        adapter.remove(position);
+                    }
+                });
+
     }
 }
