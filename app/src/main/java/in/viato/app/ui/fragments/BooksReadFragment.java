@@ -27,8 +27,7 @@ public class BooksReadFragment extends AbstractFragment {
     public static final String TAG = "BooksReadFragment";
 
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
-
-    @Bind(R.id.books_reading_grid) RecyclerView readingGrid;
+    @Bind(R.id.books_reading_grid) RecyclerView readGrid;
 
     @Nullable
     @Override
@@ -60,31 +59,24 @@ public class BooksReadFragment extends AbstractFragment {
     }
 
     private void setupGrids(MyBooksReadResponse myBooksReadResponse){
-        if(myBooksReadResponse.getReading().size() == 0 &&
-                myBooksReadResponse.getRead().size() == 0){
+        if(myBooksReadResponse.getRead().size() == 0){
             container.setDisplayedChildId(R.id.books_read_empty);
         }
         else {
-            if(myBooksReadResponse.getReading().size() == 0){
-                readingGrid.setVisibility(View.GONE);
-            }
-            else {
-                final MyBooksGirdAdapter readingAdapter = new MyBooksGirdAdapter();
-                readingAdapter.addAll(myBooksReadResponse.getReading());
-                readingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                    @Override
-                    public void onChanged() {
-                        super.onChanged();
-                        if (readingAdapter.getItemCount() == 0) {
-                            container.setDisplayedChildId(R.id.books_read_empty);
-                        }
+            final MyBooksGirdAdapter readingAdapter = new MyBooksGirdAdapter();
+            readingAdapter.addAll(myBooksReadResponse.getRead());
+            readingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if (readingAdapter.getItemCount() == 0) {
+                        container.setDisplayedChildId(R.id.books_read_empty);
                     }
-                });
+                }
+            });
 
-                readingGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                readingGrid.setAdapter(readingAdapter);
-            }
-
+            readGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
+            readGrid.setAdapter(readingAdapter);
             container.setDisplayedChildId(R.id.books_reading_grid);
         }
     }
@@ -101,9 +93,9 @@ public class BooksReadFragment extends AbstractFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) readingGrid.getAdapter();
+        MyBooksGirdAdapter adapter = (MyBooksGirdAdapter) readGrid.getAdapter();
         adapter.add(new BookItem()); //TODO
         adapter.notifyDataSetChanged();
-        readingGrid.scrollToPosition(adapter.getItemCount());
+        readGrid.scrollToPosition(adapter.getItemCount());
     }
 }
