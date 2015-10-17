@@ -169,7 +169,7 @@ public class BookSearchActivity extends AbstractActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             isSearchToAdd = intent.getBooleanExtra(ARG_ACTION_TO_ADD, false);
             query = intent.getStringExtra(SearchManager.QUERY);
-            if(query == null || query == "") return;
+            if(query == null || query.equals("")) return;
             Logger.d("Query is %s", query);
             performQuery(query);
         }
@@ -181,6 +181,7 @@ public class BookSearchActivity extends AbstractActivity {
 
 
     private void performQuery(String query){
+        Logger.d(String.valueOf(isSearchToAdd));
         container.setDisplayedChildId(R.id.search_books_loading);
         int len = query.length();
         Logger.d(String.valueOf(len));
@@ -259,7 +260,7 @@ public class BookSearchActivity extends AbstractActivity {
                     startActivity(intent);
                 }
             });
-            holder.mLinearLayout.setVisibility(isSearchToAdd ? View.VISIBLE : View.GONE);
+            holder.mLinearLayout.setVisibility(toAdd ? View.VISIBLE : View.GONE);
             Picasso.with(holder.itemView.getContext())
                     .load(result.getThumbs()[0])
                     .into(holder.cover);

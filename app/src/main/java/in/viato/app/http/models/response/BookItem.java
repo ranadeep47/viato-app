@@ -1,9 +1,14 @@
 package in.viato.app.http.models.response;
 
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by ranadeep on 16/10/15.
  */
-public class BookItem {
+
+public class BookItem implements Parcelable {
     private String _id;
     private String title;
     private String cover;
@@ -89,4 +94,45 @@ public class BookItem {
     public void setAuthors(String[] authors) {
         this.authors = authors;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this._id);
+        dest.writeString(this.title);
+        dest.writeString(this.cover);
+        dest.writeString(this.catalogueId);
+        dest.writeString(this.extraId);
+        dest.writeString(this.extraKey);
+        dest.writeParcelable(this.pricing, flags);
+        dest.writeStringArray(this.thumbs);
+        dest.writeStringArray(this.authors);
+    }
+
+    protected BookItem(Parcel in) {
+        this._id = in.readString();
+        this.title = in.readString();
+        this.cover = in.readString();
+        this.catalogueId = in.readString();
+        this.extraId = in.readString();
+        this.extraKey = in.readString();
+        this.pricing = in.readParcelable(ItemPricing.class.getClassLoader());
+        this.thumbs = in.createStringArray();
+        this.authors = in.createStringArray();
+    }
+
+    public static final Parcelable.Creator<BookItem> CREATOR = new Parcelable.Creator<BookItem>() {
+        public BookItem createFromParcel(Parcel source) {
+            return new BookItem(source);
+        }
+
+        public BookItem[] newArray(int size) {
+            return new BookItem[size];
+        }
+    };
 }
