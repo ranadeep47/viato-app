@@ -41,7 +41,7 @@ public interface ViatoService {
     Observable<List<BookItem>> getWishlist();
 
     @GET("books/{bookId}/")
-    Observable<BookDetail> getBookDetails(
+    Observable<BookDetail> getBookDetail(
             @Path("bookId") String bookId
     );
 }

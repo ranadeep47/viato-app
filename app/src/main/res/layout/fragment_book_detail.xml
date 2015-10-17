@@ -1,4 +1,10 @@
-
+<layout>
+    <data>
+        <import type="java.util.List"/>
+        <variable
+            name="book"
+            type="in.viato.app.http.models.response.BookDetail" />
+    </data>
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,7 +19,6 @@
             android:id="@+id/appbar"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -25,7 +30,6 @@
                 app:expandedTitleMarginStart="48dp"
                 app:expandedTitleTextAppearance="@style/TransparentText"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
                 <!--<ImageView-->
                 <!--android:id="@+id/header"-->
                 <!--android:layout_width="match_parent"-->
@@ -35,7 +39,6 @@
                 <!--android:scaleType="centerCrop"-->
                 <!--app:layout_collapseMode="parallax"-->
                 <!--/>-->
-
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_height="?attr/actionBarSize"
@@ -43,9 +46,7 @@
                     app:layout_collapseMode="pin"
                     android:elevation="4dp"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
             </android.support.design.widget.CollapsingToolbarLayout>
-
         </android.support.design.widget.AppBarLayout>
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scrollableView"
@@ -62,34 +63,36 @@
                 android:measureAllChildren="false"
                 android:outAnimation="@android:anim/fade_out"
                 xmlns:android="http://schemas.android.com/apk/res/android">
-
-
+                <!--<include-->
+                    <!--layout="@layout/c_progress_bar"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:id="@+id/books_detail_loading"/>-->
                 <LinearLayout
+                    android:id="@+id/book_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingBottom="56dp"
-                    android:layout_marginBottom="56dp"
-                    android:visibility="gone">
+                    android:layout_marginBottom="56dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/activity_horizontal_margin">
-
                         <ImageView
                             android:id="@+id/img_header"
                             android:layout_width="128dp"
                             android:layout_height="200dp"
                             android:scaleType="fitXY"
-                            android:src="@drawable/img_header2"
+                            android:src="@{book.images[0]}"
+                            android:error="@drawable/pla"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
                             android:layout_marginTop="@dimen/activity_horizontal_margin"
-                            android:layout_marginRight="@dimen/activity_horizontal_margin"
-                            android:elevation="4dp"/>
-
+                            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="116dp"
@@ -98,7 +101,6 @@
                             android:gravity="bottom"
                             android:id="@+id/title_wrapper"
                             android:layout_alignParentTop="true">
-
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
@@ -106,7 +108,6 @@
                                 android:textSize="20sp"
                                 android:textColor="@color/text"
                                 android:text="Windows 10 all-in-"/>
-
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
@@ -118,9 +119,7 @@
                                 android:textColor="@color/text"
                                 android:text="Windows 10 all-in-one for"
                                 android:visibility="visible"/>
-
                         </LinearLayout>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -128,14 +127,12 @@
                             android:layout_below="@+id/title_wrapper"
                             android:id="@+id/author"
                             android:text="Brandon Stanton"/>
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/author"
                             android:layout_toRightOf="@id/img_header"
                             android:id="@+id/rating">
-
                             <RatingBar
                                 android:id="@+id/ratingBar1"
                                 android:layout_width="wrap_content"
@@ -144,15 +141,12 @@
                                 android:numStars="5"
                                 android:rating="4.5"
                                 android:stepSize="0.5"/>
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#212121"
                                 android:text="(236)"/>
-
                         </LinearLayout>
-
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -161,9 +155,7 @@
                             android:text="Buy at Rs. 300"
                             android:textColor="@color/hint_text"
                             android:id="@+id/sale_price"
-                            android:layout_marginTop="4dp"
-                            />
-
+                            android:layout_marginTop="4dp"/>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -175,7 +167,6 @@
                             android:textSize="@dimen/text_xx_large"/>
                         <!--android:layout_below="@+id/author"-->
                     </RelativeLayout>
-
                     <Button
                         android:id="@+id/add_to_wishlist"
                         android:layout_width="match_parent"
@@ -187,14 +178,12 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="visible">
-
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Description"
                             android:layout_marginBottom="@dimen/activity_horizontal_margin"
                             android:textStyle="bold"/>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -202,9 +191,7 @@
                             android:id="@+id/desc"
                             android:text="@string/lorem"
                             android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                            android:visibility="visible"
-                            />
-
+                            android:visibility="visible" />
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -215,13 +202,11 @@
                             style="?android:attr/borderlessButtonStyle"
                             android:text="Show More"/>
                     </LinearLayout>
-
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:background="@color/divider"
                         android:layout_marginBottom="@dimen/activity_horizontal_margin"></FrameLayout>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -242,7 +227,6 @@
                                     android:layout_weight="50"
                                     android:gravity="center|left"
                                     android:text="Your Review"/>
-
                                 <RatingBar
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
@@ -253,15 +237,13 @@
                                     android:stepSize="0.5"
                                     android:gravity="end"
                                     android:id="@+id/user_rating"/>
-
                             </LinearLayout>
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/user_review"
                                 android:text="cool"
-                                android:singleLine="false"
-                                />
+                                android:singleLine="false"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -276,14 +258,11 @@
                                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                                 android:textStyle="bold"
                                 android:focusable="false"/>
-
                             <in.viato.app.ui.widgets.NoTouchRecyclerView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/review_list_small"
-                                android:focusable="false"
-                                />
-
+                                android:focusable="false"/>
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -292,45 +271,29 @@
                                 android:focusable="false"/>
                         </LinearLayout>
                     </LinearLayout>
-
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:background="@color/divider"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"></FrameLayout>
-
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="From the author"
                         android:layout_marginBottom="@dimen/activity_horizontal_margin"
                         android:textStyle="bold"/>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="@dimen/activity_horizontal_margin">
-
-
                         <android.support.v7.widget.RecyclerView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/related_books_list"
-                            />
+                            android:id="@+id/related_books_list"/>
                     </LinearLayout>
-
                 </LinearLayout>
-
-                <include
-                    layout="@layout/c_progress_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:id="@+id/books_detail_loading"/>
-
             </in.viato.app.ui.widgets.BetterViewAnimator>
-
         </android.support.v4.widget.NestedScrollView>
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
@@ -341,3 +304,4 @@
             android:src="@drawable/ic_add_to_cart_white"
             android:layout_gravity="end|bottom" />
     </android.support.design.widget.CoordinatorLayout>
+</layout>

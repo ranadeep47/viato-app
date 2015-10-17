@@ -4,6 +4,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
+import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
@@ -87,6 +88,13 @@ public class ViatoAPI {
     public Observable<List<BookItem>> getWishlist(){
         return mViatoService
                 .getWishlist()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BookDetail> getBookDetail(String id) {
+        return mViatoService
+                .getBookDetail(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

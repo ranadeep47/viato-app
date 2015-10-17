@@ -18,6 +18,7 @@ public class BookDetailActivity extends AbstractActivity {
 
         Intent intent = getIntent();
         String id = intent.getStringExtra(ARG_BOOK_ID);
+        id = "561b0faa9789d01e0d2cc5e0";
 
         BookDetailFragment fragment = BookDetailFragment.newInstance(id);
         loadFragment(R.id.frame_content, fragment, BookDetailFragment.TAG, false, BookDetailFragment.TAG);

@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -43,13 +44,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.databinding.FragmentBookDetailBinding;
+import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.model.Review;
 import in.viato.app.ui.activities.AbstractActivity;
 import in.viato.app.ui.activities.CheckoutActivity;
 import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
 import in.viato.app.ui.adapters.ReviewRVAdapter;
+import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import rx.functions.Action1;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,6 +80,10 @@ public class BookDetailFragment extends AbstractFragment {
 
     private AbstractActivity mActivity;
 
+    private FragmentBookDetailBinding binding;
+    private BookDetail mBookDetail;
+
+    @Bind(R.id.book_detail_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @Bind(R.id.related_books_list) RecyclerView mRelatedBooksRV;
     @Bind(R.id.review_list_small) RecyclerView mReviewList;
@@ -110,12 +119,30 @@ public class BookDetailFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_book_detail, container, false);
+        mBookDetail = new BookDetail();
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_book_detail, container, false);
+        binding.setBook(mBookDetail);
+        View view = binding.getRoot();
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mViatoAPI.getBookDetail(mBookId)
+                .subscribe(new Action1<BookDetail>() {
+                    @Override
+                    public void call(BookDetail bookDetail) {
+                        mBookDetail = bookDetail;
+                        mAnimator.setDisplayedChildId(R.id.book_container);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Logger.e(throwable.getMessage());
+                    }
+                });
 
         setHasOptionsMenu(true);
 
