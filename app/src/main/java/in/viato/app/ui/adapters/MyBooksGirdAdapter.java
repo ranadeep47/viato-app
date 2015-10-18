@@ -57,19 +57,15 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
     }
 
     public void add(BookItem book) {
-        books.add(book); //Adds the book to the front
+        books.add(book);
         notifyItemInserted(books.size() - 1);
+        notifyDataSetChanged();
     }
 
     public void addToFront(BookItem book) {
         books.add(0, book);
         notifyItemInserted(0);
-    }
-
-    public void replace(int index, BookItem book) {
-        books.remove(index);
-        books.add(index, book);
-        notifyItemChanged(0);
+        notifyDataSetChanged();
     }
 
     public String getStringId(int position) {
@@ -79,6 +75,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
     public void remove(int index) {
         books.remove(index);
         notifyItemRemoved(index);
+        notifyDataSetChanged();
     }
 
     @Override

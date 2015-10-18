@@ -67,30 +67,28 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
 
         if(books.size() == 0){
             container.setDisplayedChildId(R.id.books_wishlist_empty);
-            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    super.onChanged();
-                    if (adapter.getItemCount() > 0) {
-                        container.setDisplayedChildId(R.id.books_wishlist_grid);
-                    }
-                }
-            });
         }
         else {
             container.setDisplayedChildId(R.id.books_wishlist_grid);
             adapter.addAll(books);
-            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    super.onChanged();
-                    if (adapter.getItemCount() == 0) {
-                        container.setDisplayedChildId(R.id.books_wishlist_empty);
-                    }
-                }
-            });
         }
 
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                if (adapter.getItemCount() == 0) {
+                    container.setDisplayedChildId(R.id.books_wishlist_empty);
+                }
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                if (positionStart == 0 && itemCount == 1) {
+                    container.setDisplayedChildId(R.id.books_wishlist_grid);
+                }
+            }
+        });
     }
 
     @Override
@@ -124,14 +122,10 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
 
                     @Override
                     public void onNext(BookItem bookItem) {
-                        Logger.d("Actual : %s", bookItem.getCatalogueId());
-                        adapter.replace(0, bookItem);
+                        adapter.addToFront(bookItem);
+                        grid.scrollToPosition(0);
                     }
                 });
-
-        Logger.d("Temporary : %s", item.get_id());
-        adapter.addToFront(item);
-        grid.scrollToPosition(0);
     }
 
     @Override

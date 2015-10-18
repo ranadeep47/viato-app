@@ -66,30 +66,28 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
 
         if(myBooksReadResponse.getRead().size() == 0){
             container.setDisplayedChildId(R.id.books_read_empty);
-            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    super.onChanged();
-                    if (adapter.getItemCount() >  0) {
-                        container.setDisplayedChildId(R.id.books_reading_grid);
-                    }
-                }
-            });
         }
         else {
-            adapter.addAll(myBooksReadResponse.getRead());
             container.setDisplayedChildId(R.id.books_reading_grid);
-            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    super.onChanged();
-                    if (adapter.getItemCount() == 0) {
-                        container.setDisplayedChildId(R.id.books_read_empty);
-                    }
-                }
-            });
+            adapter.addAll(myBooksReadResponse.getRead());
         }
 
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                if (adapter.getItemCount() == 0) {
+                    container.setDisplayedChildId(R.id.books_read_empty);
+                }
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                if (positionStart == 0 && itemCount == 1) {
+                    container.setDisplayedChildId(R.id.books_reading_grid);
+                }
+            }
+        });
     }
 
     @Override
@@ -123,14 +121,10 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
 
                     @Override
                     public void onNext(BookItem bookItem) {
-                        Logger.d("Actual : %s", bookItem.getCatalogueId());
-                        adapter.replace(0, bookItem);
+                        adapter.addToFront(bookItem);
+                        readGrid.scrollToPosition(0);
                     }
                 });
-
-        Logger.d("Temporary : %s", item.get_id());
-        adapter.addToFront(item);
-        readGrid.scrollToPosition(0);
     }
 
     @Override
