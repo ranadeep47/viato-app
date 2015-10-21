@@ -11,7 +11,8 @@
     <RelativeLayout
         android:id="@+id/category_books_error"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:padding="48dp"
         >
         <ImageView
@@ -43,8 +44,8 @@
     <RelativeLayout
         android:id="@+id/category_books_empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:padding="48dp"
         >
         <ImageView

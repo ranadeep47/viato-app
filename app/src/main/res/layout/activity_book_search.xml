@@ -103,7 +103,7 @@
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_results_list"
-        android:padding="@dimen/spacing_medium"
+        android:padding="@dimen/spacing_vv_small"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

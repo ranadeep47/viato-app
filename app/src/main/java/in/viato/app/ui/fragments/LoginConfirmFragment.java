@@ -29,6 +29,7 @@ import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.receivers.SMSReceiver;
 import in.viato.app.ui.activities.HomeActivity;
+import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.SharedPrefHelper;
 import rx.Subscriber;
 import rx.functions.Action1;
@@ -202,7 +203,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
     @OnClick(R.id.btn_submit)
     public void submitEmail() {
-        String email = mEmail.getText().toString();
+        final String email = mEmail.getText().toString();
         Logger.d(email + "  " + mToken);
         if(mToken == null){
             verifyOTP();
@@ -213,9 +214,19 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
             mHttpClient.submitEmail(email, mToken)
                     .subscribe(new Action1<String>() {
                         @Override
-                        public void call(String s) {
+                        public void call(String access_token) {
 //                            Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
-                            SharedPrefHelper.set(R.string.pref_access_token, s);
+                            AppConstants.UserInfo.INSTANCE.setAuthToken(access_token);
+                            AppConstants.UserInfo.INSTANCE.setEmail(email);
+
+                            SharedPrefHelper.set(R.string.pref_access_token, access_token);
+                            SharedPrefHelper.set(R.string.pref_email, email);
+
+                            Logger.d(access_token);
+                            Logger.d("---------");
+                            Logger.d(AppConstants.UserInfo.INSTANCE.getAccessToken());
+                            Logger.d("---------");
+                            Logger.d(SharedPrefHelper.getString(R.string.pref_access_token));
                             startActivity(new Intent(getActivity(), HomeActivity.class));
                             getActivity().finish();
                         }

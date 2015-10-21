@@ -2,12 +2,6 @@ package in.viato.app.utils;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.text.TextUtils;
-
-import java.util.Locale;
-
-import in.viato.app.http.HTTPConstants;
 
 /**
  * Created by ranadeep on 12/09/15.
@@ -98,25 +92,15 @@ public class AppConstants {
         }
 
         public void setMobileNumber(final String mobileNumber) {
-            if (mobileNumber == null) {
-                mMobileNumber = "";
-            } else {
-                mMobileNumber = mobileNumber;
-            }
+            mMobileNumber = mobileNumber == null ? "" : mobileNumber;
         }
 
         public String getAccessToken() {
             return mAccessToken;
         }
 
-
         public void setAuthToken(final String authToken) {
-
-            if (authToken == null) {
-                mAccessToken = "";
-            } else {
-                mAccessToken = authToken;
-            }
+            mAccessToken = authToken == null ? "" : authToken;
         }
 
         public String getEmail() {
@@ -124,12 +108,7 @@ public class AppConstants {
         }
 
         public void setEmail(final String email) {
-
-            if (email == null) {
-                mEmail = "";
-            } else {
-                mEmail = email;
-            }
+            mEmail = email == null ? "" : email;
         }
 
         public String getId() {
@@ -137,12 +116,7 @@ public class AppConstants {
         }
 
         public void setId(final String id) {
-
-            if (id == null) {
-                mId = "";
-            } else {
-                mId = id;
-            }
+            mId = id == null ? "" : id;
         }
 
         public String getDeviceId() {

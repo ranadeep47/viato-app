@@ -28,6 +28,7 @@ import in.viato.app.R;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.ui.widgets.CirclePageIndicator;
+import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.SharedPrefHelper;
 import rx.functions.Action1;
 
@@ -132,6 +133,9 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
             //save phone number and device id in shared preferences
             SharedPrefHelper.set(R.string.pref_mobile_number, mobile_number);
             SharedPrefHelper.set(R.string.pref_device_id, device_id);
+
+            AppConstants.UserInfo.INSTANCE.setDeviceId(device_id);
+            AppConstants.UserInfo.INSTANCE.setMobileNumber(mobile_number);
 
             mHttpClient.login(mobile_number, device_id, new ArrayList<String>())
                     .subscribe(new Action1<String>() {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="54dp"
+        android:layout_height="90dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_header1"/>
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/cover"
+        android:textColor="@color/text"
+        android:layout_toLeftOf="@+id/price"
+        android:text="Happiness Unlimited: Awakening With..."/>
+
+    <TextView
+        android:id="@+id/author"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_toRightOf="@id/cover"
+        android:layout_toLeftOf="@+id/price"
+        android:singleLine="true"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        android:text="Robin Sharma"/>
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/text"
+        android:text="Rs. 162.00"/>
+    <ImageButton
+        android:id="@+id/remove"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:tint="@color/black_12"
+        android:src="@drawable/ic_close_black"
+        android:background="?attr/selectableItemBackground"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>

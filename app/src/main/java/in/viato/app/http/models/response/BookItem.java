@@ -3,6 +3,7 @@ package in.viato.app.http.models.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by ranadeep on 16/10/15.
@@ -87,8 +88,8 @@ public class BookItem implements Parcelable {
         this.thumbs = thumbs;
     }
 
-    public String[] getAuthors() {
-        return authors;
+    public String getAuthors() {
+        return TextUtils.join(",", authors);
     }
 
     public void setAuthors(String[] authors) {

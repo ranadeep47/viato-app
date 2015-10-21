@@ -7,13 +7,15 @@
     android:paddingRight="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:focusable="false"
+    android:background="?android:selectableItemBackground"
     android:id="@+id/lv_addressList_item">
     <RadioButton
+        android:id="@+id/radio_select_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:gravity="center"
-        android:id="@+id/radio_select_address"/>
+        android:gravity="center" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,33 +25,40 @@
         android:gravity="center"
         android:layout_centerVertical="true">
         <TextView
+            android:id="@+id/tv_address_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_label_addressItem"
             android:textColor="@color/text"
             android:textStyle="bold"
             android:textSize="14sp"
             android:text="Work"
             />
         <TextView
+            android:id="@+id/tv_address_flat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_street_addressItem"
-            android:layout_below="@+id/tv_label_addressItem"
+            android:layout_below="@+id/tv_address_label"
             android:textColor="@color/secondary_text"
             android:textSize="12sp"
-            android:layout_marginTop="6dp"
-            android:text="108, B Wing, Building No. 32, Sahyadri CHS, MHADA"
-            />
+            android:lineSpacingMultiplier="2"
+            android:text="Saiteja Parsi, #108, B Wing" />
         <TextView
+            android:id="@+id/tv_address_street"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_locality_addressItem"
-            android:layout_below="@+id/tv_street_addressItem"
+            android:layout_below="@+id/tv_address_flat"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            android:lineSpacingMultiplier="2"
+            android:text="Building No. 32, Sahyadri CHS, MHADA" />
+        <TextView
+            android:id="@+id/tv_address_locality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_address_street"
             android:text="Chandivali, Mumbai - 400072"
             android:textColor="@color/secondary_text"
             android:textSize="12sp"
-            android:layout_marginTop="2dp"
-            />
+            android:lineSpacingMultiplier="2" />
     </LinearLayout>
 </RelativeLayout>

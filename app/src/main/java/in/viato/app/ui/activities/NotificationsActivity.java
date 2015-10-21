@@ -1,27 +1,19 @@
 package in.viato.app.ui.activities;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.databinding.DataBindingUtil;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import com.orhanobut.logger.Logger;
+import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import in.viato.app.R;
-import in.viato.app.databinding.PNotificationBinding;
 import in.viato.app.dummy.Notifications;
 import in.viato.app.model.Notification;
 import in.viato.app.ui.widgets.DividerItemDecoration;
@@ -59,56 +51,59 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            private final PNotificationBinding mBinding;
+            @Bind(R.id.notification_heading) TextView mTitle;
+            @Bind(R.id.notification_body) TextView mBody;
+            @Bind(R.id.notification_date) TextView mDate;
 
-            public ViewHolder(PNotificationBinding binding) {
-                super(binding.getRoot());
-                this.mBinding = binding;
+            public ViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
             }
-
-            public void bindConnection(Notification notification ) {
-                mBinding.setNotification(notification);
-            }
-
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            PNotificationBinding binding = DataBindingUtil
-                    .inflate(LayoutInflater.from(parent.getContext()),
-                            R.layout.p_notification,
-                            parent,
-                            false);
-            return new ViewHolder(binding);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_notification, parent, false);
+            return new ViewHolder(view);
         }
+
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             final Notification notification = mNotifications.get(position);
-            holder.bindConnection(notification);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Logger.d("Clicked");
-                    Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Intent intent = new Intent();
-                    intent.setClassName("in.viato.app", "in.viato.app.ui.activities.HomeActivity");
-                    intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
-                    PendingIntent resultPendingIntent = PendingIntent.getActivity(mActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(getApplicationContext())
-                                    .setSmallIcon(R.drawable.ic_launcher)
-                                    .setContentTitle("My notification")
-                                    .setContentText("Hello World!")
-                                    .setAutoCancel(true)
-                                    .setSound(soundUri)
-                                    .setContentIntent(resultPendingIntent);
-                    int mNotificationId = 001;
-                    NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
-                }
-            });
+
+            holder.mTitle.setText(notification.getTitle());
+            holder.mBody.setText(notification.getBody());
+            holder.mDate.setText(notification.getDate());
         }
+
+//        @Override
+//        public void onBindViewHolder(ViewHolder holder, int position) {
+//            final Notification notification = mNotifications.get(position);
+//            holder.bindConnection(notification);
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Logger.d("Clicked");
+//                    Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                    Intent intent = new Intent();
+//                    intent.setClassName("in.viato.app", "in.viato.app.ui.activities.HomeActivity");
+//                    intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
+//                    PendingIntent resultPendingIntent = PendingIntent.getActivity(mActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                    NotificationCompat.Builder mBuilder =
+//                            new NotificationCompat.Builder(getApplicationContext())
+//                                    .setSmallIcon(R.drawable.ic_launcher)
+//                                    .setContentTitle("My notification")
+//                                    .setContentText("Hello World!")
+//                                    .setAutoCancel(true)
+//                                    .setSound(soundUri)
+//                                    .setContentIntent(resultPendingIntent);
+//                    int mNotificationId = 001;
+//                    NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
+//                }
+//            });
+//        }
 
         @Override
         public int getItemCount() {
@@ -118,8 +113,7 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
 
 
     public void setupNotificationsRV() {
-        RecyclerView mRecyclerView = new RecyclerView(this);
-        mRecyclerView.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT));
+        RecyclerView mRecyclerView = (RecyclerView) getLayoutInflater().inflate(R.layout.recycler_view, mFrameLayout, false);
         mRecyclerView.setHasFixedSize(true);
         mFrameLayout.addView(mRecyclerView);
 

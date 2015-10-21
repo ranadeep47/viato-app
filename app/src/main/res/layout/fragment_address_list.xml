@@ -1,0 +1,29 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout_addressList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="false"
+    tools:context="in.viato.app.AddressListFragment">
+    <in.viato.app.ui.widgets.BetterViewAnimator
+        android:id="@+id/addresses_animator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include
+            layout="@layout/c_progress_bar"
+            android:id="@+id/progress_bar"></include>
+        <LinearLayout
+            android:id="@+id/address_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <include
+                android:id="@+id/add_address"
+                layout="@layout/holder_add_address" />
+            <include
+                android:id="@+id/address_list"
+                layout="@layout/recycler_view" />
+        </LinearLayout>
+    </in.viato.app.ui.widgets.BetterViewAnimator>
+</android.support.design.widget.CoordinatorLayout>

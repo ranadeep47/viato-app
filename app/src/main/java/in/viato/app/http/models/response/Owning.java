@@ -9,14 +9,14 @@ import in.viato.app.BR;
  * Created by saiteja on 17/10/15.
  */
 public class Owning extends BaseObservable {
-    private float mrp;
+    private String mrp;
 
     @Bindable
-    public int getMrp() {
-        return (int)mrp;
+    public String getMrp() {
+        return mrp;
     }
 
-    public void setMrp(float mrp) {
+    public void setMrp(String mrp) {
         this.mrp = mrp;
         notifyPropertyChanged(BR.mrp);
     }

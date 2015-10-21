@@ -45,7 +45,7 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
         final BookItem book = mBooks.get(position);
 
         holder.title.setText(book.getTitle());
-        holder.author.setText(TextUtils.join(",", book.getAuthors()));
+        holder.author.setText(book.getAuthors());
 //        holder.rent.setText(book.getRent());
         holder.itemView.setTag(R.string.book_id, book.getCatalogueId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {

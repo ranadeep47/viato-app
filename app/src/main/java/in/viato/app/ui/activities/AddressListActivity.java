@@ -2,10 +2,13 @@ package in.viato.app.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+
+import com.orhanobut.logger.Logger;
 
 import in.viato.app.R;
+import in.viato.app.ui.fragments.AddressEditFragment;
 import in.viato.app.ui.fragments.AddressListFragment;
-import in.viato.app.ui.fragments.EditAddressFragment;
 
 /**
  * Created by saiteja on 20/09/15.
@@ -13,6 +16,9 @@ import in.viato.app.ui.fragments.EditAddressFragment;
 public class AddressListActivity extends AbstractActivity {
 
     public static final String ARG_ADDRESS_ID = "addressId";
+    public static final String ARG_ADDRESS_INDEX = "addressIndex";
+    public static final String ARG_ADDRESS = "address";
+
     private int selectedAddressId;
 
     @Override
@@ -29,9 +35,9 @@ public class AddressListActivity extends AbstractActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
+//        loadFragment(R.id.frame_content, AddressListFragment.newInstance(selectedAddressId), AddressListFragment.TAG, false, AddressListFragment.TAG);
         if(selectedAddressId < 0){
-            loadFragment(R.id.frame_content, EditAddressFragment.newInstance(selectedAddressId), EditAddressFragment.TAG, false, EditAddressFragment.TAG);
+            loadFragment(R.id.frame_content, AddressEditFragment.newInstance(selectedAddressId, AddressEditFragment.CREATE_ADDRESS, null), AddressEditFragment.TAG, false, AddressEditFragment.TAG);
         } else {
             loadFragment(R.id.frame_content, AddressListFragment.newInstance(selectedAddressId), AddressListFragment.TAG, false, AddressListFragment.TAG);
         }

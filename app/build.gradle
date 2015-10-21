@@ -36,16 +36,17 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    final SUPPORT_LIBRARY_VERSION = '23.0.1'
+    final SUPPORT_LIBRARY_VERSION = '23.1.0'
 
-    final GOOGLE_PLAY_SERVICES_VERSION = '7.8.0'
+    final GOOGLE_PLAY_SERVICES_VERSION = '8.1.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -59,6 +60,7 @@ dependencies {
 
     compile "com.google.android.gms:play-services-appinvite:$GOOGLE_PLAY_SERVICES_VERSION"
     compile "com.google.android.gms:play-services-vision:$GOOGLE_PLAY_SERVICES_VERSION"
+    compile "com.google.android.gms:play-services-location:$GOOGLE_PLAY_SERVICES_VERSION"
 
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'

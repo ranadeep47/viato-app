@@ -6,12 +6,12 @@ import android.os.Parcelable;
 /**
  * Created by ranadeep on 16/10/15.
  */
-public class rental implements Parcelable {
+public class Rental implements Parcelable {
     private String _id;
     private float rent;
     private int period;
 
-    public rental() {
+    public Rental() {
         super();
     }
 
@@ -52,19 +52,19 @@ public class rental implements Parcelable {
         dest.writeInt(this.period);
     }
 
-    protected rental(Parcel in) {
+    protected Rental(Parcel in) {
         this._id = in.readString();
         this.rent = in.readFloat();
         this.period = in.readInt();
     }
 
-    public static final Parcelable.Creator<rental> CREATOR = new Parcelable.Creator<rental>() {
-        public rental createFromParcel(Parcel source) {
-            return new rental(source);
+    public static final Creator<Rental> CREATOR = new Creator<Rental>() {
+        public Rental createFromParcel(Parcel source) {
+            return new Rental(source);
         }
 
-        public rental[] newArray(int size) {
-            return new rental[size];
+        public Rental[] newArray(int size) {
+            return new Rental[size];
         }
     };
 }

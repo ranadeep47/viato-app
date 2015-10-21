@@ -35,7 +35,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by ranadeep on 11/09/15.
  */
 
-public abstract class AbstractFragment extends Fragment{
+public abstract class AbstractFragment extends Fragment {
 
     private static final String TAG = "AbstractFragment";
     private boolean mIsAttached;

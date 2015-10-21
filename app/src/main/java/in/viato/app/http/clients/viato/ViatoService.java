@@ -1,9 +1,15 @@
 package in.viato.app.http.clients.viato;
 
+import android.databinding.ObservableField;
+
 import java.util.List;
 
+import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.BookCatalogueId;
+import in.viato.app.http.models.request.BookingBody;
+import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
+import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CoverQuote;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
@@ -13,6 +19,7 @@ import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -24,10 +31,10 @@ public interface ViatoService {
 
     String baseUrl = "http://viato.in/api/";
 
-    @GET("feed/home")
+    @GET("feed/home/")
     Observable<List<CategoryItem>> getCategories();
 
-    @GET("feed/category/{categoryId}")
+    @GET("feed/category/{categoryId}/")
     Observable<CategoryGrid> getBooksByCategory(
             @Path("categoryId") String categoryId,
             @Query("page") int page);
@@ -56,8 +63,35 @@ public interface ViatoService {
     @DELETE("user/mybooks/wishlist/{wishlistId}")
     Observable<String> removeFromWishlist(@Path("wishlistId") String wishlistId);
 
-    @GET("books/{bookId}/")
-    Observable<BookDetail> getBookDetail(
-            @Path("bookId") String bookId
+    @GET("books/{bookId}")
+    Observable<BookDetail> getBookDetail(@Path("bookId") String bookId);
+
+    @GET("user/address")
+    Observable<List<Address>> getAddresses();
+
+    @POST("user/address")
+    Observable<Address> createAddress(
+            @Body Address address
     );
+
+    @PUT("user/address/{addressId}")
+    Observable<Address> updateAddress(
+            @Path("addressId") String addressId,
+            @Body Address address
+    );
+
+    @DELETE("user/address/{addressId}")
+    Observable<String> deleteAddress(@Path("addressId") String addressId);
+
+    @GET("user/cart")
+    Observable<Cart> getCart();
+
+    @POST("user/cart")
+    Observable<Cart> addToCart(@Body CartItem cartItem);
+
+    @DELETE("user/cart/{id}")
+    Observable<String> removeFromCart(@Path("id") String id);
+
+    @POST("user/bookings")
+    Observable<String> placeOrder(@Body BookingBody booking);
 }

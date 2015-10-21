@@ -145,7 +145,7 @@ public class CategoryBooksFragment extends AbstractFragment{
                 .subscribe(new Subscriber<CategoryGrid>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("First page loading completed");
+//                        Logger.d("First page loading completed");
                     }
 
                     @Override

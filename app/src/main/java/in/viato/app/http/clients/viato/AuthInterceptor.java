@@ -13,23 +13,15 @@ import in.viato.app.utils.AppConstants.UserInfo;
  * Created by ranadeep on 13/09/15.
  */
 public class AuthInterceptor implements Interceptor {
-
-    private final String mAccessToken;
-    private final int mAppVersion;
-    private final String mDeviceId;
-
     public AuthInterceptor() {
-        mAccessToken = UserInfo.INSTANCE.getAccessToken();
-        mAppVersion = UserInfo.INSTANCE.getAppVersion();
-        mDeviceId = UserInfo.INSTANCE.getDeviceId();
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-        builder.header("Authorization", "Bearer " + mAccessToken);
-        builder.header("X-APP-VERSION", String.valueOf(mAppVersion));
-        builder.header("X-DEVICE-ID", mDeviceId);
+        builder.header("Authorization", "Bearer " + UserInfo.INSTANCE.getAccessToken());
+        builder.header("X-APP-VERSION", String.valueOf(UserInfo.INSTANCE.getAppVersion()));
+        builder.header("X-DEVICE-ID", UserInfo.INSTANCE.getDeviceId());
         return chain.proceed(builder.build());
     }
 

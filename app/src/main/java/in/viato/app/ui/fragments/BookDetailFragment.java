@@ -1,24 +1,20 @@
 package in.viato.app.ui.fragments;
 
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,20 +35,18 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
-import in.viato.app.databinding.FragmentBookDetailBinding;
+import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
+import in.viato.app.http.models.response.Cart;
 import in.viato.app.model.Review;
 import in.viato.app.ui.activities.AbstractActivity;
 import in.viato.app.ui.activities.CheckoutActivity;
@@ -61,13 +55,9 @@ import in.viato.app.ui.adapters.ReviewRVAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import rx.Subscriber;
 import rx.functions.Action1;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BookDetailFragment extends AbstractFragment {
 
     public static final String TAG = BookDetailFragment.class.getSimpleName();
@@ -82,27 +72,32 @@ public class BookDetailFragment extends AbstractFragment {
 
     private String mBookId;
 
-    private static Boolean inWishlist = true;
     private static Boolean isFullDesc = false;
 
     private AbstractActivity mActivity;
 
-    private FragmentBookDetailBinding binding;
     private BookDetail mBookDetail;
+
+    @Bind(R.id.img_header) ImageView mCover;
+    @Bind(R.id.title) TextView mTitle;
+    @Bind(R.id.author) TextView mAuthor;
+    @Bind(R.id.book_rating_stars) RatingBar mBookRatingStars;
+    @Bind(R.id.book_rating) TextView mBookRating;
+    @Bind(R.id.retail_price) TextView mRetailPrice;
+    @Bind(R.id.rental_price) TextView mRentalPrice;
+    @Bind(R.id.btn_wish_list) Button mWishListButton;
+    @Bind(R.id.description) TextView mDescription;
+    @Bind(R.id.btn_desc_more) Button mBtn_desc_more;
 
     @Bind(R.id.book_detail_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @Bind(R.id.related_books_list) RecyclerView mRelatedBooksRV;
     @Bind(R.id.review_list_small) RecyclerView mReviewList;
-    @Bind(R.id.img_header) ImageView mImageView;
     @Bind(R.id.user_review) TextView mUserReview;
-    @Bind(R.id.sale_price) TextView mSalePrice;
-    @Bind(R.id.desc) TextView mDescription;
     @Bind(R.id.user_rating) RatingBar mUserRating;
     @Bind(R.id.all_reviews) LinearLayout allReviews;
     @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.fab) FloatingActionButton mFloatingActionButton;
-    @Bind(R.id.book_rating) RatingBar bookRating;
+    @Bind(R.id.fab) FloatingActionButton mFAB;
 
     public static BookDetailFragment newInstance(String id) {
         BookDetailFragment fragment = new BookDetailFragment();
@@ -124,31 +119,20 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mBookDetail = new BookDetail();
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_book_detail, container, false);
-        binding.setBook(mBookDetail);
-        View view = binding.getRoot();
-        return view;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_book_detail, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // LayerDrawable was added in lollipop
-            LayerDrawable stars = (LayerDrawable) bookRating.getProgressDrawable();
-            stars.getDrawable(2).setColorFilter(getActivity().getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_ATOP);
-        }
-
         mViatoAPI.getBookDetail(mBookId)
                 .subscribe(new Action1<BookDetail>() {
                     @Override
                     public void call(BookDetail bookDetail) {
-                        binding.setBook(bookDetail);
-                        setPalleteColors(bookDetail.getThumbs().get(0));
+                        mBookDetail = bookDetail;
+                        setVariables(bookDetail);
                         mAnimator.setDisplayedChildId(R.id.book_container);
                     }
                 }, new Action1<Throwable>() {
@@ -162,9 +146,6 @@ public class BookDetailFragment extends AbstractFragment {
 
         mActivity.setSupportActionBar(mToolbar);
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        mCollapsingToolbarLayout.setTitle("Windows 10 all-in-one for Dummies");
-
-        mSalePrice.setPaintFlags(mSalePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         setListeners();
 
@@ -184,7 +165,6 @@ public class BookDetailFragment extends AbstractFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Logger.d(String.valueOf(id));
         switch(id) {
             case R.id.action_cart:
                 startActivity(new Intent(mActivity, CheckoutActivity.class));
@@ -193,14 +173,8 @@ public class BookDetailFragment extends AbstractFragment {
                 letShare();
                 return true;
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override
@@ -214,53 +188,6 @@ public class BookDetailFragment extends AbstractFragment {
             String review = data.getStringExtra(RatingDialogFragment.EXTRA_REVIEW).replaceAll("\\s+", " ");
             mUserRating.setRating(rating);
             mUserReview.setText(review);
-        }
-    }
-
-    @TargetApi(21)
-    public void setPalleteColors(String src) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded()) {
-            Bitmap myBitmap;// = BitmapFactory.decodeResource(getResources(), R.drawable.img_header2);
-
-            try {
-                URL url = new URL(src);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                myBitmap = BitmapFactory.decodeStream(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-
-//            Bitmap bitmap = getBitmapFromURL(src);
-
-            Palette.from(myBitmap).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    if (!isAdded()) {
-                        return;
-                    }
-                    int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary));
-                    int darkMutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.primary_light));
-                    mCollapsingToolbarLayout.setBackgroundColor(mutedColor);
-                    mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
-
-                    mFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
-
-                    Window window = mActivity.getWindow();
-
-                    // clear FLAG_TRANSLUCENT_STATUS flag:
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-                    // finally change the color
-                    window.setStatusBarColor(darkMutedColor);
-                }
-            });
         }
     }
 
@@ -282,49 +209,72 @@ public class BookDetailFragment extends AbstractFragment {
             }
         });
 
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+        mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-//                //Todo: Add to cart
-                startActivity(new Intent(mActivity, CheckoutActivity.class));
-//                Snackbar.make(v, "Added to cart", Snackbar.LENGTH_SHORT)
-//                        .setAction("Undo", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                //Todo: Remove from cart
-//                                Snackbar.make(v, "Removed from cart", Snackbar.LENGTH_SHORT).show();
-//                            }
-//                        })
-//                        .show();
+            public void onClick(final View v) {
+                if(mBookDetail == null){
+                    return;
+                }
+                String catalogueId = mBookDetail.get_id();
+                String rentalId = mBookDetail.getPricing().getRental().get(0).get_id();
+                Boolean available = mBookDetail.getAvailable();
+                float rent = mBookDetail.getPricing().getRental().get(0).getRent();
+                if ((!available) || (rent == 0)) {
+                    //Todo: Trigger analytics event
+                    Snackbar.make(v, "This book is currently unavailable for rental. We will let you know once it's available.", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                mViatoAPI.addToCart(new CartItem(catalogueId, rentalId))
+                        .subscribe(new Subscriber<Cart>() {
+                            @Override
+                            public void onCompleted() {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Logger.d("Item not added to cart " + R.string.due_to + e.getMessage());
+                                Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNext(Cart cart) {
+                                startActivity(new Intent(mActivity, CheckoutActivity.class));
+                            }
+                        });
+
             }
         });
     }
 
-    @OnClick(R.id.add_to_wishlist)
-    public void toggleWishlist(Button button) {
-        inWishlist =  !inWishlist;
-
-        if (inWishlist) {
-            button.setText("Added to whishlist");
+    @OnClick(R.id.btn_wish_list)
+    public void toggleWishList(Button button) {
+        Boolean inWishList = mBookDetail.getIsInWishList();
+        //Todo: make server call
+        if (inWishList) {
+            button.setText(R.string.add_to_wish_list);
+            Snackbar.make(button, R.string.removed_from_wish_list, Snackbar.LENGTH_SHORT).show();
         } else {
-            button.setText("Add to wishlist");
+            button.setText(R.string.added_to_wish_list);
+            Snackbar.make(button, R.string.added_to_wish_list, Snackbar.LENGTH_SHORT).show();
         }
+        mBookDetail.setIsInWishList(!inWishList);
     }
 
-    @OnClick(R.id.desc_more)
+    @OnClick(R.id.btn_desc_more)
     public void toggleDesc(TextView view) {
         if(isFullDesc) {
             mDescription.setMaxLines(8);
-            view.setText("Show More");
+            view.setText(R.string.show_more);
         } else {
             mDescription.setMaxLines(Integer.MAX_VALUE);
-            view.setText("Show Less");
+            view.setText(R.string.show_less);
         }
         isFullDesc = ! isFullDesc;
     }
 
     @OnClick(R.id.all_reviews)
-    public void showAllReviews(LinearLayout layout) {
+    public void showAllReviews() {
         FragmentManager fm = mActivity.getSupportFragmentManager();
         fm.beginTransaction()
                 .add(R.id.frame_content, ShowCaseReview.newInstance("abc", "abc"), "ShowCaseReviewFragment")
@@ -381,18 +331,94 @@ public class BookDetailFragment extends AbstractFragment {
         startActivity(intent);
     }
 
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    public void setVariables(final BookDetail book)  {
+        //set cover
+        Picasso.with(getContext())
+                .load(book.getCover())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(mCover, new Callback() {
+                    @Override
+                    public void onSuccess() {
+//                        setPalleteColors(mCover);
+//                        Logger.d("colors set");
+//                        Picasso.with(getContext())
+//                                .load(book.getCover())
+//                                .into(mCover);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+        //set title
+        mTitle.setText(book.getTitle());
+        mCollapsingToolbarLayout.setTitle(book.getTitle());
+        //set Author
+        mAuthor.setText(book.getAuthors());
+        //set stars
+        mBookRatingStars.setRating(book.getRating());
+        mBookRating.setText(book.getRating() + "");
+        //set color to rating stars
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LayerDrawable stars = (LayerDrawable) mBookRatingStars.getProgressDrawable();
+            stars.getDrawable(2).setColorFilter(getActivity().getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_ATOP);
+        }
+        //set price and strike through retail price
+        mRetailPrice.setText("Buy at Rs. " + book.getPricing().getOwning().getMrp());
+        mRetailPrice.setPaintFlags(mRetailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        mRentalPrice.setText("Rent at Rs. " + book.getPricing().getRental().get(0).getRent());
+        //set wishlist button
+        if(book.getIsInWishList()) {
+            mWishListButton.setText(R.string.added_to_wish_list);
+        } else {
+            mWishListButton.setText(R.string.add_to_wish_list);
+        }
+        //set description
+        mDescription.setText(mBookDetail.getDescription());
+        mDescription.post(new Runnable() {
+            @Override
+            public void run() {
+                int lineCount = mDescription.getLineCount();
+                mBtn_desc_more.setVisibility(lineCount > 8 ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    @TargetApi(21)
+    public void setPalleteColors(ImageView imageView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded()) {
+
+            Bitmap myBitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+
+            Palette.from(myBitmap).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    if (!isAdded()) {
+                        return;
+                    }
+                    int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary));
+                    Logger.d("muted color: " + mutedColor);
+                    int darkMutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.primary_light));
+                    Logger.d("muted color: " + darkMutedColor);
+                    mCollapsingToolbarLayout.setBackgroundColor(mutedColor);
+                    mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
+
+                    mFAB.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
+
+                    Window window = mActivity.getWindow();
+
+                    // clear FLAG_TRANSLUCENT_STATUS flag:
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                    // finally change the color
+                    window.setStatusBarColor(darkMutedColor);
+                }
+            });
         }
     }
 }

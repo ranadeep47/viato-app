@@ -5,9 +5,13 @@ import com.squareup.okhttp.OkHttpClient;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
 import in.viato.app.http.clients.ToStringConverterFactory;
+import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.BookCatalogueId;
+import in.viato.app.http.models.request.BookingBody;
+import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.BookItem;
+import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import retrofit.MoshiConverterFactory;
@@ -131,6 +135,65 @@ public class ViatoAPI {
     public Observable<BookDetail> getBookDetail(String id) {
         return mViatoService
                 .getBookDetail(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<List<Address>> getAddress(){
+        return mViatoService
+                .getAddresses()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+
+    }
+
+    public Observable<Address> createAddress(Address address) {
+        return mViatoService
+                .createAddress(address)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+
+    }
+
+    public Observable<Address> updateAddress(String id, Address address) {
+        return mViatoService
+                .updateAddress(id, address)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+
+    }
+
+    public Observable<String> deleteAddress(String id) {
+        return mViatoService
+                .deleteAddress(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+
+    }
+
+    public Observable<Cart> getCart() {
+        return mViatoService
+                .getCart()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Cart> addToCart(CartItem cartItem) {
+        return mViatoService
+                .addToCart(cartItem)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<String> removeFromCart(String id) {
+        return mViatoService
+                .removeFromCart(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<String> placeOrder(BookingBody booking) {
+        return mViatoService.placeOrder(booking)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

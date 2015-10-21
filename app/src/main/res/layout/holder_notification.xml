@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <data>
-        <variable
-            name="notification"
-            type="in.viato.app.model.Notification"></variable>
-    </data>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_vv_small">
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
         <TextView
@@ -16,19 +15,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:textColor="@color/text"
-            android:text="Heading"/>
+            android:textColor="@color/text"/>
         <TextView
+            android:id="@+id/notification_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lorem"
             android:layout_marginTop="8dp"/>
         <TextView
+            android:id="@+id/notification_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="12-Sep-15"
             android:gravity="end"
             android:textColor="@color/hint_text"/>
     </LinearLayout>
-</layout>
+</android.support.v7.widget.CardView>

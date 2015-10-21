@@ -3,7 +3,8 @@ package in.viato.app.dummy;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.viato.app.model.Address;
+import in.viato.app.http.models.Address;
+import in.viato.app.http.models.Locality;
 
 /**
  * Created by saiteja on 09/10/15.
@@ -15,21 +16,21 @@ public class Addresses {
         mAddressList = new ArrayList<>();
 
         Address aAddress = new Address();
-        aAddress.mAddress.set("The Busy Coder's Guide to Android Development");
-        aAddress.mLabel.set("Mark L. Murphy");
-        aAddress.mLocality.set("Rs 20.00");
+        aAddress.setFlat("#108, B Wing");
+        aAddress.setStreet("Building No. 32, Sahyadri CHS, MHADA");
+        aAddress.setLocality(new Locality("23456789", "Chandivali, Mumbai"));
         mAddressList.add(aAddress);
 
         Address bAddress = new Address();
-        bAddress.mAddress.set("Fifty Shades of Grey");
-        bAddress.mLabel.set("E. L. James");
-        bAddress.mLocality.set("Rs 40.00");
+        bAddress.setFlat("#108, B Wing");
+        bAddress.setStreet("Building No. 32, Sahyadri CHS, MHADA");
+        aAddress.setLocality(new Locality("23456789", "Chandivali, Mumbai"));
         mAddressList.add(bAddress);
 
         Address cAddress = new Address();
-        cAddress.mAddress.set("Ikshvaku Ke Vanshaj");
-        cAddress.mLabel.set("Amish Tripathi, Urmila Gupta");
-        cAddress.mLocality.set("Rs 33.00");
+        cAddress.setFlat("#108, B Wing");
+        cAddress.setStreet("Building No. 32, Sahyadri CHS, MHADA");
+        aAddress.setLocality(new Locality("23456789", "Chandivali, Mumbai"));
         mAddressList.add(cAddress);
     }
 

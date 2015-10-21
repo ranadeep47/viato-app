@@ -11,38 +11,37 @@
         <ImageView
             android:id="@+id/search_result_cover"
             android:scaleType="fitXY"
-            android:layout_width="90dp"
-            android:layout_height="150dp"
+            android:layout_width="60dp"
+            android:layout_height="96dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:contentDescription="@string/cover_image"
             android:src="@drawable/img_header1"/>
         <LinearLayout
             android:id="@+id/contentPanel"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/search_result_cover"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/search_result_cover">
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp">
+                android:layout_weight="5"
+                android:padding="8dp">
                 <TextView
                     android:id="@+id/search_result_title"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="First and only irst and only irst and only irst and only irst and only irst and only"
+                    android:text="Angry Birds Comics, Vol. 1: Welcome to the Flock"
                     android:ellipsize="end"
-                    android:maxLines="2"/>
+                    android:maxLines="2"
+                    android:textColor="@color/text"/>
                 <TextView
                     android:id="@+id/search_result_author"
-                    android:textColor="@color/hint_text"
+                    android:textColor="@color/secondary_text"
                     android:layout_marginTop="4dp"
                     android:textSize="12sp"
                     android:layout_width="match_parent"
@@ -51,24 +50,18 @@
                     android:maxLines="1"
                     android:text="Peter Flanery"
                     android:layout_marginBottom="8dp"/>
-                <LinearLayout
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btn_action_wrapper">
+                <ImageButton
+                    android:id="@+id/btn_action"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_gravity="bottom"
-                    android:id="@+id/btn_action_wrapper">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider"/>
-                    <Button
-                        android:id="@+id/btn_action"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Add to list"
-                        android:padding="8dp"
-                        style="?android:attr/borderlessButtonStyle"/>
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_add_circle_outline_black_24dp"
+                    style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

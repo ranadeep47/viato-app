@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -241,7 +242,7 @@ public class BookSearchActivity extends AbstractActivity {
         public void onBindViewHolder(ResultItemHolder holder, final int position) {
             final BookItem result = results.get(position);
             holder.title.setText(result.getTitle());
-            holder.author.setText(TextUtils.join(",", result.getAuthors()));
+            holder.author.setText(result.getAuthors());
             holder.mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -279,7 +280,7 @@ public class BookSearchActivity extends AbstractActivity {
             @Bind(R.id.search_result_cover) ImageView cover;
             @Bind(R.id.search_result_title) TextView title;
             @Bind(R.id.search_result_author) TextView author;
-            @Bind(R.id.btn_action) Button mButton;
+            @Bind(R.id.btn_action) ImageButton mButton;
             @Bind(R.id.btn_action_wrapper) LinearLayout mLinearLayout;
 
             public ResultItemHolder(View itemView) {

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:bind="http://schemas.android.com/apk/res-auto">
-    <data>
-        <variable name="address" type="in.viato.app.model.Address"/>
-    </data>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <in.viato.app.ui.widgets.BetterViewAnimator
-        android:id="@+id/books_wishlist_animator"
+        android:id="@+id/checkout_animator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:inAnimation="@android:anim/fade_in"
         android:outAnimation="@android:anim/fade_out"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto">
+        <include layout="@layout/c_progress_bar"
+                 android:id="@+id/checkout_loading" />
         <RelativeLayout
+            android:id="@+id/checkout_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <android.support.v4.widget.NestedScrollView
@@ -25,8 +28,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginLeft="8dp">
+                    android:layout_marginRight="@dimen/spacing_vv_small"
+                    android:layout_marginLeft="@dimen/spacing_vv_small">
 
                     <android.support.v7.widget.CardView
                         android:id="@+id/card_view_list"
@@ -43,12 +46,13 @@
                             <android.support.v7.widget.RecyclerView
                                 android:id="@+id/checkout_list"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                                android:layout_height="wrap_content">
+                            </android.support.v7.widget.RecyclerView>
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="@color/divider"/>
+                                android:background="?android:listDivider"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -65,10 +69,10 @@
                                     android:text="Order Total"/>
 
                                 <TextView
+                                    android:id="@+id/total"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="50"
-                                    android:text="Rs 93.00"
                                     android:textSize="20sp"
                                     android:gravity="end"
                                     android:textColor="#8BC34A"/>
@@ -82,27 +86,80 @@
                         android:id="@+id/card_view_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
                         card_view:cardCornerRadius="2dp"
                         android:layout_marginTop="8dp"
-                        android:onClick="onAddressClicked">
-                        <in.viato.app.ui.widgets.BetterViewAnimator
-                            android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:focusableInTouchMode="false">
+                        <LinearLayout
                             android:id="@+id/lv_addressList"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inAnimation="@android:anim/fade_in"
-                            android:outAnimation="@android:anim/fade_out"
-                            android:measureAllChildren="false"
-                            xmlns:android="http://schemas.android.com/apk/res/android">
+                            android:orientation="vertical">
                             <include
-                                layout="@layout/p_add_address"
-                                android:id="@+id/add_address"/>
+                                layout="@layout/holder_add_address"
+                                android:id="@+id/add_address"
+                                android:visibility="gone"/>
+                            <!-- android:id="@+id/address_item"-->
+                            <LinearLayout
+                                android:id="@+id/already_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="@dimen/activity_vertical_margin"
+                                android:visibility="gone">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+                                    <TextView
+                                        android:id="@+id/tv_address_label"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:textColor="@color/text"
+                                        android:textStyle="bold"
+                                        android:textSize="14sp"
+                                        android:inputType="textCapSentences"
+                                        android:fontFamily="sans-serif-medium" />
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="end"
+                                        android:textColor="@color/hint_text"
+                                        android:textSize="12sp"
+                                        android:text="@string/change"
+                                        android:layout_gravity="center_vertical" />
+                                </LinearLayout>
+                                <TextView
+                                    android:id="@+id/tv_address_flat"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/tv_address_label"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="2" />
+                                <TextView
+                                    android:id="@+id/tv_address_street"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/tv_address_flat"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="2" />
+                                <TextView
+                                    android:id="@+id/tv_address_locality"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/tv_address_street"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="2" />
+                            </LinearLayout>
 
-                            <include layout="@layout/p_address_item"
-                                     android:id="@+id/already_aaddress"
-                                     bind:address="@{address}"/>
-                        </in.viato.app.ui.widgets.BetterViewAnimator>
+                        </LinearLayout>
                     </android.support.v7.widget.CardView>
 
                     <android.support.v7.widget.CardView
@@ -129,18 +186,18 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="60"
-                                    android:text="Estimated Delivery"
+                                    android:text="Estimated Delivery (48 hrs)"
                                     android:textColor="@color/text"
                                     android:textStyle="bold"
                                     android:textSize="14sp"
                                     android:id="@+id/heading_text"/>
 
                                 <TextView
+                                    android:id="@+id/delivery_date"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="40"
-                                    android:gravity="end"
-                                    android:text="21st Sep, Monday"/>
+                                    android:gravity="end"/>
 
                             </LinearLayout>
 
@@ -159,11 +216,11 @@
                                     android:textSize="14sp"/>
 
                                 <TextView
+                                    android:id="@+id/return_date"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="40"
-                                    android:gravity="end"
-                                    android:text="6th Oct, Tuesday"/>
+                                    android:gravity="end"/>
 
                             </LinearLayout>
 
@@ -184,7 +241,7 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
+                android:focusable="false"
                 android:foreground="?attr/selectableItemBackground">
                 <TextView
                     android:id="@+id/place_order"
@@ -194,53 +251,10 @@
                     android:layout_height="wrap_content" />
             </FrameLayout>
         </RelativeLayout>
-        <include layout="@layout/c_progress_bar"
-                 android:id="@+id/books_wishlist_loading" />
+        <include layout="@layout/no_connection_template"
+                 android:id="@+id/no_conection" />
         <LinearLayout
-            android:id="@+id/books_wishlist_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:padding="@dimen/activity_horizontal_margin"
-            >
-            <ImageView
-                android:id="@+id/error_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:src="@drawable/error"
-                android:contentDescription="@string/error"
-                />
-            <TextView
-                android:id="@+id/error_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/error_image"
-                android:gravity="center_horizontal"
-                android:textSize="34sp"
-                android:textColor="?android:attr/textColorPrimary"
-                android:text="Please try again"
-                />
-            <TextView
-                android:id="@+id/error_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/error_image"
-                android:layout_marginTop="4dp"
-                android:gravity="center_horizontal"
-                android:text="Problem with your internet connection."
-                />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/try_again"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/books_wishlist_empty"
+            android:id="@+id/checkout_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -270,14 +284,15 @@
                 android:layout_below="@id/empty_image"
                 android:layout_marginTop="4dp"
                 android:gravity="center_horizontal"
-                android:text="Seams like your cart is empty. Add some books and come back!"
+                android:text="Seams like you already bought your favourite.\nCheckout some new trending."
                 />
             <Button
+                android:id="@+id/btn_empty_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="Browse Books"/>
+                android:text="Checkout Trending Books"/>
         </LinearLayout>
     </in.viato.app.ui.widgets.BetterViewAnimator>
-</layout>
+</android.support.design.widget.CoordinatorLayout>

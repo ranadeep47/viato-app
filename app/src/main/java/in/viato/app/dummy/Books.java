@@ -3,40 +3,47 @@ package in.viato.app.dummy;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.viato.app.model.Book;
+import in.viato.app.http.models.response.BookItem;
+import in.viato.app.http.models.response.ItemPricing;
 
 /**
  * Created by saiteja on 15/09/15.
  */
 public class Books {
-    private List<Book> mBookList;
+    private List<BookItem> mBookList;
 
-    public List<Book> get() {
+    public List<BookItem> get() {
         return mBookList;
     }
 
     public Books() {
         this.mBookList = new ArrayList<>();
 
-        Book aBook = new Book();
-        aBook.title.set("The Busy Coder's Guide to Android Development");
-        aBook.author.set("Mark L. Murphy");
-        aBook.rentPrice.set("Rs 20.00");
-        aBook.cover.set("https://c1.staticflickr.com/1/751/21665490700_12180f62d2_n.jpg");
+        BookItem aBook = new BookItem();
+        aBook.setTitle("The Busy Coder's Guide to Android Development");
+        aBook.setAuthors(new String[]{"Paulo Coelho", "Amish Tripathi"});
+        aBook.setCover("http://ecx.images-amazon.com/images/I/41MeC94AxIL._SL160_PIsitb-sticker-arrow-dp,TopRight,12,-18_SH30_OU31_SL150_.jpg");
+        ItemPricing pricing1 = new ItemPricing();
+        pricing1.setRent(98);
+        aBook.setPricing(pricing1);
         mBookList.add(aBook);
 
-        Book bBook = new Book();
-        bBook.title.set("Fifty Shades of Grey");
-        bBook.author.set("E. L. James");
-        bBook.rentPrice.set("Rs 40.00");
-        bBook.cover.set("http://c2.staticflickr.com/6/5705/21664857848_c8e6750b26_n.jpg");
-        mBookList.add(bBook);
+        BookItem bBookItem = new BookItem();
+        bBookItem.setTitle("The Busy Coder's Guide to Android Development");
+        bBookItem.setAuthors(new String[]{"Paulo Coelho", "Amish Tripathi"});
+        bBookItem.setCover("http://ecx.images-amazon.com/images/I/41MeC94AxIL._SL160_PIsitb-sticker-arrow-dp,TopRight,12,-18_SH30_OU31_SL150_.jpg");
+        ItemPricing pricing2 = new ItemPricing();
+        pricing1.setRent(98);
+        bBookItem.setPricing(pricing2);
+        mBookList.add(bBookItem);
 
-        Book cBook = new Book();
-        cBook.title.set("Ikshvaku Ke Vanshaj");
-        cBook.author.set("Amish Tripathi, Urmila Gupta");
-        cBook.rentPrice.set("Rs 33.00");
-        cBook.cover.set("https://c1.staticflickr.com/1/592/21841433136_983544a079.jpg");
-        mBookList.add(cBook);
+        BookItem cBookItem = new BookItem();
+        cBookItem.setTitle("The Busy Coder's Guide to Android Development");
+        cBookItem.setAuthors(new String[]{"Paulo Coelho", "Amish Tripathi"});
+        cBookItem.setCover("http://ecx.images-amazon.com/images/I/41MeC94AxIL._SL160_PIsitb-sticker-arrow-dp,TopRight,12,-18_SH30_OU31_SL150_.jpg");
+        ItemPricing pricing3 = new ItemPricing();
+        pricing3.setRent(98);
+        cBookItem.setPricing(pricing3);
+        mBookList.add(cBookItem);
     }
 }

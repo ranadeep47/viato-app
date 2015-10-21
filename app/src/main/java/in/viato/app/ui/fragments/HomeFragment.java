@@ -3,6 +3,7 @@ package in.viato.app.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,7 +43,6 @@ public class HomeFragment extends AbstractFragment {
     private CategoryListAdapter adapter;
 
     public static HomeFragment newInstance() {
-
         Bundle args = new Bundle();
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
@@ -57,7 +57,7 @@ public class HomeFragment extends AbstractFragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         adapter = new CategoryListAdapter();
@@ -74,8 +74,12 @@ public class HomeFragment extends AbstractFragment {
 
             @Override
             public void onError(Throwable e) {
-                Logger.e(e.getMessage());
-                showError("Check your internet connection.");
+//                Logger.e(e.getMessage());
+                if(e instanceof retrofit.HttpException){
+                    Snackbar.make(view, e.getMessage() + " " + e.getCause() , Snackbar.LENGTH_LONG).show();
+                    Logger.e(e, "Cannot cannot to internet");
+//                    showError("Check your internet connection.");
+                }
             }
 
             @Override
