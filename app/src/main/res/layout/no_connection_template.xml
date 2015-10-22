@@ -30,9 +30,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:gravity="center_horizontal"
-        android:text="Problem with your internet connection."
+        android:text="Problem with connection."
         />
     <Button
+        android:id="@+id/try_again"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

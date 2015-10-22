@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +42,6 @@ public class AddressListFragment extends AbstractFragment {
     private List<Address> mAddresses;
 
     private RecyclerView mAddressList;
-    private RelativeLayout mAddAddress;
     private AddressListAdapter mAdapter;
 
     private int mSelectedAddress;
@@ -76,7 +74,6 @@ public class AddressListFragment extends AbstractFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_address_list, container, false);
         mAddressList = (RecyclerView) view.findViewById(R.id.address_list);
-        mAddAddress = (RelativeLayout) view.findViewById(R.id.add_address);
         return view;
     }
 
@@ -111,7 +108,8 @@ public class AddressListFragment extends AbstractFragment {
         AddressEditFragment fragment = AddressEditFragment.newInstance(
                 mSelectedAddress,
                 AddressEditFragment.CREATE_ADDRESS,
-                null);
+                null,
+                mAddresses.size());
         loadFragment(R.id.frame_content, fragment, AddressEditFragment.TAG, true, AddressEditFragment.TAG);
     }
 
@@ -119,7 +117,8 @@ public class AddressListFragment extends AbstractFragment {
         AddressEditFragment fragment = AddressEditFragment.newInstance(
                 mSelectedAddress,
                 AddressEditFragment.EDIT_ADDRESS,
-                address);
+                address,
+                mAddresses.size());
         loadFragment(R.id.frame_content, fragment, AddressEditFragment.TAG, true, AddressEditFragment.TAG);
     }
 
@@ -155,6 +154,7 @@ public class AddressListFragment extends AbstractFragment {
             case android.R.id.home:
                 setResult();
                 getActivity().finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -162,11 +162,9 @@ public class AddressListFragment extends AbstractFragment {
 
     public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.ViewHolder> {
         private List<Address> addresses;
-        private int mSelectedAddress;
 
-        public AddressListAdapter(List<Address> addressList, int selectedAddress) {
+        public AddressListAdapter(List<Address> addressList) {
             this.addresses = addressList;
-            this.mSelectedAddress = selectedAddress;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -219,6 +217,7 @@ public class AddressListFragment extends AbstractFragment {
                     int position = (Integer) v.getTag();
                     if (mSelectedAddress != position) {
                         mSelectedAddress = position;
+                        Logger.d(mSelectedAddress + " " + position);
                         notifyDataSetChanged();
                     }
                 }
@@ -248,7 +247,7 @@ public class AddressListFragment extends AbstractFragment {
                     @Override
                     public void onNext(String s) {
                         mAddresses.remove(mSelectedAddress);
-                        mSelectedAddress = 0;
+                        mSelectedAddress = mAddresses.size() - 1;
                         mAdapter.notifyItemRemoved(mSelectedAddress);
                         mAdapter.notifyDataSetChanged();
                         Snackbar.make(mCoordinatorLayout, s, Snackbar.LENGTH_LONG).show();
@@ -260,7 +259,7 @@ public class AddressListFragment extends AbstractFragment {
     public void onPrepareOptionsMenu(Menu menu) {
         if(mAddresses == null){
 
-        } else if (mAddresses.size() < 0){
+        } else if (mAddresses.size() == 0){
             for (int i = 0; i < menu.size(); i++) {
                 if(menu.getItem(i).getItemId() != android.R.id.home) {
                     menu.getItem(i).setVisible(false);
@@ -272,7 +271,7 @@ public class AddressListFragment extends AbstractFragment {
     }
 
     public void setupAddresses() {
-        mAdapter = new AddressListAdapter(mAddresses, mSelectedAddress);
+        mAdapter = new AddressListAdapter(mAddresses);
         mAddressList.setAdapter(mAdapter);
         mAddressList.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -293,7 +292,11 @@ public class AddressListFragment extends AbstractFragment {
     }
 
     public void setResult(){
+        Logger.d("set Result");
         Intent intent = new Intent();
+        if(mAddresses.size() == 0){
+            return;
+        }
         intent.putExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
         intent.putExtra(AddressListActivity.ARG_ADDRESS, mAddresses.get(mSelectedAddress));
         getActivity().setResult(Activity.RESULT_OK, intent);

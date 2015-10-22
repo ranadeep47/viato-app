@@ -98,14 +98,14 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
                     public boolean onMenuItemClick(MenuItem item) {
                         String id = (String) v.getTag();
                         switch (item.getItemId()) {
-                            case R.id.menu_rate:
-                                Intent intent = new Intent(mContext, BookDetailActivity.class);
-                                intent.putExtra(BookDetailActivity.ARG_BOOK_ID, id);
-                                intent.putExtra(BookDetailActivity.ARG_RATE_BOOK, true);
-                                mContext.startActivity(intent);
-                                break;
-                            case R.id.menu_move_to:
-                                break;
+//                            case R.id.menu_rate:
+//                                Intent intent = new Intent(mContext, BookDetailActivity.class);
+//                                intent.putExtra(BookDetailActivity.ARG_BOOK_ID, id);
+//                                intent.putExtra(BookDetailActivity.ARG_RATE_BOOK, true);
+//                                mContext.startActivity(intent);
+//                                break;
+//                            case R.id.menu_move_to:
+//                                break;
                             case R.id.menu_remove:
                                 listener.onBookRemove(position);
                                 break;

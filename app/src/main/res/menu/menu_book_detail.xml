@@ -13,18 +13,18 @@
           app:showAsAction="ifRoom"
           android:icon="@drawable/ic_cart_white"/>
 
-    <item android:id="@+id/action_i_read"
-        android:title="@string/not_in_read"
-        android:orderInCategory="101"
-        app:showAsAction="never"/>
+    <!--<item android:id="@+id/action_i_read"-->
+        <!--android:title="@string/not_in_read"-->
+        <!--android:orderInCategory="101"-->
+        <!--app:showAsAction="never"/>-->
 
-    <item android:id="@+id/action_i_owe"
-        android:title="@string/not_in_owe"
-        android:orderInCategory="102"
-        app:showAsAction="never"/>
+    <!--<item android:id="@+id/action_i_owe"-->
+        <!--android:title="@string/not_in_owe"-->
+        <!--android:orderInCategory="102"-->
+        <!--app:showAsAction="never"/>-->
 
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="103"
-          app:showAsAction="never"/>
+    <!--<item android:id="@+id/action_settings"-->
+          <!--android:title="@string/action_settings"-->
+          <!--android:orderInCategory="103"-->
+          <!--app:showAsAction="never"/>-->
 </menu>

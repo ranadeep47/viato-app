@@ -15,6 +15,7 @@ import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import retrofit.MoshiConverterFactory;
+import retrofit.Response;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import java.util.List;
@@ -192,7 +193,7 @@ public class ViatoAPI {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<String> placeOrder(BookingBody booking) {
+    public Observable<Response<String>> placeOrder(BookingBody booking) {
         return mViatoService.placeOrder(booking)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());

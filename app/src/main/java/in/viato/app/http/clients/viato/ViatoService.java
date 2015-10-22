@@ -1,7 +1,5 @@
 package in.viato.app.http.clients.viato;
 
-import android.databinding.ObservableField;
-
 import java.util.List;
 
 import in.viato.app.http.models.Address;
@@ -15,6 +13,7 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
+import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -93,5 +92,5 @@ public interface ViatoService {
     Observable<String> removeFromCart(@Path("id") String id);
 
     @POST("user/bookings")
-    Observable<String> placeOrder(@Body BookingBody booking);
+    Observable<Response<String>> placeOrder(@Body BookingBody booking);
 }

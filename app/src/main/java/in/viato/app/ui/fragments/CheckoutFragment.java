@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,6 +40,8 @@ import in.viato.app.ui.activities.SuccessActivity;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import retrofit.HttpException;
+import retrofit.Response;
 import rx.Subscriber;
 
 /**
@@ -65,6 +68,8 @@ public class CheckoutFragment extends AbstractFragment {
     @Bind(R.id.total) TextView totalTV;
     @Bind(R.id.delivery_date) TextView deliveryDateTV;
     @Bind(R.id.return_date) TextView returnDateTV;
+    @Bind(R.id.add_address) View addAddress;
+    @Bind(R.id.already_address) View alreadyAddress;
 
     @Bind(R.id.tv_address_flat) TextView mAddressFlat;
     @Bind(R.id.tv_address_street) TextView mAddressStreet;
@@ -88,43 +93,26 @@ public class CheckoutFragment extends AbstractFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mViatoAPI.getCart()
-                .subscribe(new Subscriber<Cart>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Logger.e("Failed to fetch cart " + getString(R.string.due_to) + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(Cart cart) {
-                        items = cart.getCart();
-                        addresses = cart.getAddresses();
-                        setupBooksList();
-                        setupAddress();
-                        setTotal();
-                        setDates();
-                        mViewContainer.setDisplayedChildId(R.id.checkout_container);
-                    }
-                });
+        fetchCart();
     }
 
     @OnClick(R.id.card_view_address)
     public void onAddressClicked() {
         Intent intent = new Intent(getActivity(), AddressListActivity.class);
         intent.putExtra(AddressListActivity.ARG_ADDRESS_ID, mSelectedAddress);
+        intent.putExtra(AddressListActivity.ARG_ADDRESSES_SIZE, addresses.size());
         startActivityForResult(intent, REQUEST_ADDRESS);
     }
 
     @OnClick(R.id.place_order)
     public void placeOrder(final View v) {
+        if(addresses.size() == 0){
+            Snackbar.make(v, "Please Select a address", Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        Logger.d(addresses.get(mSelectedAddress).getId());
         mViatoAPI.placeOrder(new BookingBody(addresses.get(mSelectedAddress).getId()))
-        .subscribe(new Subscriber<String>() {
+        .subscribe(new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {
 
@@ -132,59 +120,36 @@ public class CheckoutFragment extends AbstractFragment {
 
             @Override
             public void onError(Throwable e) {
-                Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
+
             }
 
             @Override
-            public void onNext(String s) {
-                Intent intent = new Intent(getContext(), SuccessActivity.class);
-                intent.putExtra(SuccessActivity.ARG_ORDER_ID, s);
-                intent.putExtra(SuccessActivity.ARG_DELIVERY_DATE, deliveryDate);
-                startActivity(intent);
-                getActivity().finish();
+            public void onNext(Response<String> stringResponse) {
+                if (stringResponse.isSuccess()) {
+                    String body = stringResponse.body();
+                    Intent intent = new Intent(getContext(), SuccessActivity.class);
+                    intent.putExtra(SuccessActivity.ARG_ORDER_ID, body);
+                    intent.putExtra(SuccessActivity.ARG_DELIVERY_DATE, deliveryDate);
+                    startActivity(intent);
+                    getActivity().finish();
+                } else {
+                    try {
+                        Snackbar.make(v, stringResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }
 
+
     @OnClick(R.id.btn_empty_action)
     public void goToTrending() {
-        startActivity(new Intent(getContext(), HomeActivity.class));
+        Intent intent = new Intent(getContext(), HomeActivity.class);
+        intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
+        startActivity(intent);
         getActivity().finish();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-
-        if (requestCode == REQUEST_ADDRESS) {
-            if(data != null){
-                if (data.getParcelableExtra(AddressListActivity.ARG_ADDRESS) == null) {
-                    Logger.e("No address found");
-                    return;
-                } else {
-                    Logger.e("Address found");
-                }
-
-                Address address = data.getParcelableExtra(AddressListActivity.ARG_ADDRESS);
-                mSelectedAddress = data.getIntExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
-                Logger.e(address.getFlat());
-                String flat = address.getFlat();
-                String street = address.getStreet();
-                String label = address.getLabel();
-                String locality = address.getLocality().getName();
-
-                mAddressFlat.setText(flat);
-                mAddressStreet.setText(street);
-                mAddressLocality.setText(locality);
-                mAddressLabel.setText(label);
-            } else {
-                Logger.e("empty data");
-            }
-        }
     }
     
     public void setupBooksList() {
@@ -222,8 +187,6 @@ public class CheckoutFragment extends AbstractFragment {
     }
     
     public void setupAddress() {
-        View addAddress = mAddressWrapper.findViewById(R.id.add_address);
-        View alreadyAddress = mAddressWrapper.findViewById(R.id.already_address);
 
         if(addresses.size() == 0) {
             alreadyAddress.setVisibility(View.GONE);
@@ -252,6 +215,108 @@ public class CheckoutFragment extends AbstractFragment {
             addAddress.setVisibility(View.GONE);
             alreadyAddress.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setTotal() {
+        int total = 0;
+        for (BookItem item : items){
+            total += (int) item.getPricing().getRent();
+        }
+        totalTV.setText("Rs. " + total);
+    }
+
+    public void setDates() {
+        DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d");
+        Calendar cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(new Date()); // sets calendar time/date
+
+        cal.add(Calendar.HOUR_OF_DAY, 48); // adds 48 hours
+        deliveryDate = dateFormat.format(cal.getTime());
+        deliveryDateTV.setText(deliveryDate);
+
+        int period = items.get(0).getPricing().getPeriod();
+        cal.add(Calendar.DAY_OF_YEAR, period); // adds 48 hours
+        returnDate = dateFormat.format(cal.getTime());
+        returnDateTV.setText(returnDate);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_ADDRESS) {
+            if(data != null){
+                if (data.getParcelableExtra(AddressListActivity.ARG_ADDRESS) == null) {
+                    Logger.d("No address found");
+                    addAddress.setVisibility(View.VISIBLE);
+                    alreadyAddress.setVisibility(View.GONE);
+                    return;
+                }
+
+                Address address = data.getParcelableExtra(AddressListActivity.ARG_ADDRESS);
+                mSelectedAddress = data.getIntExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
+                Logger.d(mSelectedAddress + "");
+
+                if(mSelectedAddress == addresses.size()) {
+                    addresses.add(address);
+                    addAddress.setVisibility(View.GONE);
+                    alreadyAddress.setVisibility(View.VISIBLE);
+                }
+
+                String flat = address.getFlat();
+                String street = address.getStreet();
+                String label = address.getLabel();
+                String locality = address.getLocality().getName();
+
+                mAddressFlat.setText(flat);
+                mAddressStreet.setText(street);
+                mAddressLocality.setText(locality);
+                mAddressLabel.setText(label);
+            } else {
+                Logger.e("empty data");
+            }
+        }
+    }
+
+    @OnClick(R.id.try_again)
+    public void tryAgain() {
+        fetchCart();
+    }
+
+    public void fetchCart() {
+        mViatoAPI.getCart()
+                .subscribe(new Subscriber<Cart>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mViewContainer.setDisplayedChildId(R.id.no_conection);
+                        Logger.e("Failed to fetch cart " + getString(R.string.due_to) + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Cart cart) {
+                        items = cart.getCart();
+                        addresses = cart.getAddresses();
+                        if (items.size() == 0) {
+                            //Empty Cart
+                            mViewContainer.setDisplayedChildId(R.id.checkout_empty);
+                            return;
+                        }
+                        setupBooksList();
+                        setupAddress();
+                        setTotal();
+                        setDates();
+                        mViewContainer.setDisplayedChildId(R.id.checkout_container);
+                    }
+                });
     }
 
     public class CheckoutListAdapter extends RecyclerView.Adapter<CheckoutListAdapter.ViewHolder> {
@@ -323,28 +388,5 @@ public class CheckoutFragment extends AbstractFragment {
         public int getItemCount() {
             return sBookList.size();
         }
-    }
-
-    public void setTotal() {
-        int total = 0;
-        for (BookItem item : items){
-            total += (int) item.getPricing().getRent();
-        }
-        totalTV.setText("Rs. " + total);
-    }
-
-    public void setDates() {
-        DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d");
-        Calendar cal = Calendar.getInstance(); // creates calendar
-        cal.setTime(new Date()); // sets calendar time/date
-
-        cal.add(Calendar.HOUR_OF_DAY, 48); // adds 48 hours
-        deliveryDate = dateFormat.format(cal.getTime());
-        deliveryDateTV.setText(deliveryDate);
-
-        int period = items.get(0).getPricing().getPeriod();
-        cal.add(Calendar.DAY_OF_YEAR, period); // adds 48 hours
-        returnDate = dateFormat.format(cal.getTime());
-        returnDateTV.setText(returnDate);
     }
 }

@@ -60,7 +60,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.activity_drawer_tab_layout);
 
         String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
 

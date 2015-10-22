@@ -1,6 +1,7 @@
 package in.viato.app.ui.fragments;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -39,6 +41,7 @@ import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.http.models.Address;
 import in.viato.app.http.models.Locality;
+import in.viato.app.ui.activities.AddressListActivity;
 import in.viato.app.ui.adapters.PlaceAutocompleteAdapter;
 import rx.Subscriber;
 
@@ -49,6 +52,7 @@ public class AddressEditFragment extends AbstractFragment
 
     public static final String ARG_SELECTED_ADDRESS = "selectedAddress";
     public static final String ARG_ADDRESS = "address";
+    public static final String ARG_LENGTH = "listSize";
 
     private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
             new LatLng(8.06, 77.5), new LatLng(37.4, 75.4));
@@ -79,15 +83,17 @@ public class AddressEditFragment extends AbstractFragment
 
     private int mAction;
     private int mSelectedAddress;
+    private int mListLength;
     private String placeId;
     private Address mAddress;
     private Validator mValidator;
 
-    public static AddressEditFragment newInstance (int selectedAddressId, int action, Address address){
+    public static AddressEditFragment newInstance (int selectedAddressId, int action, Address address, int listSize){
         AddressEditFragment fragment = new AddressEditFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SELECTED_ADDRESS, selectedAddressId);
         args.putInt(ARG_ACTION, action);
+        args.putInt(ARG_LENGTH, listSize);
         if(address == null){
             address = new Address();
         }
@@ -104,13 +110,16 @@ public class AddressEditFragment extends AbstractFragment
         mSelectedAddress = args.getInt(ARG_SELECTED_ADDRESS, -1);
         mAction = args.getInt(ARG_ACTION, 0);
         mAddress = args.getParcelable(ARG_ADDRESS);
+        mListLength = args.getInt(ARG_LENGTH);
 
         setHasOptionsMenu(true);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity(), 0 /* clientId */, this)
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
     }
 
@@ -129,14 +138,24 @@ public class AddressEditFragment extends AbstractFragment
         flat.setText(mAddress.getFlat());
         street.setText(mAddress.getStreet());
         label.setText(mAddress.getLabel());
+        label.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    mValidator.validate();
+                }
+                return false;
+            }
+        });
 
         PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
                 .getCurrentPlace(mGoogleApiClient, null);
+        Logger.d("-------------" + result);
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                Logger.d(likelyPlaces + "");
                 for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                    locality.setText(placeLikelihood.getPlace().getName());
                     Log.i(TAG, String.format("Place '%s' has likelihood: %g",
                             placeLikelihood.getPlace().getName(),
                             placeLikelihood.getLikelihood()));
@@ -144,6 +163,7 @@ public class AddressEditFragment extends AbstractFragment
                 likelyPlaces.release();
             }
         });
+
         if(mAddress.getLocality() == null) {
             //Todo: get from fused location api
             placeId = "";
@@ -155,15 +175,6 @@ public class AddressEditFragment extends AbstractFragment
         mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, BOUNDS_INDIA, null);
         locality.setOnItemClickListener(mAutocompleteClickListener);
         locality.setAdapter(mAdapter);
-        locality.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    mValidator.validate();
-                }
-                return false;
-            }
-        });
     }
 
     @Override
@@ -219,6 +230,18 @@ public class AddressEditFragment extends AbstractFragment
                 }
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -292,6 +315,7 @@ public class AddressEditFragment extends AbstractFragment
                     @Override
                     public void onNext(Address address) {
                         Toast.makeText(getContext(), "New Address Added", Toast.LENGTH_SHORT).show();
+                        mSelectedAddress = mListLength;
                         setResult(getActivity().RESULT_OK, address);
                     }
                 });
@@ -322,6 +346,7 @@ public class AddressEditFragment extends AbstractFragment
     public void setResult(int resultCode, Address address) {
         Intent intent = new Intent();
         intent.putExtra(ARG_ADDRESS, address);
+        intent.putExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
         getActivity().setResult(resultCode, intent);
         getActivity().finish();
     }

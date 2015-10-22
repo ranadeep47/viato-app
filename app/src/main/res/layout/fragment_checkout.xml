@@ -185,18 +185,19 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="60"
+                                    android:layout_weight="6"
                                     android:text="Estimated Delivery (48 hrs)"
-                                    android:textColor="@color/text"
-                                    android:textStyle="bold"
                                     android:textSize="14sp"
+                                    android:ellipsize="end"
                                     android:id="@+id/heading_text"/>
 
                                 <TextView
                                     android:id="@+id/delivery_date"
                                     android:layout_width="0dp"
+                                    android:textColor="@color/text"
+                                    android:textStyle="bold"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="40"
+                                    android:layout_weight="4"
                                     android:gravity="end"/>
 
                             </LinearLayout>
@@ -209,17 +210,18 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="60"
+                                    android:layout_weight="6"
+                                    android:ellipsize="end"
                                     android:text="Estimated Return (15 days)"
-                                    android:textColor="@color/text"
-                                    android:textStyle="bold"
                                     android:textSize="14sp"/>
 
                                 <TextView
                                     android:id="@+id/return_date"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="40"
+                                    android:textColor="@color/text"
+                                    android:textStyle="bold"
+                                    android:layout_weight="4"
                                     android:gravity="end"/>
 
                             </LinearLayout>

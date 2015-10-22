@@ -17,9 +17,11 @@ public class AddressListActivity extends AbstractActivity {
 
     public static final String ARG_ADDRESS_ID = "addressId";
     public static final String ARG_ADDRESS_INDEX = "addressIndex";
+    public static final String ARG_ADDRESSES_SIZE = "addressListSize";
     public static final String ARG_ADDRESS = "address";
 
     private int selectedAddressId;
+    private int addressListSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class AddressListActivity extends AbstractActivity {
         Intent intent = getIntent();
         if(intent != null){
             selectedAddressId = intent.getIntExtra(ARG_ADDRESS_ID, -1);
+            addressListSize = intent.getIntExtra(ARG_ADDRESSES_SIZE, -1);
         }
     }
 
@@ -37,7 +40,7 @@ public class AddressListActivity extends AbstractActivity {
         super.onPostCreate(savedInstanceState);
 //        loadFragment(R.id.frame_content, AddressListFragment.newInstance(selectedAddressId), AddressListFragment.TAG, false, AddressListFragment.TAG);
         if(selectedAddressId < 0){
-            loadFragment(R.id.frame_content, AddressEditFragment.newInstance(selectedAddressId, AddressEditFragment.CREATE_ADDRESS, null), AddressEditFragment.TAG, false, AddressEditFragment.TAG);
+            loadFragment(R.id.frame_content, AddressEditFragment.newInstance(selectedAddressId, AddressEditFragment.CREATE_ADDRESS, null, addressListSize), AddressEditFragment.TAG, false, AddressEditFragment.TAG);
         } else {
             loadFragment(R.id.frame_content, AddressListFragment.newInstance(selectedAddressId), AddressListFragment.TAG, false, AddressListFragment.TAG);
         }
