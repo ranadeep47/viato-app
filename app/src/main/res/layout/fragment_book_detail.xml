@@ -57,7 +57,7 @@
             android:outAnimation="@android:anim/fade_out"
             xmlns:android="http://schemas.android.com/apk/res/android">
             <include
-                layout="@layout/c_progress_bar"
+                layout="@layout/progress_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

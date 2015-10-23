@@ -134,8 +134,8 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
             SharedPrefHelper.set(R.string.pref_mobile_number, mobile_number);
             SharedPrefHelper.set(R.string.pref_device_id, device_id);
 
-            AppConstants.UserInfo.INSTANCE.setDeviceId(device_id);
             AppConstants.UserInfo.INSTANCE.setMobileNumber(mobile_number);
+            AppConstants.UserInfo.INSTANCE.setDeviceId(device_id);
 
             mHttpClient.login(mobile_number, device_id, new ArrayList<String>())
                     .subscribe(new Action1<String>() {

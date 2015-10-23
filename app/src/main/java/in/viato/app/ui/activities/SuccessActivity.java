@@ -34,7 +34,7 @@ public class SuccessActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_no_drawer);
+        setContentView(R.layout.activity_bare);
         Intent intent = getIntent();
         if (intent == null){
             return;

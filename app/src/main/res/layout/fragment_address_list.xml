@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <include
-            layout="@layout/c_progress_bar"
+            layout="@layout/progress_bar"
             android:id="@+id/progress_bar"></include>
         <LinearLayout
             android:id="@+id/address_container"

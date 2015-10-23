@@ -1,7 +1,6 @@
 package in.viato.app.ui.fragments;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -21,14 +20,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -54,8 +47,8 @@ public class AddressEditFragment extends AbstractFragment
     public static final String ARG_ADDRESS = "address";
     public static final String ARG_LENGTH = "listSize";
 
-    private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
-            new LatLng(8.06, 77.5), new LatLng(37.4, 75.4));
+    private static final LatLngBounds BOUNDS_INDIA = null;
+//    new LatLngBounds(new LatLng(8.06, 77.5), new LatLng(37.4, 75.4))
 
     public static final String ARG_ACTION = "action";
     public static final int CREATE_ADDRESS = 0;
@@ -148,21 +141,26 @@ public class AddressEditFragment extends AbstractFragment
             }
         });
 
+        /*get current place
+        Collection<Integer> filterTypes = new ArrayList<Integer>();
+        filterTypes.add(Place.TYPE_ESTABLISHMENT);
+        PlaceFilter pf = new PlaceFilter(filterTypes, false, null, null);
+
         PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                .getCurrentPlace(mGoogleApiClient, null);
-        Logger.d("-------------" + result);
+                .getCurrentPlace(mGoogleApiClient, pf);
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                Logger.d(likelyPlaces + "");
+                Logger.d(likelyPlaces.getCount() + "");
                 for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                    Log.i(TAG, String.format("Place '%s' has likelihood: %g",
+                    Log.i(TAG, String.format("Place '%s' of type '%s' has likelihood: %g",
                             placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getPlace().getPlaceTypes().toString(),
                             placeLikelihood.getLikelihood()));
                 }
                 likelyPlaces.release();
             }
-        });
+        });*/
 
         if(mAddress.getLocality() == null) {
             //Todo: get from fused location api
@@ -235,13 +233,15 @@ public class AddressEditFragment extends AbstractFragment
     @Override
     public void onStart() {
         super.onStart();
+
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onStop() {
-        mGoogleApiClient.disconnect();
         super.onStop();
+
+        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -249,6 +249,7 @@ public class AddressEditFragment extends AbstractFragment
         super.onDestroy();
 
         mValidator = null;
+        mGoogleApiClient = null;
     }
 
     @Override

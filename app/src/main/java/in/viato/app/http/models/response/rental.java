@@ -1,19 +1,21 @@
 package in.viato.app.http.models.response;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.Date;
 
 /**
- * Created by ranadeep on 16/10/15.
+ * Created by saiteja on 22/10/15.
  */
-public class Rental implements Parcelable {
+public class Rental {
     private String _id;
-    private float rent;
-    private int period;
-
-    public Rental() {
-        super();
-    }
+    private Date expires_at;
+    private String status;
+    private Payment extension_payment;
+    private Boolean is_extended;
+    private BookItem item;
+    private Boolean is_picked;
+    private Date pickup_done_at;
+    private Date pickup_requested_at;
+    private Date extended_at;
 
     public String get_id() {
         return _id;
@@ -23,48 +25,75 @@ public class Rental implements Parcelable {
         this._id = _id;
     }
 
-    public float getRent() {
-        return rent;
+    public BookItem getItem() {
+        return item;
     }
 
-    public void setRent(float rent) {
-        this.rent = rent;
+    public void setItem(BookItem item) {
+        this.item = item;
     }
 
-    public int getPeriod() {
-        return period;
+    public Date getExpires_at() {
+        return expires_at;
     }
 
-    public void setPeriod(int period) {
-        this.period = period;
+    public void setExpires_at(Date expires_at) {
+        this.expires_at = expires_at;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getStatus() {
+        return status;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this._id);
-        dest.writeFloat(this.rent);
-        dest.writeInt(this.period);
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    protected Rental(Parcel in) {
-        this._id = in.readString();
-        this.rent = in.readFloat();
-        this.period = in.readInt();
+    public Boolean getIs_picked() {
+        return is_picked;
     }
 
-    public static final Creator<Rental> CREATOR = new Creator<Rental>() {
-        public Rental createFromParcel(Parcel source) {
-            return new Rental(source);
-        }
+    public void setIs_picked(Boolean is_picked) {
+        this.is_picked = is_picked;
+    }
 
-        public Rental[] newArray(int size) {
-            return new Rental[size];
-        }
-    };
+    public Date getPickup_done_at() {
+        return pickup_done_at;
+    }
+
+    public void setPickup_done_at(Date pickup_done_at) {
+        this.pickup_done_at = pickup_done_at;
+    }
+
+    public Date getPickup_requested_at() {
+        return pickup_requested_at;
+    }
+
+    public void setPickup_requested_at(Date pickup_requested_at) {
+        this.pickup_requested_at = pickup_requested_at;
+    }
+
+    public Boolean getIs_extended() {
+        return is_extended;
+    }
+
+    public void setIs_extended(Boolean is_extended) {
+        this.is_extended = is_extended;
+    }
+
+    public Date getExtended_at() {
+        return extended_at;
+    }
+
+    public void setExtended_at(Date extended_at) {
+        this.extended_at = extended_at;
+    }
+
+    public Payment getExtension_payment() {
+        return extension_payment;
+    }
+
+    public void setExtension_payment(Payment extension_payment) {
+        this.extension_payment = extension_payment;
+    }
 }

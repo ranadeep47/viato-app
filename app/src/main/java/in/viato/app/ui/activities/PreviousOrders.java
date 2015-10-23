@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import in.viato.app.R;
-import in.viato.app.ui.fragments.PastOrdersFragment;
+import in.viato.app.ui.fragments.BookingsFragment;
 
 public class PreviousOrders extends AbstractNavDrawerActivity {
 
@@ -19,7 +19,7 @@ public class PreviousOrders extends AbstractNavDrawerActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        loadFragment(R.id.frame_content, PastOrdersFragment.newInstance(), PastOrdersFragment.TAG, false, PastOrdersFragment.TAG);
+        loadFragment(R.id.frame_content, BookingsFragment.newInstance(), BookingsFragment.TAG, false, BookingsFragment.TAG);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white);
         //Listen for changes in the back stack
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {

@@ -1,9 +1,11 @@
 package in.viato.app.http.clients.viato;
 
+import com.squareup.moshi.Moshi;
 import com.squareup.okhttp.OkHttpClient;
 
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
+import in.viato.app.http.clients.Rfc3339DateJsonAdapter;
 import in.viato.app.http.clients.ToStringConverterFactory;
 import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.BookCatalogueId;
@@ -11,13 +13,17 @@ import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.BookItem;
+import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
+import in.viato.app.http.models.response.MyDate;
 import retrofit.MoshiConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
+
+import java.util.Date;
 import java.util.List;
 
 import in.viato.app.http.models.response.CoverQuote;
@@ -39,13 +45,15 @@ public class ViatoAPI {
         //Add interceptors
         client.interceptors().add(new AuthInterceptor());
 
+        Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter()).build();
+
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl(ViatoService.baseUrl)
                 .client(client)
                 .validateEagerly()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .addConverterFactory(new ToStringConverterFactory())
-                .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
@@ -195,6 +203,27 @@ public class ViatoAPI {
 
     public Observable<Response<String>> placeOrder(BookingBody booking) {
         return mViatoService.placeOrder(booking)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+//    public Observable<MyDate> getDate() {
+//        return mViatoService
+//                .getDate()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io());
+//    }
+
+    public Observable<Response<List<Booking>>> getBookings() {
+        return mViatoService
+                .getBookings()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<Booking>> getBookingDetail(String id) {
+        return mViatoService
+                .getBooking(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

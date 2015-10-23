@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <in.viato.app.ui.widgets.BetterViewAnimator
+        android:id="@+id/main_animator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
+        <include
+            layout="@layout/progress_bar"
+            android:id="@+id/progress_bar" />
+        <include
+            android:id="@+id/bookings_list"
+            layout="@layout/recycler_view"/>
+        <include
+            layout="@layout/no_connection_template"
+            android:id="@+id/no_conection" />
+        <LinearLayout
+            android:id="@+id/bookings_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_xx_largee">
+            <ImageView
+                android:id="@+id/empty_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/empty"
+                android:contentDescription="@string/error"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/empty_image"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:textSize="34sp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:text="Its empty here"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/empty_image"
+                android:layout_marginTop="4dp"
+                android:gravity="center_horizontal"
+                android:text="Place your first order and come back to see status"
+                />
+            <Button
+                android:id="@+id/btn_empty_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="Checkout Trending Books"/>
+        </LinearLayout>
+    </in.viato.app.ui.widgets.BetterViewAnimator>
+</android.support.design.widget.CoordinatorLayout>

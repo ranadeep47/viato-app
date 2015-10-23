@@ -7,6 +7,8 @@ import android.view.WindowManager;
 import in.viato.app.R;
 import in.viato.app.ui.fragments.LoginConfirmFragment;
 import in.viato.app.ui.fragments.LoginFragment;
+import in.viato.app.utils.AppConstants;
+import in.viato.app.utils.SharedPrefHelper;
 
 /**
  * Created by ranadeep on 15/09/15.
@@ -20,6 +22,7 @@ public class RegistrationActivity extends AbstractActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_bare);
+
 
         LoginFragment loginFragment = LoginFragment.newInstance();
         loadFragment(R.id.frame_content, loginFragment, LoginFragment.TAG, false, LoginFragment.TAG);

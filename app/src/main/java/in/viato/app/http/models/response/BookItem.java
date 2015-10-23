@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import java.util.List;
+
 /**
  * Created by ranadeep on 16/10/15.
  */
@@ -17,7 +19,7 @@ public class BookItem implements Parcelable {
     private String extraId;
     private String extraKey;
     private ItemPricing pricing;
-    private String[] thumbs;
+    private List<String> thumbs;
     private String[] authors;
 
     public BookItem() {
@@ -80,16 +82,16 @@ public class BookItem implements Parcelable {
         this.pricing = pricing;
     }
 
-    public String[] getThumbs() {
+    public List<String> getThumbs() {
         return thumbs;
     }
 
-    public void setThumbs(String[] thumbs) {
+    public void setThumbs(List<String> thumbs) {
         this.thumbs = thumbs;
     }
 
     public String getAuthors() {
-        return TextUtils.join(",", authors);
+        return TextUtils.join(", ", authors);
     }
 
     public void setAuthors(String[] authors) {
@@ -110,8 +112,8 @@ public class BookItem implements Parcelable {
         dest.writeString(this.catalogueId);
         dest.writeString(this.extraId);
         dest.writeString(this.extraKey);
-        dest.writeParcelable(this.pricing, flags);
-        dest.writeStringArray(this.thumbs);
+        dest.writeParcelable(this.pricing, 0);
+        dest.writeStringList(this.thumbs);
         dest.writeStringArray(this.authors);
     }
 
@@ -123,11 +125,11 @@ public class BookItem implements Parcelable {
         this.extraId = in.readString();
         this.extraKey = in.readString();
         this.pricing = in.readParcelable(ItemPricing.class.getClassLoader());
-        this.thumbs = in.createStringArray();
+        this.thumbs = in.createStringArrayList();
         this.authors = in.createStringArray();
     }
 
-    public static final Parcelable.Creator<BookItem> CREATOR = new Parcelable.Creator<BookItem>() {
+    public static final Creator<BookItem> CREATOR = new Creator<BookItem>() {
         public BookItem createFromParcel(Parcel source) {
             return new BookItem(source);
         }

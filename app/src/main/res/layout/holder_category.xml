@@ -9,15 +9,18 @@
         android:scaleType="fitXY"
         android:layout_height="150dp" />
     <TextView
-        android:textColor="@color/text_innverse"
+        android:id="@+id/category_title"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_large"
         android:textAllCaps="true"
-        android:shadowColor="@color/dark_grey"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="2"
-        android:id="@+id/category_title"
+        android:fontFamily="sans-serif-medium"
         android:layout_gravity="center"
+        android:textStyle="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <!--android:shadowColor="@color/dark_grey"-->
+    <!--android:shadowDx="1"-->
+    <!--android:shadowDy="1"-->
+    <!--android:shadowRadius="2"-->
 </FrameLayout>

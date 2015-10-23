@@ -174,7 +174,7 @@
             android:value="barcode" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCLS4IiP1Z86qOoWpW5pByZQEJ1ttceYcw"/>
+            android:value="AIzaSyDcf2JFLjIBHKYycS8WNbqM6rm8_jH5ZXI"/>
     </application>
 
 </manifest>

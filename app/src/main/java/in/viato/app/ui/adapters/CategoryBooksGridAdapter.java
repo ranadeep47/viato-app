@@ -57,7 +57,7 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
             }
         });
         Picasso.with(holder.itemView.getContext())
-                .load(book.getThumbs()[0])
+                .load(book.getThumbs().get(0))
 //                .load(book.getCover())
                 .into(holder.cover);
     }

@@ -6,11 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
@@ -18,11 +20,13 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.http.models.response.CategoryItem;
+import in.viato.app.http.models.response.MyDate;
 import in.viato.app.ui.activities.CategoryBooksActivity;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import rx.Subscriber;
@@ -75,8 +79,8 @@ public class HomeFragment extends AbstractFragment {
             @Override
             public void onError(Throwable e) {
 //                Logger.e(e.getMessage());
-                if(e instanceof retrofit.HttpException){
-                    Snackbar.make(view, e.getMessage() + " " + e.getCause() , Snackbar.LENGTH_LONG).show();
+                if (e instanceof retrofit.HttpException) {
+                    Snackbar.make(view, e.getMessage() + " " + e.getCause(), Snackbar.LENGTH_LONG).show();
                     Logger.e(e, "Cannot cannot to internet");
 //                    showError("Check your internet connection.");
                 }
@@ -87,6 +91,27 @@ public class HomeFragment extends AbstractFragment {
                 adapter.setCategories(categories);
             }
         });
+
+
+//        mViatoAPI.getDate()
+//                .subscribe(new Subscriber<MyDate>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Toast.makeText(getContext(), e.getMessage() + " due to " + e.getCause(), Toast.LENGTH_LONG).show();
+//                        Logger.d(e.getMessage() + " due to " + e.getCause());
+//                    }
+//
+//                    @Override
+//                    public void onNext(MyDate date) {
+//                        Toast.makeText(getContext(), date.toString(), Toast.LENGTH_LONG).show();
+//                        Logger.d(date.getDate().toString());
+//                    }
+//                });
 
     }
 
@@ -141,7 +166,6 @@ public class HomeFragment extends AbstractFragment {
             Picasso
                     .with(getActivity())
                     .load(category.getImages().getCover())
-                    .placeholder(R.drawable.placeholder)
                     .transform(new ColorFilterTransformation(R.color.black))
                     .networkPolicy(NetworkPolicy.OFFLINE)
                     .error(R.drawable.placeholder)

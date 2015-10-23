@@ -263,7 +263,7 @@ public class BookSearchActivity extends AbstractActivity {
             });
             holder.mLinearLayout.setVisibility(toAdd ? View.VISIBLE : View.GONE);
             Picasso.with(holder.itemView.getContext())
-                    .load(result.getThumbs()[0])
+                    .load(result.getThumbs().get(0))
                     .into(holder.cover);
         }
 

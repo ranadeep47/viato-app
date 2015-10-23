@@ -84,7 +84,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
 
         holder.title.setText(book.getTitle());
         Picasso.with(holder.itemView.getContext())
-                .load(book.getThumbs()[0])
+                .load(book.getThumbs().get(0))
                 .into(holder.cover);
 
         holder.more.setTag(getStringId(position));

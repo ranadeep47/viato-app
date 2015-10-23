@@ -1,5 +1,6 @@
 package in.viato.app.http.clients.viato;
 
+import java.util.Date;
 import java.util.List;
 
 import in.viato.app.http.models.Address;
@@ -7,12 +8,15 @@ import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
+import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CoverQuote;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
+import in.viato.app.http.models.response.MyDate;
+import in.viato.app.model.Book;
 import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -91,6 +95,16 @@ public interface ViatoService {
     @DELETE("user/cart/{id}")
     Observable<String> removeFromCart(@Path("id") String id);
 
+    @GET("user/bookings")
+    Observable<Response<List<Booking>>> getBookings();
+
     @POST("user/bookings")
     Observable<Response<String>> placeOrder(@Body BookingBody booking);
+
+    @GET("user/bookings/{id}")
+    Observable<Response<Booking>> getBooking(@Path("id") String id);
+//
+//    @GET("test")
+//    Observable<MyDate> getDate();
+
 }

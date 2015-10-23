@@ -117,7 +117,6 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
         mRecyclerView.setHasFixedSize(true);
         mFrameLayout.addView(mRecyclerView);
 
-
         mRecyclerView.setAdapter(new NotificationsAdapter(mNotifications));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, null));

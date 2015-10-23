@@ -2,6 +2,7 @@ package in.viato.app.ui.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -75,6 +76,7 @@ public class BookDetailFragment extends AbstractFragment {
     private static Boolean isFullDesc = false;
 
     private AbstractActivity mActivity;
+    private Context mContext;
 
     private BookDetail mBookDetail;
 
@@ -116,6 +118,7 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         mActivity = (AbstractActivity) getActivity();
+        mContext = getContext();
     }
 
     @Override
@@ -167,7 +170,7 @@ public class BookDetailFragment extends AbstractFragment {
         int id = item.getItemId();
         switch(id) {
             case R.id.action_cart:
-                startActivity(new Intent(mActivity, CheckoutActivity.class));
+                startActivity(new Intent(mContext, CheckoutActivity.class));
                 return true;
             case R.id.action_share:
                 letShare();
@@ -239,7 +242,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                             @Override
                             public void onNext(Cart cart) {
-                                startActivity(new Intent(mActivity, CheckoutActivity.class));
+                                startActivity(new Intent(mContext, CheckoutActivity.class));
                             }
                         });
 
@@ -333,18 +336,18 @@ public class BookDetailFragment extends AbstractFragment {
 
     public void setVariables(final BookDetail book)  {
         //set cover
-        Picasso.with(getContext())
-                .load(book.getCover())
+        Picasso.with(mContext)
+                .load(book.getThumbs().get(0))
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .into(mCover, new Callback() {
                     @Override
                     public void onSuccess() {
-//                        setPalleteColors(mCover);
-//                        Logger.d("colors set");
-//                        Picasso.with(getContext())
-//                                .load(book.getCover())
-//                                .into(mCover);
+                        setPalleteColors(mCover);
+                        Logger.d("colors set");
+                        Picasso.with(getContext())
+                                .load(book.getCover())
+                                .into(mCover);
                     }
 
                     @Override
@@ -369,7 +372,7 @@ public class BookDetailFragment extends AbstractFragment {
         mRetailPrice.setText("Buy at Rs. " + book.getPricing().getOwning().getMrp());
         mRetailPrice.setPaintFlags(mRetailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         mRentalPrice.setText("Rent at Rs. " + book.getPricing().getRental().get(0).getRent());
-        //set wishlist button
+        //set wish list button
         if(book.getIsInWishList()) {
             mWishListButton.setText(R.string.added_to_wish_list);
         } else {
@@ -420,5 +423,13 @@ public class BookDetailFragment extends AbstractFragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        mActivity = null;
+        mContext = null;
     }
 }

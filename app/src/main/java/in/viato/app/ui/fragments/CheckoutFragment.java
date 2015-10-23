@@ -1,6 +1,7 @@
 package in.viato.app.ui.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
@@ -110,37 +112,39 @@ public class CheckoutFragment extends AbstractFragment {
             Snackbar.make(v, "Please Select a address", Snackbar.LENGTH_LONG).show();
             return;
         }
-        Logger.d(addresses.get(mSelectedAddress).getId());
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(getContext(), "Please wait ...", "Placing your order", true);
+        ringProgressDialog.setCancelable(false);
         mViatoAPI.placeOrder(new BookingBody(addresses.get(mSelectedAddress).getId()))
-        .subscribe(new Subscriber<Response<String>>() {
-            @Override
-            public void onCompleted() {
+            .subscribe(new Subscriber<Response<String>>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-            }
+                }
 
-            @Override
-            public void onNext(Response<String> stringResponse) {
-                if (stringResponse.isSuccess()) {
-                    String body = stringResponse.body();
-                    Intent intent = new Intent(getContext(), SuccessActivity.class);
-                    intent.putExtra(SuccessActivity.ARG_ORDER_ID, body);
-                    intent.putExtra(SuccessActivity.ARG_DELIVERY_DATE, deliveryDate);
-                    startActivity(intent);
-                    getActivity().finish();
-                } else {
-                    try {
-                        Snackbar.make(v, stringResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                @Override
+                public void onNext(Response<String> stringResponse) {
+                    ringProgressDialog.dismiss();
+                    if (stringResponse.isSuccess()) {
+                        String body = stringResponse.body();
+                        Intent intent = new Intent(getContext(), SuccessActivity.class);
+                        intent.putExtra(SuccessActivity.ARG_ORDER_ID, body);
+                        intent.putExtra(SuccessActivity.ARG_DELIVERY_DATE, deliveryDate);
+                        startActivity(intent);
+                        getActivity().finish();
+                    } else {
+                        try {
+                            Snackbar.make(v, stringResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        });
+            });
     }
 
 
@@ -163,8 +167,6 @@ public class CheckoutFragment extends AbstractFragment {
             @Override
             public void onChanged() {
 //                super.onChanged();
-
-                Logger.d("" + adapter.getItemCount());
 
                 if (adapter.getItemCount() == 0) {
                     totalTV.setText(total + "");
@@ -226,7 +228,7 @@ public class CheckoutFragment extends AbstractFragment {
     }
 
     public void setDates() {
-        DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d");
+        DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d y");
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
 
@@ -370,7 +372,8 @@ public class CheckoutFragment extends AbstractFragment {
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    Logger.d(e.getMessage());
+                                    Snackbar.make(v, "Some error occurred. Please try again after some time", Snackbar.LENGTH_LONG).show();
+                                    Logger.e(e.getMessage());
                                 }
 
                                 @Override

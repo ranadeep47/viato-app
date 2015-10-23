@@ -6,7 +6,7 @@
     android:inAnimation="@android:anim/fade_in"
     android:outAnimation="@android:anim/fade_out"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <include layout="@layout/c_progress_bar"
+    <include layout="@layout/progress_bar"
              android:id="@+id/books_read_loading" />
     <RelativeLayout
         android:id="@+id/books_read_error"

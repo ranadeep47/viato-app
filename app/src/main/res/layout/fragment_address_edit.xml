@@ -19,7 +19,7 @@
                 android:id="@+id/editText_flat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name and flat no."
+                android:hint="Flat no."
                 android:textColor="@color/black"
                 android:singleLine="true"
                 android:imeOptions="actionNext"/>

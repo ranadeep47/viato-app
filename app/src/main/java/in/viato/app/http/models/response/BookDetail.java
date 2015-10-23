@@ -1,15 +1,10 @@
 package in.viato.app.http.models.response;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
 import android.text.TextUtils;
-
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import in.viato.app.BR;
 
 /**
  * Created by ranadeep on 17/10/15.

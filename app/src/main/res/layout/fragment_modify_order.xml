@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="4">
             <include
-                layout="@layout/c_progress_bar"/>
+                layout="@layout/progress_bar"/>
         </FrameLayout>
         <TextView
             android:layout_width="0dp"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="4">
             <include
-                layout="@layout/c_progress_bar"/>
+                layout="@layout/progress_bar"/>
         </FrameLayout>
         <TextView
             android:layout_width="0dp"
