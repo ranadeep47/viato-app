@@ -52,8 +52,8 @@ public class ViatoAPI {
                 .baseUrl(ViatoService.baseUrl)
                 .client(client)
                 .validateEagerly()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .addConverterFactory(new ToStringConverterFactory())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 

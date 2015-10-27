@@ -77,8 +77,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.orhanobut:logger:1.11'
 
-    compile 'me.biubiubiu.justifytext:library:1.1'
-
 //    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 
     compile 'com.mobsandgeeks:android-saripaar:2.0.3'

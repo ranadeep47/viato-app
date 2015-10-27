@@ -20,6 +20,8 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -378,8 +380,10 @@ public class BookDetailFragment extends AbstractFragment {
         } else {
             mWishListButton.setText(R.string.add_to_wish_list);
         }
+
         //set description
-        mDescription.setText(mBookDetail.getDescription());
+        Spanned sp = Html.fromHtml(mBookDetail.getDescription());
+        mDescription.setText(sp);
         mDescription.post(new Runnable() {
             @Override
             public void run() {
