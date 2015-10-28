@@ -11,13 +11,13 @@ import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.request.CartItem;
+import in.viato.app.http.models.request.RentalBody;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
-import in.viato.app.http.models.response.MyDate;
 import retrofit.MoshiConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -224,6 +224,20 @@ public class ViatoAPI {
     public Observable<Response<Booking>> getBookingDetail(String id) {
         return mViatoService
                 .getBooking(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<String>> extendRental(RentalBody body) {
+        return mViatoService
+                .extendRental(body)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<String>> returnRental(RentalBody body) {
+        return mViatoService
+                .returnRental(body)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

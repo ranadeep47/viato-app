@@ -31,7 +31,6 @@ import in.viato.app.http.models.response.Rental;
 import in.viato.app.ui.activities.HomeActivity;
 import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
-import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
 import retrofit.Response;
 import rx.Subscriber;
@@ -116,7 +115,6 @@ public class BookingsFragment extends AbstractFragment {
 
     public void setupRentHistory() {
         mBookingsList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mBookingsList.addItemDecoration(new DividerItemDecoration(getContext(), null));
         mBookingsList.setHasFixedSize(true);
         mBookingsList.setAdapter(new OrdersListAdapter(mBookings));
     }
@@ -134,7 +132,7 @@ public class BookingsFragment extends AbstractFragment {
         public class ViewHolder extends RecyclerView.ViewHolder {
             @Bind(R.id.book_covers) RecyclerView bookCovers;
             @Bind(R.id.status) TextView status;
-            @Bind(R.id.date) TextView date;
+            @Bind(R.id.placed_on) TextView date;
             @Bind(R.id.amount) TextView amount;
 
             public ViewHolder(View itemView) {
@@ -162,7 +160,7 @@ public class BookingsFragment extends AbstractFragment {
             cal.setTime(booking.getBooked_at()); // sets calendar time/date
             holder.date.setText(dateFormat.format(cal.getTime()));
             holder.status.setText(booking.getStatus());
-            holder.amount.setText("Rs. " + ((int) booking.getPayment().getTotal_payable()) + "");
+            holder.amount.setText("Rs. " + ((int) booking.getBooking_payment().getTotal_payable()) + "");
 
             LinearLayoutManager layoutManager = new MyHorizantalLlm(getContext(), LinearLayoutManager.HORIZONTAL, false);
             RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(R.layout.holder_thumbnail_small, covers, true);

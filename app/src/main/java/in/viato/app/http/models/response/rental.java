@@ -10,12 +10,18 @@ public class Rental {
     private Date expires_at;
     private String status;
     private Payment extension_payment;
-    private Boolean is_extended;
     private BookItem item;
+
     private Boolean is_picked;
-    private Date pickup_done_at;
     private Date pickup_requested_at;
+    private Date pickup_done_at;
+
+    private Boolean is_extended;
     private Date extended_at;
+
+    private Boolean is_delivered;
+    private Date delivered_at;
+    private Date expected_delivery_at;
 
     public String get_id() {
         return _id;
@@ -95,5 +101,29 @@ public class Rental {
 
     public void setExtension_payment(Payment extension_payment) {
         this.extension_payment = extension_payment;
+    }
+
+    public Boolean getIs_delivered() {
+        return is_delivered;
+    }
+
+    public void setIs_delivered(Boolean is_delivered) {
+        this.is_delivered = is_delivered;
+    }
+
+    public Date getDelivered_at() {
+        return delivered_at;
+    }
+
+    public void setDelivered_at(Date delivered_at) {
+        this.delivered_at = delivered_at;
+    }
+
+    public Date getExpected_delivery_at() {
+        return expected_delivery_at;
+    }
+
+    public void setExpected_delivery_at(Date expected_delivery_at) {
+        this.expected_delivery_at = expected_delivery_at;
     }
 }

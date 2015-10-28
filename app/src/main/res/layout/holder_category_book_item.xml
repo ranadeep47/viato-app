@@ -32,8 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/hint_text"
-                android:ellipsize="marquee"
                 android:textSize="12sp"
+                android:ellipsize="marquee"
                 android:singleLine="true" />
         </LinearLayout>
     </LinearLayout>

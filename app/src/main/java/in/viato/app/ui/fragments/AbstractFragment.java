@@ -10,9 +10,7 @@ import android.content.ClipboardManager;
 
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -36,13 +34,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public abstract class AbstractFragment extends Fragment {
-
-    private static final String TAG = "AbstractFragment";
     private boolean mIsAttached;
 
     //Props that need to be inherited. API Services, Composite Subscribers, Listener buses etc..
     protected CompositeSubscription mRxSubs;
-    //TODO Add api services here
+    //Add api services here
     protected ViatoAPI mViatoAPI;
     protected int mContainerViewId;
 
@@ -55,7 +51,7 @@ public abstract class AbstractFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        //TODO Bind the api services here
+        //Bind the api services here
         ViatoApplication app = ViatoApplication.get();
         mViatoAPI = app.getViatoAPI();
         mIsAttached = true;

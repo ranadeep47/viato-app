@@ -7,6 +7,7 @@ import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.request.CartItem;
+import in.viato.app.http.models.request.RentalBody;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Cart;
@@ -16,6 +17,7 @@ import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
 import in.viato.app.http.models.response.MyDate;
+import in.viato.app.http.models.response.Rental;
 import in.viato.app.model.Book;
 import retrofit.Response;
 import retrofit.http.Body;
@@ -103,8 +105,13 @@ public interface ViatoService {
 
     @GET("user/bookings/{id}")
     Observable<Response<Booking>> getBooking(@Path("id") String id);
-//
+
+    @POST("user/bookings/rents/extend")
+    Observable<Response<String>> extendRental(@Body RentalBody rentalBody);
+
+    @POST("user/bookings/rents/return")
+    Observable<Response<String>> returnRental(@Body RentalBody rentalBody);
+
 //    @GET("test")
 //    Observable<MyDate> getDate();
-
 }

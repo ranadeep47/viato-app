@@ -26,6 +26,13 @@ public class RegistrationActivity extends AbstractActivity {
 
         LoginFragment loginFragment = LoginFragment.newInstance();
         loadFragment(R.id.frame_content, loginFragment, LoginFragment.TAG, false, LoginFragment.TAG);
+
+//        SharedPrefHelper.set(R.string.pref_mobile_number, "8452062307");
+//        SharedPrefHelper.set(R.string.pref_device_id, "8452062307");
+//
+//        AppConstants.UserInfo.INSTANCE.setMobileNumber("8452062307");
+//        AppConstants.UserInfo.INSTANCE.setDeviceId("8452062307");
+//
 //        loadFragment(R.id.frame_content, LoginConfirmFragment.newInstance(), LoginConfirmFragment.TAG, false, LoginConfirmFragment.TAG);
 
         //Prevent keybaord from automatically popping up when there is only EditText in LoginFragment

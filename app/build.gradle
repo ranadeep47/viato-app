@@ -41,6 +41,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        production {
+            applicationId "in.viato.app"
+        }
+
+        staging {
+            applicationId "in.viato.app.staging"
+        }
+    }
 }
 
 dependencies {

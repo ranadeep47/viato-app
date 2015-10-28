@@ -63,6 +63,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         setContentView(R.layout.activity_drawer_tab_layout);
 
         String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
+        Logger.d(access_token);
 
         mActivity = this;
 

@@ -121,6 +121,8 @@ public class BookDetailFragment extends AbstractFragment {
 
         mActivity = (AbstractActivity) getActivity();
         mContext = getContext();
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -146,8 +148,6 @@ public class BookDetailFragment extends AbstractFragment {
                         Logger.e(throwable.getMessage());
                     }
                 });
-
-        setHasOptionsMenu(true);
 
         mActivity.setSupportActionBar(mToolbar);
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -161,7 +161,7 @@ public class HomeFragment extends AbstractFragment {
         @Override
         public void onBindViewHolder(final CategoryViewHolder holder, int position) {
             final CategoryItem category = categories.get(position);
-            //TODO load cateogry into imageView
+            //TODO load category into imageView
             holder.titleView.setText(category.getTitle());
             Picasso
                     .with(getActivity())

@@ -122,7 +122,6 @@
                                         android:textColor="@color/text"
                                         android:textStyle="bold"
                                         android:textSize="14sp"
-                                        android:inputType="textCapSentences"
                                         android:fontFamily="sans-serif-medium" />
                                     <TextView
                                         android:layout_width="0dp"

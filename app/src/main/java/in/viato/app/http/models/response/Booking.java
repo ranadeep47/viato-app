@@ -13,7 +13,7 @@ public class Booking {
     private String order_id;
     private String status;
     private Date booked_at;
-    private Payment payment;
+    private Payment booking_payment;
     private Address delivery_address;
     private Address pickup_address;
     private List<Rental> rentals;
@@ -66,12 +66,12 @@ public class Booking {
         this.rentals = rentals;
     }
 
-    public Payment getPayment() {
-        return payment;
+    public Payment getBooking_payment() {
+        return booking_payment;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setBooking_payment(Payment booking_payment) {
+        this.booking_payment = booking_payment;
     }
 
     public Date getBooked_at() {

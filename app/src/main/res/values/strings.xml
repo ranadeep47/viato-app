@@ -167,7 +167,7 @@
     <string name="regex_otp">^[0-9]{4}$</string>
     <string name="regex_email">android.util.Patterns.EMAIL_ADDRESS</string>
 
-    <!--wishlist-->
+    <!--wish list-->
     <string name="add_to_wish_list">Add to Wish List</string>
     <string name="added_to_wish_list">Added to wish list</string>
     <string name="removed_from_wish_list">Removed from wish list</string>
@@ -180,4 +180,12 @@
     <string name="agree">Agree</string>
     <string name="disagree">Disagree</string>
     <string name="due_to">due to </string>
+
+    <string name="extend">Extend</string>
+    <string name="Return">Return</string>
+    <string name="rate_book">Rate this book</string>
+
+
+    <!-- Booking details-->
+
 </resources>
