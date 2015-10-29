@@ -1,6 +1,5 @@
 package in.viato.app.http.clients.viato;
 
-import java.util.Date;
 import java.util.List;
 
 import in.viato.app.http.models.Address;
@@ -16,9 +15,6 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
-import in.viato.app.http.models.response.MyDate;
-import in.viato.app.http.models.response.Rental;
-import in.viato.app.model.Book;
 import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;

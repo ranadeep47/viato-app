@@ -1,9 +1,5 @@
 package in.viato.app.http.models.response;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-
-
 /**
  * Created by ranadeep on 16/10/15.
  */

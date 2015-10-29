@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.databinding'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.google.gms.google-services'
 
 buildscript {
 
@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
@@ -22,6 +22,14 @@ apt {
 
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('../release_key.jks')
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias "ReleaseKey"
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
@@ -39,15 +47,10 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
-    }
-    productFlavors {
-        production {
-            applicationId "in.viato.app"
-        }
-
-        staging {
-            applicationId "in.viato.app.staging"
+        debug {
+            applicationIdSuffix ".debug"
         }
     }
 }
@@ -70,6 +73,8 @@ dependencies {
     compile "com.google.android.gms:play-services-appinvite:$GOOGLE_PLAY_SERVICES_VERSION"
     compile "com.google.android.gms:play-services-vision:$GOOGLE_PLAY_SERVICES_VERSION"
     compile "com.google.android.gms:play-services-location:$GOOGLE_PLAY_SERVICES_VERSION"
+    compile "com.google.android.gms:play-services-analytics:$GOOGLE_PLAY_SERVICES_VERSION"
+
 
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'

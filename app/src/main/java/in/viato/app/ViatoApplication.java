@@ -8,6 +8,8 @@ import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.AppConstants.UserInfo;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -35,6 +37,8 @@ public class ViatoApplication extends Application implements NetworkStateReceive
 
     private ViatoAPI mViatoAPI;
     private HttpClient mHttpClient;
+
+    private Tracker mTracker;
 
     @Override
     public void onCreate() {
@@ -140,5 +144,18 @@ public class ViatoApplication extends Application implements NetworkStateReceive
                 .set(R.string.pref_last_version_name, info.versionName);
 
         SharedPrefHelper.set(R.string.pref_device_id, MiscUtils.getDeviceId());
+    }
+
+    /**
+     * Gets the default {@link Tracker} for this {@link Application}.
+     * @return tracker
+     */
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+        }
+        return mTracker;
     }
 }
