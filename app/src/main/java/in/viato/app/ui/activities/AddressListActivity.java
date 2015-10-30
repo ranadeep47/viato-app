@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import com.orhanobut.logger.Logger;
 
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.ui.fragments.AddressEditFragment;
 import in.viato.app.ui.fragments.AddressListFragment;
 

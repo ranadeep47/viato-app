@@ -38,6 +38,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -47,6 +48,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
 import in.viato.app.http.models.response.Cart;
@@ -112,6 +114,15 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+//        ViatoApplication.get().trackScreenView(getString(R.string.book_detail_fragment));
+        Analytics.with(getContext()).screen("screen", getString(R.string.book_detail_fragment));
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -172,7 +183,7 @@ public class BookDetailFragment extends AbstractFragment {
         int id = item.getItemId();
         switch(id) {
             case R.id.action_cart:
-                startActivity(new Intent(mContext, CheckoutActivity.class));
+                startActivity(new Intent(getActivity(), CheckoutActivity.class));
                 return true;
             case R.id.action_share:
                 letShare();
@@ -244,7 +255,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                             @Override
                             public void onNext(Cart cart) {
-                                startActivity(new Intent(mContext, CheckoutActivity.class));
+                                startActivity(new Intent(getActivity(), CheckoutActivity.class));
                             }
                         });
 
@@ -346,7 +357,6 @@ public class BookDetailFragment extends AbstractFragment {
                     @Override
                     public void onSuccess() {
                         setPalleteColors(mCover);
-                        Logger.d("colors set");
                         Picasso.with(getContext())
                                 .load(book.getCover())
                                 .into(mCover);
@@ -406,9 +416,7 @@ public class BookDetailFragment extends AbstractFragment {
                         return;
                     }
                     int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary));
-                    Logger.d("muted color: " + mutedColor);
                     int darkMutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.primary_light));
-                    Logger.d("muted color: " + darkMutedColor);
                     mCollapsingToolbarLayout.setBackgroundColor(mutedColor);
                     mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
 

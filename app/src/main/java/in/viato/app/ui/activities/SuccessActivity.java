@@ -4,23 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v4.widget.NestedScrollView;
-import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.segment.analytics.Analytics;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
 
-public class SuccessActivity extends Activity {
+public class SuccessActivity extends AbstractActivity {
 
     public static final String ARG_ORDER_ID = "orderId";
     public static final String ARG_DELIVERY_DATE = "delivery_date";
@@ -60,7 +55,7 @@ public class SuccessActivity extends Activity {
     @OnClick(R.id.trendingBooks)
     public void openTrendingBooks() {
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
+        intent.putExtra(HomeActivity.EXTRA_SELECT_TAB, HomeActivity.TAB_TRENDING);
         startActivity(intent);
         finish();
     }
@@ -68,5 +63,14 @@ public class SuccessActivity extends Activity {
     @OnClick(R.id.letShare)
     public void letShare() {
         Toast.makeText(this, "Hi, If you like the experience, Please let your friends know about us. Thank you", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
+        Analytics.with(this).screen("screen", getString(R.string.booking_detail_fragment));
+
     }
 }

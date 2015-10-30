@@ -24,11 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -105,6 +107,14 @@ public class BookingDetailFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getBookingDetail();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+//        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
+        Analytics.with(getContext()).screen("screen", getString(R.string.booking_detail_fragment));
     }
 
     public void getBookingDetail() {
@@ -282,7 +292,7 @@ public class BookingDetailFragment extends AbstractFragment {
                 Logger.d("extended on %s", rental.getExtended_at().toString());
 
                 cal.setTime(rental.getExtended_at());
-                holder.mPriceExtended.setText("+ Rs. " + (int)rental.getExtension_payment().getTotal_payable());
+                holder.mPriceExtended.setText("+ Rs. " + (int) rental.getExtension_payment().getTotal_payable());
                 holder.mBtnExtend.setVisibility(View.GONE);
             } else {
                 Logger.d("not extended");
@@ -295,8 +305,10 @@ public class BookingDetailFragment extends AbstractFragment {
                 holder.mBtnReturn.setVisibility(View.GONE);
             } else {
                 Logger.d("pickup not requested");
-//                holder.mBtnExtend.setVisibility(View.VISIBLE);
-//                holder.mBtnReturn.setVisibility(View.VISIBLE);
+            }
+
+            if(rental.getExpires_at().after(new Date())) {
+                holder.mBtnReturn.setVisibility(View.GONE);
             }
         }
 

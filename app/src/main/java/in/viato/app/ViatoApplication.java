@@ -9,8 +9,11 @@ import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.AppConstants.UserInfo;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -28,7 +31,7 @@ import in.viato.app.utils.SharedPrefHelper;
  */
 public class ViatoApplication extends Application implements NetworkStateReceiver.NetworkStateReceiverListener{
 
-    private final String mTAG = "ViatoApplication";
+    private final String mTAG = ViatoApplication.class.getSimpleName();
 
     private static ViatoApplication instance;
 
@@ -50,8 +53,8 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         Picasso.Builder builder = new Picasso.Builder(this);
         builder.downloader(new OkHttpDownloader(this, MiscUtils.calculateDiskCacheSize(this.getCacheDir())));
         Picasso built = builder.build();
-//        built.setIndicatorsEnabled(true);
-//        built.setLoggingEnabled(true);
+        built.setIndicatorsEnabled(BuildConfig.DEBUG);
+        built.setLoggingEnabled(BuildConfig.DEBUG);
         Picasso.setSingletonInstance(built);
 
 //        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
@@ -66,6 +69,13 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         readUserInfoFromSharedPref();
         //Initialise API only after all the apt prefs have been read into memory
         initAPI();
+
+        //segment analytics
+        Analytics analytics = new Analytics.Builder(this, getString(R.string.analytics_write_key)).build();
+        Analytics.setSingletonInstance(analytics);
+
+        // Safely call Analytics.with(context) from anywhere within your app!
+        Analytics.with(this).track("Application Started");
     }
 
     public static ViatoApplication get(){
@@ -146,16 +156,72 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         SharedPrefHelper.set(R.string.pref_device_id, MiscUtils.getDeviceId());
     }
 
-    /**
-     * Gets the default {@link Tracker} for this {@link Application}.
-     * @return tracker
-     */
-    synchronized public Tracker getDefaultTracker() {
+    /*
+     *Gets the default {@link Tracker} for this {@link Application}.
+     *@return tracker
+    */
+    synchronized public Tracker getGoogleAnalyticsTracker() {
         if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            analytics.setAppOptOut(BuildConfig.DEBUG);
             // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-            mTracker = analytics.newTracker(R.xml.global_tracker);
+            mTracker = analytics.newTracker(R.xml.app_tracker);
         }
         return mTracker;
+    }
+
+    /***
+     * Tracking screen view
+     *
+     * @param screenName screen name to be displayed on GA dashboard
+     */
+    /*public void trackScreenView(String screenName) {
+        Logger.d(screenName);
+        Tracker t = getGoogleAnalyticsTracker();
+
+        // Set screen name.
+        t.setScreenName(screenName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+
+        GoogleAnalytics.getInstance(this).dispatchLocalHits();
+
+        t.setScreenName(null);
+    }*/
+
+    /***
+     * Tracking exception
+     *
+     * @param e exception to be tracked
+     */
+    public void trackException(String screenName, Exception e) {
+        if (e != null) {
+            Tracker t = getGoogleAnalyticsTracker();
+            t.setScreenName(screenName);
+            t.send(new HitBuilders.ExceptionBuilder()
+                            .setDescription(
+                                    new StandardExceptionParser(this, null)
+                                            .getDescription(Thread.currentThread().getName(), e))
+                            .setFatal(false)
+                            .build()
+            );
+            t.setScreenName(null);
+        }
+    }
+
+    /***
+     * Tracking event
+     *
+     * @param category event category
+     * @param action   action of the event
+     * @param label    label
+     */
+    public void trackEvent(String screenName, String category, String action, String label) {
+        Tracker t = getGoogleAnalyticsTracker();
+        t.setScreenName(screenName);
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+        t.setScreenName(null);
     }
 }

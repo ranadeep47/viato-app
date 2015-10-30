@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="base_url">https://www.viato.in/</string>
-    <string name="base_api_url">https://www.viato.in/api/</string>
-</resources>

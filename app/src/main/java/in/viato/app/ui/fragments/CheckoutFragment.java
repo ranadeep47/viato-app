@@ -16,9 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -32,6 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.response.BookItem;
@@ -42,7 +43,6 @@ import in.viato.app.ui.activities.SuccessActivity;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyVerticalLlm;
-import retrofit.HttpException;
 import retrofit.Response;
 import rx.Subscriber;
 
@@ -98,6 +98,15 @@ public class CheckoutFragment extends AbstractFragment {
         fetchCart();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+//        ViatoApplication.get().trackScreenView(getString(R.string.checkout_fragment));
+        Analytics.with(getContext())
+                .screen("screen", getString(R.string.checkout_fragment));
+    }
+
     @OnClick(R.id.card_view_address)
     public void onAddressClicked() {
         Intent intent = new Intent(getActivity(), AddressListActivity.class);
@@ -151,7 +160,7 @@ public class CheckoutFragment extends AbstractFragment {
     @OnClick(R.id.btn_empty_action)
     public void goToTrending() {
         Intent intent = new Intent(getContext(), HomeActivity.class);
-        intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
+        intent.putExtra(HomeActivity.EXTRA_SELECT_TAB, HomeActivity.TAB_TRENDING);
         startActivity(intent);
         getActivity().finish();
     }

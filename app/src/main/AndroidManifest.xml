@@ -23,22 +23,25 @@
             android:value=".ui.activities.BookSearchActivity"/>
         <activity
             android:name=".ui.activities.HomeActivity"
-            android:label="@string/title_activity_home"
+            android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter android:autoVerify="true" >
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="www.viato.in"/>
+                <data android:host="www.viato.in" />
             </intent-filter>
         </activity>
         <activity
@@ -49,18 +52,18 @@
         <activity
             android:name=".ui.activities.RegistrationActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.activities.TestActivity"
             android:label="@string/title_activity_test"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.activities.CategoryBooksActivity"
             android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activities.HomeActivity">
+            android:parentActivityName=".ui.activities.HomeActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
@@ -68,8 +71,8 @@
         <activity
             android:name=".ui.activities.BookDetailActivity"
             android:label="@string/title_activity_book_detail"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activities.HomeActivity">
+            android:parentActivityName=".ui.activities.HomeActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
@@ -77,8 +80,8 @@
         <activity
             android:name=".ui.activities.CheckoutActivity"
             android:label="@string/title_activity_checkout"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activities.HomeActivity">
+            android:parentActivityName=".ui.activities.HomeActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
@@ -86,9 +89,9 @@
         <activity
             android:name=".ui.activities.AddressListActivity"
             android:label="@string/title_activity_address_list"
-            android:screenOrientation="portrait"
             android:parentActivityName=".ui.activities.CheckoutActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.CheckoutActivity" />
@@ -97,7 +100,7 @@
             android:name=".ui.activities.MyBooksActivity"
             android:label="@string/title_activity_my_books"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
@@ -106,7 +109,7 @@
             android:name=".ui.activities.PreviousOrders"
             android:label="@string/title_activity_previous_orders"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
@@ -115,7 +118,7 @@
             android:name=".ui.activities.NotificationsActivity"
             android:label="@string/title_activity_notifications"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
@@ -126,10 +129,11 @@
             android:label="@string/title_activity_search"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:stateNotNeeded="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -143,9 +147,9 @@
         <activity
             android:name=".ui.activities.BarcodeScannerActivity"
             android:label="Book Scanner"
+            android:parentActivityName=".ui.activities.BookSearchActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:parentActivityName=".ui.activities.BookSearchActivity">
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.BookSearchActivity" />
@@ -159,7 +163,7 @@
                 android:value="in.viato.app.ui.activities.HomeActivity" />
         </activity>
         <!-- Receivers -->
-        <!--<receiver android:name=".receivers.SMSReceiver" ></receiver>-->
+        <!-- <receiver android:name=".receivers.SMSReceiver" ></receiver> -->
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -169,7 +173,38 @@
             android:value="barcode" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDcf2JFLjIBHKYycS8WNbqM6rm8_jH5ZXI"/>
+            android:value="AIzaSyDcf2JFLjIBHKYycS8WNbqM6rm8_jH5ZXI" />
+
+        <!--
+          Optionally, register AnalyticsReceiver and AnalyticsService to support background
+          dispatching on non-Google Play devices
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!--
+             Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
+             installation campaign reporting
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
     </application>
 
 </manifest>

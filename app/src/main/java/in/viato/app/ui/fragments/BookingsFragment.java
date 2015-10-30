@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -32,7 +33,9 @@ import in.viato.app.ui.activities.HomeActivity;
 import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
+import retrofit.HttpException;
 import retrofit.Response;
+import retrofit.Retrofit;
 import rx.Subscriber;
 
 public class BookingsFragment extends AbstractFragment {
@@ -69,6 +72,15 @@ public class BookingsFragment extends AbstractFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+//        mViatoApp.trackScreenView(getString(R.string.booking_list_fragment));
+        Analytics.with(getContext())
+                .screen("screen", getString(R.string.booking_list_fragment));
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -81,6 +93,9 @@ public class BookingsFragment extends AbstractFragment {
 
                     @Override
                     public void onError(Throwable e) {
+                        if (e instanceof HttpException) {
+                            Snackbar.make(mCoordinatorLayout, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                        }
                         Logger.e(e.getMessage() + " due to " + e.getCause());
                     }
 
@@ -186,7 +201,7 @@ public class BookingsFragment extends AbstractFragment {
     @OnClick(R.id.btn_empty_action)
     public void showTrending() {
         Intent intent = new Intent(getContext(), HomeActivity.class);
-        intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
+        intent.putExtra(HomeActivity.EXTRA_SELECT_TAB, HomeActivity.TAB_TRENDING);
         startActivity(intent);
         getActivity().finish();
     }

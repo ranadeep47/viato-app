@@ -45,6 +45,7 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
 
     protected CompositeSubscription mRxSubs;
     protected ViatoAPI mViatoAPI;
+    protected ViatoApplication mViatoApp;
 
     protected NetworkStateReceiver mNetworkReceiver;
 
@@ -55,8 +56,8 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViatoApplication app = ViatoApplication.get();
-        mViatoAPI = app.getViatoAPI();
+        mViatoApp = ViatoApplication.get();
+        mViatoAPI = mViatoApp.getViatoAPI();
     }
 
     @Override

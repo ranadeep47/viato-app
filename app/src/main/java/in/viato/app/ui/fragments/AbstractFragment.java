@@ -40,6 +40,7 @@ public abstract class AbstractFragment extends Fragment {
     protected CompositeSubscription mRxSubs;
     //Add api services here
     protected ViatoAPI mViatoAPI;
+    protected ViatoApplication mViatoApp;
     protected int mContainerViewId;
 
     @Override
@@ -52,8 +53,8 @@ public abstract class AbstractFragment extends Fragment {
         super.onAttach(context);
 
         //Bind the api services here
-        ViatoApplication app = ViatoApplication.get();
-        mViatoAPI = app.getViatoAPI();
+        mViatoApp = ViatoApplication.get();
+        mViatoAPI = mViatoApp.getViatoAPI();
         mIsAttached = true;
 
     }

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.CoverQuote;
 
 import in.viato.app.ui.fragments.BooksReadFragment;
@@ -36,13 +38,12 @@ import rx.Subscriber;
  */
 public class MyBooksActivity extends AbstractNavDrawerActivity {
 
+    private AbstractActivity mActivity;
     private ViewPager mViewPager;
     private TabLayout mTabs;
-
     private ImageView cover;
     private TextView quote;
     private TextView quoter;
-
     private FloatingActionButton fab;
 
     private static final int REQUEST_BOOK_ID = 0;
@@ -52,7 +53,7 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_tab_layout);
-
+        mActivity = this;
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
@@ -88,7 +89,7 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
                 setCoverQuote(coverQuotes.get(0));
                 setupFab(getFragmentName(0));
 
-                mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -98,25 +99,30 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
                     public void onPageSelected(int position) {
                         setCoverQuote(coverQuotes.get(position));
                         setupFab(getFragmentName(position));
+
+                        String screenName = (String) mViewPager.getAdapter().getPageTitle(position);
+//                      ViatoApplication.get().trackScreenView(screenName + "Fragment");
+                        Analytics.with(mActivity).screen("screen", screenName + " Fragment");
                     }
 
                     @Override
                     public void onPageScrollStateChanged(int state) {
 
                     }
-                });
+                };
+                mViewPager.addOnPageChangeListener(listener);
+                listener.onPageSelected(0);
             }
         });
     }
 
     private void setupViewPager(){
         Adapter mAdapter = new Adapter(getSupportFragmentManager());
-        mAdapter.add(new BooksReadFragment(), "I Read");
-        mAdapter.add(new BooksWishlistFragment(), "Wishlist");
-//        mAdapter.add(new BooksOwnFragment(), "I Own");
+        mAdapter.add(new BooksReadFragment(), "Read");
+        mAdapter.add(new BooksWishlistFragment(), "Wish List");
+
         mViewPager.setAdapter(mAdapter);
         mTabs.setupWithViewPager(mViewPager);
-//        mTabs.setSelectedTabIndicatorColor(getResources().getColor(R.color.white));
     }
 
     private String getFragmentName(int position){

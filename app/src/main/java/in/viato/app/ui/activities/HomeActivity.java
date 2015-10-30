@@ -1,5 +1,6 @@
 package in.viato.app.ui.activities;
 
+import android.app.Application;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.graphics.Color;
@@ -26,7 +27,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
+import com.segment.analytics.Traits;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,6 +39,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.ui.fragments.CategoryBooksFragment;
 import in.viato.app.ui.fragments.HomeFragment;
 import in.viato.app.utils.SharedPrefHelper;
@@ -44,18 +50,17 @@ import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
  */
 public class HomeActivity extends AbstractNavDrawerActivity {
 
+    private AbstractActivity mActivity;
     private ViewPager mViewPager;
     private TabLayout mTabs;
-    @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
+    private EditText searchBar;
 
-    private AbstractActivity mActivity;
+    @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
 
     public static final int TAB_CATEGORIES = '0';
     public static final int TAB_TRENDING = '1';
 
-    private EditText searchBar;
-
-    public static final String EXTRA_SETECT_TAB = "select_tab";
+    public static final String EXTRA_SELECT_TAB = "select_tab";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +68,22 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         setContentView(R.layout.activity_drawer_tab_layout);
 
         String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
-        Logger.d(access_token);
 
         mActivity = this;
 
-        if(access_token == "") {
+        if(access_token.length() == 0) {
             startActivity(new Intent(this, RegistrationActivity.class));
             finish();
             return;
+        } else {
+            // TODO: 30/10/15 replace 1 with user id
+            String userId = "1";
+            String email = SharedPrefHelper.getString(R.string.pref_email);
+            String phone = SharedPrefHelper.getString(R.string.pref_mobile_number);
+
+            Analytics.with(this).identify(userId, new Traits()
+                    .putEmail(email)
+                    .putPhone(phone), null);
         }
 
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
@@ -115,26 +128,6 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        return super.onSearchRequested();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
@@ -174,6 +167,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+
+
     }
 
     public void setupViewPager() {
@@ -186,6 +181,27 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
         mViewPager.setAdapter(adapter);
         mTabs.setupWithViewPager(mViewPager);
+
+        ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                String screenName = (String) mViewPager.getAdapter().getPageTitle(position);
+//                ViatoApplication.get().trackScreenView(screenName + "Fragment");
+                Analytics.with(mActivity).screen("screen", screenName + " Fragment");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+        mViewPager.addOnPageChangeListener(listener);
+        listener.onPageSelected(0);
     }
     protected void showCoverImage(){
 
@@ -262,8 +278,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
     public void handleIntent(Intent intent) {
         if(intent == null){ return; }
-        if(intent.hasExtra(EXTRA_SETECT_TAB)){
-            int index = intent.getIntExtra(EXTRA_SETECT_TAB, 0);
+        if(intent.hasExtra(EXTRA_SELECT_TAB)){
+            int index = intent.getIntExtra(EXTRA_SELECT_TAB, 0);
             mViewPager.setCurrentItem(index);
         }
     }

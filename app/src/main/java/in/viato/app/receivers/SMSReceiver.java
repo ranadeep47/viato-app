@@ -51,10 +51,8 @@ public class SMSReceiver extends BroadcastReceiver {
                     }
 
                     Matcher m = Pattern.compile("(\\d{4})").matcher(mMessage);
-                    Logger.e("here");
                     if ( m.find() ) {
                         String otp = m.group();
-                        Logger.d("OTP: " + otp);
                         if (mListeners != null) {
                             for(OnSmsReceivedListener aListener : mListeners) {
                                 aListener.onSmsReceived(otp);

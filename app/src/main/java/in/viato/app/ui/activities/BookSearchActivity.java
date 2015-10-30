@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
@@ -288,5 +290,13 @@ public class BookSearchActivity extends AbstractActivity {
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        ViatoApplication.get().trackScreenView(getString(R.string.book_search_activity));
+        Analytics.with(this).screen("screen", getString(R.string.book_search_activity));
     }
 }

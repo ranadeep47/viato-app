@@ -25,6 +25,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyDate;
 import in.viato.app.ui.activities.CategoryBooksActivity;
@@ -78,9 +79,8 @@ public class HomeFragment extends AbstractFragment {
 
             @Override
             public void onError(Throwable e) {
-//                Logger.e(e.getMessage());
                 if (e instanceof retrofit.HttpException) {
-                    Snackbar.make(view, e.getMessage() + " " + e.getCause(), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     Logger.e(e, "Cannot cannot to internet");
 //                    showError("Check your internet connection.");
                 }
@@ -91,43 +91,6 @@ public class HomeFragment extends AbstractFragment {
                 adapter.setCategories(categories);
             }
         });
-
-
-//        mViatoAPI.getDate()
-//                .subscribe(new Subscriber<MyDate>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Toast.makeText(getContext(), e.getMessage() + " due to " + e.getCause(), Toast.LENGTH_LONG).show();
-//                        Logger.d(e.getMessage() + " due to " + e.getCause());
-//                    }
-//
-//                    @Override
-//                    public void onNext(MyDate date) {
-//                        Toast.makeText(getContext(), date.toString(), Toast.LENGTH_LONG).show();
-//                        Logger.d(date.getDate().toString());
-//                    }
-//                });
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override

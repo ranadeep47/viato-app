@@ -16,7 +16,6 @@
         <in.viato.app.ui.widgets.RoundedImageView
             android:layout_width="@dimen/avatar_normal"
             android:layout_height="@dimen/avatar_normal"
-            android:src="@drawable/img_header1"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/activity_vertical_margin"
@@ -40,8 +39,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/reviewer_img"
             android:layout_toLeftOf="@id/rating_bar"
-            android:focusable="false"
-            >
+            android:focusable="false">
 
             <TextView
                 android:layout_width="match_parent"

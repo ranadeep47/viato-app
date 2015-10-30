@@ -9,11 +9,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.segment.analytics.Analytics;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.dummy.Notifications;
 import in.viato.app.model.Notification;
 import in.viato.app.ui.widgets.DividerItemDecoration;
@@ -88,7 +91,7 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
 //                    Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 //                    Intent intent = new Intent();
 //                    intent.setClassName("in.viato.app", "in.viato.app.ui.activities.HomeActivity");
-//                    intent.putExtra(HomeActivity.EXTRA_SETECT_TAB, HomeActivity.TAB_TRENDING);
+//                    intent.putExtra(HomeActivity.EXTRA_SELECT_TAB, HomeActivity.TAB_TRENDING);
 //                    PendingIntent resultPendingIntent = PendingIntent.getActivity(mActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //                    NotificationCompat.Builder mBuilder =
 //                            new NotificationCompat.Builder(getApplicationContext())
@@ -120,5 +123,14 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
         mRecyclerView.setAdapter(new NotificationsAdapter(mNotifications));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, null));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        mViatoApp.trackScreenView(getString(R.string.notification_activity));
+        Analytics.with(this).screen("screen", getString(R.string.notification_activity));
+
     }
 }

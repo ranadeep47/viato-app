@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -31,6 +32,8 @@ import in.viato.app.receivers.SMSReceiver;
 import in.viato.app.ui.activities.HomeActivity;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.SharedPrefHelper;
+import retrofit.HttpException;
+import retrofit.Retrofit;
 import rx.Subscriber;
 import rx.functions.Action1;
 
@@ -52,12 +55,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     private final HttpClient mHttpClient = ViatoApplication.get().getHttpClient();
 
     public static LoginConfirmFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        LoginConfirmFragment fragment = new LoginConfirmFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new LoginConfirmFragment();
     }
 
     @Nullable
@@ -74,27 +72,23 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         smsReceiver = new SMSReceiver();
         smsReceiver.addListener(this);
 
-//        mBtnVerifyOtp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                verifyOTP();
-//            }
-//        });
-
         String[] emails = getEmails();
         ArrayAdapter<String> emailsAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_dropdown_item_1line,
                 emails);
-//        mEmail.setThreshold(1);
+        mEmail.setThreshold(3);
         mEmail.setAdapter(emailsAdapter);
         mEmail.setText(emails[0]);
-        //TODO setup email validator and change error label accordingly
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+//        ViatoApplication.get().trackScreenView(getString(R.string.login_confirm_fragment));
+        Analytics.with(getContext())
+                .screen("screen", getString(R.string.login_confirm_fragment));
 
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.setPriority(999);
@@ -106,16 +100,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         super.onPause();
 
         getActivity().unregisterReceiver(smsReceiver);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return super.onBackPressed();
     }
 
     private String[] getEmails() {
@@ -148,13 +132,14 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                         //Todo: Handle error condition
                         @Override
                         public void onError(Throwable e) {
-//                        if (e instanceof Retrofit.RetrofitError) {
-//                            if (((RetrofitError) e).isNetworkError()) {
-//                                //handle network error
-//                            } else {
-//                                //handle error message from server
-//                            }
-//                        }
+                        if (e instanceof HttpException) {
+			                Logger.d(String.valueOf(((HttpException) e).code()));
+                            if (((HttpException) e).code() == 502) {
+                                //handle network error
+                            } else {
+                                //handle error message from server
+                            }
+                        }
                             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             Logger.e(e.getMessage());
                         }
@@ -164,7 +149,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                             mToken = token;
                             otpInputContainer.setVisibility(View.GONE);
                             otpsuccessContainer.setVisibility(View.VISIBLE);
-                            Logger.d(token);
                         }
                     });
         } else {
@@ -204,29 +188,18 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     @OnClick(R.id.btn_submit)
     public void submitEmail() {
         final String email = mEmail.getText().toString();
-        Logger.d(email + "  " + mToken);
-        if(mToken == null){
-            verifyOTP();
-            return;
-        }
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mEmail.setError(null);
             mHttpClient.submitEmail(email, mToken)
                     .subscribe(new Action1<String>() {
                         @Override
                         public void call(String access_token) {
-//                            Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                             AppConstants.UserInfo.INSTANCE.setAuthToken(access_token);
                             AppConstants.UserInfo.INSTANCE.setEmail(email);
 
                             SharedPrefHelper.set(R.string.pref_access_token, access_token);
                             SharedPrefHelper.set(R.string.pref_email, email);
 
-                            Logger.d(access_token);
-                            Logger.d("---------");
-                            Logger.d(AppConstants.UserInfo.INSTANCE.getAccessToken());
-                            Logger.d("---------");
-                            Logger.d(SharedPrefHelper.getString(R.string.pref_access_token));
                             startActivity(new Intent(getActivity(), HomeActivity.class));
                             getActivity().finish();
                         }

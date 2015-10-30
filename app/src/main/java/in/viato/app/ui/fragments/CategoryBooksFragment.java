@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.segment.analytics.Analytics;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.ui.adapters.CategoryBooksGridAdapter;
@@ -120,6 +122,11 @@ public class CategoryBooksFragment extends AbstractFragment{
         super.onResume();
         //Setup here because it deals with mRxSubs whose lifecycle depends on fragment's Pause/Resume cycle
         setupInfiniteLoader();
+
+        //includes events from trending 'category' on Home screen
+//        ViatoApplication.get().trackScreenView(getString(R.string.category_books_fragment));
+        Analytics.with(getContext())
+                .screen("screen", getString(R.string.category_books_fragment));
     }
 
     @Override

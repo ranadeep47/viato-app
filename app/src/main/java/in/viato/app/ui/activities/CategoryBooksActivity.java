@@ -11,8 +11,8 @@ import in.viato.app.ui.fragments.CategoryBooksFragment;
 
 public class CategoryBooksActivity extends AbstractActivity {
 
-    public static final String ARG_CATEGORY_ID = "in.viato.app.ui.activities.CategoryBooksActivity.categoryId";
-    public static final String ARG_CATEGORY_NAME = "in.viato.app.ui.activities.CategoryBooksActivity.categoryName";
+    public static final String ARG_CATEGORY_ID = "categoryId";
+    public static final String ARG_CATEGORY_NAME = "categoryName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
