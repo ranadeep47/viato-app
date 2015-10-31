@@ -38,7 +38,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -117,8 +116,8 @@ public class BookDetailFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-//        ViatoApplication.get().trackScreenView(getString(R.string.book_detail_fragment));
-        Analytics.with(getContext()).screen("screen", getString(R.string.book_detail_fragment));
+        ViatoApplication.get().trackScreenView(getString(R.string.book_detail_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.book_detail_fragment));
 
     }
 
@@ -350,23 +349,10 @@ public class BookDetailFragment extends AbstractFragment {
     public void setVariables(final BookDetail book)  {
         //set cover
         Picasso.with(mContext)
-                .load(book.getThumbs().get(0))
+                .load(book.getCover())
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
-                .into(mCover, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        setPalleteColors(mCover);
-                        Picasso.with(getContext())
-                                .load(book.getCover())
-                                .into(mCover);
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                .into(mCover);
         //set title
         mTitle.setText(book.getTitle());
         mCollapsingToolbarLayout.setTitle(book.getTitle());

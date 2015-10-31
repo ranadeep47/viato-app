@@ -12,11 +12,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.CoverQuote;
@@ -52,7 +53,7 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer_tab_layout);
+        setContentView(R.layout.activity_drawer);
         mActivity = this;
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
@@ -63,14 +64,13 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
         quoter = (TextView) coverContainer.findViewById(R.id.cover_quote_quoter);
 
         fab = (FloatingActionButton)((ViewStub) findViewById(R.id.stub_fab_add_books)).inflate();
-
-        setupViewPager();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("");
+        setupViewPager();
 
         mViatoAPI.getQuotes().subscribe(new Subscriber<List<CoverQuote>>() {
             @Override
@@ -101,8 +101,8 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
                         setupFab(getFragmentName(position));
 
                         String screenName = (String) mViewPager.getAdapter().getPageTitle(position);
-//                      ViatoApplication.get().trackScreenView(screenName + "Fragment");
-                        Analytics.with(mActivity).screen("screen", screenName + " Fragment");
+                      ViatoApplication.get().trackScreenView(screenName + "Fragment");
+//                        Analytics.with(mActivity).screen("screen", screenName + " Fragment");
                     }
 
                     @Override

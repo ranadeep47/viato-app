@@ -19,13 +19,13 @@
     </style>
 
     <style name="Viato.ActionBar.Title" parent="android:TextAppearance">
-        <item name="android:textColor">@color/text_innverse</item>
+        <item name="android:textColor">@color/text_inverse</item>
         <item name="android:textSize">@dimen/text_large</item>
     </style>
 
     <style name="Viato.ActionBar.Subtitle" parent="android:TextAppearance">
         <item name="android:textSize">@dimen/text_small</item>
-        <item name="android:textColor">@color/text_secondary_innverse</item>
+        <item name="android:textColor">@color/text_secondary_inverse</item>
     </style>
 
     <style name="Headings" parent="android:TextAppearance">
@@ -49,7 +49,7 @@
 
     <!--LoginScreen-->
     <style name="Login" parent="android:TextAppearance">
-        <item name="android:textColor">@color/text_innverse</item>
+        <item name="android:textColor">@color/text_inverse</item>
     </style>
     <style name="Login.ImageTitle">
         <item name="android:textSize">@dimen/text_xx_large</item>
@@ -59,8 +59,8 @@
     </style>
 
     <style name="LoginInput" parent="Theme.Viato">
-        <item name="android:textColorHint">@color/text_innverse</item>
-        <item name="colorControlNormal">@color/text_innverse</item>
+        <item name="android:textColorHint">@color/text_inverse</item>
+        <item name="colorControlNormal">@color/text_inverse</item>
         <item name="colorControlActivated">@color/white</item>
         <item name="colorControlHighlight">@color/white</item>
     </style>
@@ -68,7 +68,7 @@
     <style name="BoldButton" parent="android:TextAppearance">
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/text_innverse</item>
+        <item name="android:textColor">@color/text_inverse</item>
         <!--<item name="fontPath">"fonts/Montserrat-Bold.ttf"</item>-->
     </style>
 

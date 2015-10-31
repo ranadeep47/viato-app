@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -113,8 +112,8 @@ public class BookingDetailFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-//        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
-        Analytics.with(getContext()).screen("screen", getString(R.string.booking_detail_fragment));
+        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.booking_detail_fragment));
     }
 
     public void getBookingDetail() {

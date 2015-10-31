@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -165,7 +164,7 @@ public class BookSearchActivity extends AbstractActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
+//        overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }
 
     private void handleIntent(Intent intent) {
@@ -296,7 +295,7 @@ public class BookSearchActivity extends AbstractActivity {
     protected void onResume() {
         super.onResume();
 
-//        ViatoApplication.get().trackScreenView(getString(R.string.book_search_activity));
-        Analytics.with(this).screen("screen", getString(R.string.book_search_activity));
+        ViatoApplication.get().trackScreenView(getString(R.string.book_search_activity));
+//        Analytics.with(this).screen("screen", getString(R.string.book_search_activity));
     }
 }

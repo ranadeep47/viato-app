@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -102,9 +101,8 @@ public class CheckoutFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-//        ViatoApplication.get().trackScreenView(getString(R.string.checkout_fragment));
-        Analytics.with(getContext())
-                .screen("screen", getString(R.string.checkout_fragment));
+        ViatoApplication.get().trackScreenView(getString(R.string.checkout_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.checkout_fragment));
     }
 
     @OnClick(R.id.card_view_address)

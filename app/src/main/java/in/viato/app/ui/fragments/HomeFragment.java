@@ -6,13 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
@@ -20,16 +19,14 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.CategoryItem;
-import in.viato.app.http.models.response.MyDate;
 import in.viato.app.ui.activities.CategoryBooksActivity;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
+import retrofit.HttpException;
 import rx.Subscriber;
 
 /**
@@ -79,7 +76,9 @@ public class HomeFragment extends AbstractFragment {
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof retrofit.HttpException) {
+                Logger.e(e.getMessage());
+                if (e instanceof HttpException) {
+                    Logger.e(((HttpException) e).code() + "");
                     Snackbar.make(view, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     Logger.e(e, "Cannot cannot to internet");
 //                    showError("Check your internet connection.");

@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 
 import java.util.ArrayList;
 
@@ -113,9 +112,8 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
     @Override
     public void onResume() {
         super.onResume();
-//        ViatoApplication.get().trackScreenView(getString(R.string.login_fragment));
-        Analytics.with(getContext())
-                .screen("screen", getString(R.string.login_fragment));
+        ViatoApplication.get().trackScreenView(getString(R.string.login_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.login_fragment));
     }
 
     @Override

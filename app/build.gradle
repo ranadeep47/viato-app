@@ -1,4 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.google.gms.google-services'
 
@@ -6,10 +12,12 @@ buildscript {
 
     repositories {
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
@@ -51,6 +59,7 @@ android {
         }
         debug {
             applicationIdSuffix ".debug"
+//            ext.enableCrashlytics = false
         }
     }
 }
@@ -99,11 +108,7 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 
-    compile('com.segment.analytics.android:analytics-core:+') {
-        transitive = true
-    }
-    // Add other dependencies as you want here
-    compile('com.segment.analytics.android:analytics-integration-google-analytics:+') {
-        transitive = true
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+        transitive = true;
     }
 }

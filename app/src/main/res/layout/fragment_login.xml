@@ -41,7 +41,7 @@
                 <EditText
                     android:id="@+id/mobile_input"
                     android:maxLength="@integer/phone_number_length"
-                    android:textColor="@color/text_innverse"
+                    android:textColor="@color/text_inverse"
                     android:inputType="phone"
                     android:hint="@string/enter_mobile_number"
                     android:layout_width="match_parent"

@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -75,9 +74,8 @@ public class BookingsFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-//        mViatoApp.trackScreenView(getString(R.string.booking_list_fragment));
-        Analytics.with(getContext())
-                .screen("screen", getString(R.string.booking_list_fragment));
+        mViatoApp.trackScreenView(getString(R.string.booking_list_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.booking_list_fragment));
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -125,8 +124,7 @@ public class CategoryBooksFragment extends AbstractFragment{
 
         //includes events from trending 'category' on Home screen
 //        ViatoApplication.get().trackScreenView(getString(R.string.category_books_fragment));
-        Analytics.with(getContext())
-                .screen("screen", getString(R.string.category_books_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.category_books_fragment));
     }
 
     @Override

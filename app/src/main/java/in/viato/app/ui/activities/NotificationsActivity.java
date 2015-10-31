@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.segment.analytics.Analytics;
-
 import java.util.List;
 
 import butterknife.Bind;
@@ -129,8 +127,8 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
     protected void onResume() {
         super.onResume();
 
-//        mViatoApp.trackScreenView(getString(R.string.notification_activity));
-        Analytics.with(this).screen("screen", getString(R.string.notification_activity));
+        mViatoApp.trackScreenView(getString(R.string.notification_activity));
+//        Analytics.with(this).screen("screen", getString(R.string.notification_activity));
 
     }
 }

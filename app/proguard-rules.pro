@@ -166,3 +166,7 @@
 
 # Segment Analytics
 -keep class com.segment.analytics.** { *; }
+
+# Fabric
+-keep class com.crashlytics.** { *; }
+-keep class com.crashlytics.android.**

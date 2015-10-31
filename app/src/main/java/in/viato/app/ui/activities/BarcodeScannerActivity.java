@@ -21,7 +21,6 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 
 import java.io.IOException;
 import in.viato.app.R;
@@ -75,8 +74,8 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startCameraSource();
-//        ViatoApplication.get().trackScreenView(getString(R.string.barcode_scanner_activity));
-        Analytics.with(this).screen("screen", getString(R.string.barcode_scanner_activity));
+        ViatoApplication.get().trackScreenView(getString(R.string.barcode_scanner_activity));
+//        Analytics.with(this).screen("screen", getString(R.string.barcode_scanner_activity));
 
     }
 

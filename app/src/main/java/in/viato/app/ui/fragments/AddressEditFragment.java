@@ -114,13 +114,45 @@ public class AddressEditFragment extends AbstractFragment
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        mValidator = new Validator(this);
+        mValidator.setValidationListener(new Validator.ValidationListener() {
+            @Override
+            public void onValidationSucceeded() {
+                mAddress.setLabel(label.getText().toString());
+                mAddress.setFlat(flat.getText().toString());
+                mAddress.setStreet(street.getText().toString());
+                mAddress.setLocality(new Locality(placeId, locality.getText().toString()));
+
+                switch (mAction) {
+                    case EDIT_ADDRESS:
+                        updateAddress(mAddress, mAddress.getId());
+                        break;
+                    case CREATE_ADDRESS:
+                        createAddress(mAddress);
+                        break;
+                }
+            }
+
+            @Override
+            public void onValidationFailed(List<ValidationError> errors) {
+                for (ValidationError error : errors) {
+                    View view = error.getView();
+                    String message = error.getCollatedErrorMessage(getContext());
+
+                    if (view instanceof EditText) {
+                        ((EditText) view).setError(message);
+                    } else {
+                        Snackbar.make(view, "message", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_address_edit, container, false);
-
-        setValidation(this);
         return view;
     }
 
@@ -192,42 +224,6 @@ public class AddressEditFragment extends AbstractFragment
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public void setValidation(AddressEditFragment that) {
-        mValidator = new Validator(that);
-        mValidator.setValidationListener(new Validator.ValidationListener() {
-            @Override
-            public void onValidationSucceeded() {
-                mAddress.setLabel(label.getText().toString());
-                mAddress.setFlat(flat.getText().toString());
-                mAddress.setStreet(street.getText().toString());
-                mAddress.setLocality(new Locality(placeId, locality.getText().toString()));
-
-                switch (mAction) {
-                    case EDIT_ADDRESS:
-                        updateAddress(mAddress, mAddress.getId());
-                        break;
-                    case CREATE_ADDRESS:
-                        createAddress(mAddress);
-                        break;
-                }
-            }
-
-            @Override
-            public void onValidationFailed(List<ValidationError> errors) {
-                for (ValidationError error : errors) {
-                    View view = error.getView();
-                    String message = error.getCollatedErrorMessage(getContext());
-
-                    if (view instanceof EditText) {
-                        ((EditText) view).setError(message);
-                    } else {
-                        Snackbar.make(view, "message", Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
     }
 
     @Override

@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -86,9 +85,8 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     public void onResume() {
         super.onResume();
 
-//        ViatoApplication.get().trackScreenView(getString(R.string.login_confirm_fragment));
-        Analytics.with(getContext())
-                .screen("screen", getString(R.string.login_confirm_fragment));
+        ViatoApplication.get().trackScreenView(getString(R.string.login_confirm_fragment));
+//        Analytics.with(getContext()).screen("screen", getString(R.string.login_confirm_fragment));
 
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.setPriority(999);

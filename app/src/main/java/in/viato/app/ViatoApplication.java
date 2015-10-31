@@ -4,16 +4,17 @@ import android.app.Application;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 
+import com.crashlytics.android.Crashlytics;
 import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.AppConstants.UserInfo;
 
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -24,6 +25,7 @@ import in.viato.app.http.clients.viato.ViatoAPI;
 import in.viato.app.receivers.NetworkStateReceiver;
 import in.viato.app.utils.MiscUtils;
 import in.viato.app.utils.SharedPrefHelper;
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -46,7 +48,6 @@ public class ViatoApplication extends Application implements NetworkStateReceive
     @Override
     public void onCreate() {
         super.onCreate();
-
         instance = (ViatoApplication) getApplicationContext();
         mRefWatcher = LeakCanary.install(this);
 
@@ -70,12 +71,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         //Initialise API only after all the apt prefs have been read into memory
         initAPI();
 
-        //segment analytics
-        Analytics analytics = new Analytics.Builder(this, getString(R.string.analytics_write_key)).build();
-        Analytics.setSingletonInstance(analytics);
-
-        // Safely call Analytics.with(context) from anywhere within your app!
-        Analytics.with(this).track("Application Started");
+        initializeFabric();
     }
 
     public static ViatoApplication get(){
@@ -163,8 +159,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
     synchronized public Tracker getGoogleAnalyticsTracker() {
         if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            analytics.setAppOptOut(BuildConfig.DEBUG);
-            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            analytics.setDryRun(BuildConfig.DEBUG);
             mTracker = analytics.newTracker(R.xml.app_tracker);
         }
         return mTracker;
@@ -175,8 +170,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
      *
      * @param screenName screen name to be displayed on GA dashboard
      */
-    /*public void trackScreenView(String screenName) {
-        Logger.d(screenName);
+    public void trackScreenView(String screenName) {
         Tracker t = getGoogleAnalyticsTracker();
 
         // Set screen name.
@@ -188,11 +182,12 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         GoogleAnalytics.getInstance(this).dispatchLocalHits();
 
         t.setScreenName(null);
-    }*/
+    }
 
     /***
      * Tracking exception
      *
+     * @param screenName same of the screen exception has occurred
      * @param e exception to be tracked
      */
     public void trackException(String screenName, Exception e) {
@@ -206,6 +201,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
                             .setFatal(false)
                             .build()
             );
+            GoogleAnalytics.getInstance(this).dispatchLocalHits();
             t.setScreenName(null);
         }
     }
@@ -213,6 +209,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
     /***
      * Tracking event
      *
+     * * @param screenName same of the screen event has occurred
      * @param category event category
      * @param action   action of the event
      * @param label    label
@@ -222,6 +219,13 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         t.setScreenName(screenName);
         // Build and send an Event.
         t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+        GoogleAnalytics.getInstance(this).dispatchLocalHits();
         t.setScreenName(null);
+    }
+
+    public void initializeFabric () {
+        // Set up Crashlytics, disabled for debug builds
+        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+        Fabric.with(this, new Crashlytics.Builder().core(core).build());
     }
 }

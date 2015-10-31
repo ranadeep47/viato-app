@@ -1,6 +1,5 @@
 package in.viato.app.ui.activities;
 
-import android.app.Application;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,11 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.orhanobut.logger.Logger;
-import com.segment.analytics.Analytics;
-import com.segment.analytics.Traits;
+import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -65,7 +60,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer_tab_layout);
+        setContentView(R.layout.activity_drawer);
 
         String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
 
@@ -81,21 +76,21 @@ public class HomeActivity extends AbstractNavDrawerActivity {
             String email = SharedPrefHelper.getString(R.string.pref_email);
             String phone = SharedPrefHelper.getString(R.string.pref_mobile_number);
 
-            Analytics.with(this).identify(userId, new Traits()
-                    .putEmail(email)
-                    .putPhone(phone), null);
+//            Analytics.with(this).identify(userId, new Traits().putEmail(email).putPhone(phone), null);
+            Crashlytics.setUserIdentifier(userId);
+            Crashlytics.setUserEmail(email);
         }
 
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
-        setupViewPager();
         handleIntent(getIntent());
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        setupViewPager();
         showCoverImage();
         Picasso.with(this)
                 .load("https://c2.staticflickr.com/6/5790/21790653402_0cf3b8c65e.jpg")
@@ -118,7 +113,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         switch (item.getItemId()) {
             case R.id.menu_search:
                 startActivity(new Intent(this, BookSearchActivity.class));
-                overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_fade_out);
+//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_fade_out);
                 break;
             case R.id.menu_cart:
                 startActivity(new Intent(this, CheckoutActivity.class));
@@ -191,8 +186,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
             @Override
             public void onPageSelected(int position) {
                 String screenName = (String) mViewPager.getAdapter().getPageTitle(position);
-//                ViatoApplication.get().trackScreenView(screenName + "Fragment");
-                Analytics.with(mActivity).screen("screen", screenName + " Fragment");
+                mViatoApp.trackScreenView(screenName + " Fragment");
+//                Analytics.with(mActivity).screen("screen", screenName + " Fragment");
             }
 
             @Override
@@ -204,15 +199,12 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         listener.onPageSelected(0);
     }
     protected void showCoverImage(){
-
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
         View coverContainer = stubCoverImage.inflate();
         coverImage = (ImageView) coverContainer.findViewById(R.id.cover_image);
-        coverImage.setVisibility(View.VISIBLE);
-
         searchBar = (EditText) coverContainer.findViewById(R.id.search_bar);
 
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -244,7 +236,6 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Logger.d("start setSearchBarDrawables");
                 setSearchBarDrawables();
             }
         });
@@ -260,12 +251,11 @@ public class HomeActivity extends AbstractNavDrawerActivity {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getRawX() >= (searchBar.getRight() - searchBar.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         setSearchBarDrawables();
-                        if(searchBar.getText().length() > 0){
+                        if (searchBar.getText().length() > 0) {
                             //clear search bar
                             searchBar.setText("");
                         } else {
                             //start barcode activity
-                            Logger.d("start setSearchBarDrawables");
                             startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
                         }
                         return true;
@@ -285,7 +275,6 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     }
 
     public void setSearchBarDrawables() {
-        Logger.d(searchBar.getText().toString());
         if(searchBar.getText().toString().length() > 0) {
             searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
                     null,

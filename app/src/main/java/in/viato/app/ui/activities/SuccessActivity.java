@@ -8,8 +8,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.segment.analytics.Analytics;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -69,8 +67,8 @@ public class SuccessActivity extends AbstractActivity {
     protected void onResume() {
         super.onResume();
 
-//        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
-        Analytics.with(this).screen("screen", getString(R.string.booking_detail_fragment));
+        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
+//        Analytics.with(this).screen("screen", getString(R.string.booking_detail_fragment));
 
     }
 }
