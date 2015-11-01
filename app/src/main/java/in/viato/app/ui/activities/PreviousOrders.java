@@ -42,4 +42,9 @@ public class PreviousOrders extends AbstractNavDrawerActivity {
         getSupportFragmentManager().popBackStack();
         return true;
     }
+
+    @Override
+    protected int getSelfNavDrawerItem() {
+        return getResources().getInteger(R.integer.nav_item_lends);
+    }
 }

@@ -1,8 +1,10 @@
 package in.viato.app.http.clients.viato;
 
 import java.util.List;
+import java.util.Map;
 
 import in.viato.app.http.models.Address;
+import in.viato.app.http.models.Locality;
 import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.request.CartItem;
@@ -23,6 +25,7 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -32,10 +35,13 @@ public interface ViatoService {
 
     String baseUrl = "http://viato.in/api/";
 
-    @GET("feed/home/")
+    @GET("feed/home")
     Observable<List<CategoryItem>> getCategories();
 
-    @GET("feed/category/{categoryId}/")
+    @GET("feed/trending")
+    Observable<CategoryGrid> getTrending (@Query("page") int page);
+
+    @GET("feed/category/{categoryId}")
     Observable<CategoryGrid> getBooksByCategory(
             @Path("categoryId") String categoryId,
             @Query("page") int page);
@@ -107,6 +113,12 @@ public interface ViatoService {
 
     @POST("user/bookings/rents/return")
     Observable<Response<String>> returnRental(@Body RentalBody rentalBody);
+
+    @GET("user/address/locality")
+    Observable<Locality> getLocality(
+            @Query("lat") String lat,
+            @Query("lon") String lon
+    );
 
 //    @GET("test")
 //    Observable<MyDate> getDate();

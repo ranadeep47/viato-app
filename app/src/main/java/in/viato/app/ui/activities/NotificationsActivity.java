@@ -24,7 +24,8 @@ import in.viato.app.ui.widgets.DividerItemDecoration;
  */
 public class NotificationsActivity extends AbstractNavDrawerActivity {
 
-    @Bind(R.id.frame_content) FrameLayout mFrameLayout;
+    @Bind(R.id.frame_content)
+    FrameLayout mFrameLayout;
 
     private List<Notification> mNotifications;
     private NotificationsActivity mActivity;
@@ -52,9 +53,12 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            @Bind(R.id.notification_heading) TextView mTitle;
-            @Bind(R.id.notification_body) TextView mBody;
-            @Bind(R.id.notification_date) TextView mDate;
+            @Bind(R.id.notification_heading)
+            TextView mTitle;
+            @Bind(R.id.notification_body)
+            TextView mBody;
+            @Bind(R.id.notification_date)
+            TextView mDate;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -130,5 +134,10 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
         mViatoApp.trackScreenView(getString(R.string.notification_activity));
 //        Analytics.with(this).screen("screen", getString(R.string.notification_activity));
 
+    }
+
+    @Override
+    protected int getSelfNavDrawerItem() {
+        return getResources().getInteger(R.integer.nav_item_notifications);
     }
 }

@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
+import com.google.android.gms.analytics.ecommerce.ProductAction;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
@@ -138,9 +142,29 @@ public class CheckoutFragment extends AbstractFragment {
                     ringProgressDialog.dismiss();
                     if (stringResponse.isSuccess()) {
                         String body = stringResponse.body();
+                        String orderId = body;
                         Intent intent = new Intent(getContext(), SuccessActivity.class);
-                        intent.putExtra(SuccessActivity.ARG_ORDER_ID, body);
+                        intent.putExtra(SuccessActivity.ARG_ORDER_ID, orderId);
                         intent.putExtra(SuccessActivity.ARG_DELIVERY_DATE, deliveryDate);
+
+                        Product product =  new Product()
+                                .setId(orderId)
+                                .setPrice(total)
+                                .setQuantity(1);
+
+                        ProductAction productAction = new ProductAction(ProductAction.ACTION_ADD);
+                        HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                                .addProduct(product)
+                                .setProductAction(productAction);
+
+                        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+                        t.setScreenName(getString(R.string.book_detail_fragment));
+                        t.send(builder.build());
+                        t.setScreenName(null);
+
+                        mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                                "cart", "place", "order");
+
                         startActivity(intent);
                         getActivity().finish();
                     } else {
@@ -216,7 +240,7 @@ public class CheckoutFragment extends AbstractFragment {
                 return;
             }
 
-            mAddressLabel.setText(address.getLabel());
+            mAddressLabel.setText(Character.toUpperCase(address.getLabel().charAt(0)) + address.getLabel().substring(1));
             mAddressFlat.setText(address.getFlat());
             mAddressStreet.setText(address.getStreet());
             mAddressLocality.setText(address.getLocality().getName());
@@ -268,7 +292,6 @@ public class CheckoutFragment extends AbstractFragment {
 
                 Address address = data.getParcelableExtra(AddressListActivity.ARG_ADDRESS);
                 mSelectedAddress = data.getIntExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
-                Logger.d(mSelectedAddress + "");
 
                 if(mSelectedAddress == addresses.size()) {
                     addresses.add(address);
@@ -284,7 +307,7 @@ public class CheckoutFragment extends AbstractFragment {
                 mAddressFlat.setText(flat);
                 mAddressStreet.setText(street);
                 mAddressLocality.setText(locality);
-                mAddressLabel.setText(label);
+                mAddressLabel.setText(Character.toUpperCase(label.charAt(0)) + label.substring(1));
             } else {
                 Logger.e("empty data");
             }
@@ -387,6 +410,26 @@ public class CheckoutFragment extends AbstractFragment {
                                 public void onNext(String s) {
                                     sBookList.remove(position);
                                     notifyDataSetChanged();
+
+                                    Product product =  new Product()
+                                            .setId(removed.get_id())
+                                            .setName(removed.getTitle())
+                                            .setPrice(removed.getPricing().getRent())
+                                            .setQuantity(1);
+
+                                    ProductAction productAction = new ProductAction(ProductAction.ACTION_REMOVE);
+                                    HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                                            .addProduct(product)
+                                            .setProductAction(productAction);
+
+                                    Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+                                    t.setScreenName(mContext.getString(R.string.book_detail_fragment));
+                                    t.send(builder.build());
+                                    t.setScreenName(null);
+
+                                    mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                                            "cart", "remove", "book", removed.get_id(), removed.getTitle());
+
                                     Snackbar.make(v, "Item removed", Snackbar.LENGTH_LONG).show();
                                 }
                             });

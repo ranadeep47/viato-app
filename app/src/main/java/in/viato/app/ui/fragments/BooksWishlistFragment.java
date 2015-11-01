@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -105,6 +108,24 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         BookItem item = data.getParcelableExtra("book"); //TODO , replace the string with a resource
+
+        Product product = new Product()
+                .setId(item.getCatalogueId())
+                .setName(item.getTitle())
+                .setCustomDimension(getResources().getInteger(R.integer.source),
+                        getString(R.string.title_activity_my_books));
+
+        HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                .addImpression(product, "add to wish list");
+
+        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+        t.setScreenName(getString(R.string.title_activity_my_books));
+        t.send(builder.build());
+        t.setScreenName(null);
+
+        mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
+                "wish_list", "add", "book", item.getCatalogueId(), getString(R.string.title_activity_my_books));
+
         mViatoAPI
                 .addToWishlist(item.getCatalogueId())
                 .subscribe(new Subscriber<BookItem>() {
@@ -135,6 +156,23 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     }
 
     private void removeFromList(BookItem book, final int position) {
+        Product product = new Product()
+                .setId(book.getCatalogueId())
+                .setName(book.getTitle())
+                .setCustomDimension(getResources().getInteger(R.integer.source),
+                        getString(R.string.title_activity_my_books));
+
+        HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                .addImpression(product, "remove from wish list");
+
+        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+        t.setScreenName(getString(R.string.title_activity_my_books));
+        t.send(builder.build());
+        t.setScreenName(null);
+
+        mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
+                "wish_list", "remove", "book", book.getCatalogueId(), getString(R.string.title_activity_my_books));
+
         mViatoAPI
                 .removeFromWishlist(book.get_id())
                 .subscribe(new Subscriber<String>() {

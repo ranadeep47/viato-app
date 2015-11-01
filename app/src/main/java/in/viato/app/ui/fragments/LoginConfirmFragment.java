@@ -1,25 +1,28 @@
 package in.viato.app.ui.fragments;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import butterknife.Bind;
@@ -27,12 +30,13 @@ import butterknife.OnClick;
 import in.viato.app.R;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.login.HttpClient;
+import in.viato.app.http.models.request.Account;
 import in.viato.app.receivers.SMSReceiver;
 import in.viato.app.ui.activities.HomeActivity;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.SharedPrefHelper;
 import retrofit.HttpException;
-import retrofit.Retrofit;
+import retrofit.Response;
 import rx.Subscriber;
 import rx.functions.Action1;
 
@@ -71,6 +75,18 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         smsReceiver = new SMSReceiver();
         smsReceiver.addListener(this);
 
+        mSMSCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (v.getText().length() == 4) {
+                    mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "manual_verify", "otp");
+                    verifyOTP();
+                    return false;
+                }
+                return false;
+            }
+        });
+
         String[] emails = getEmails();
         ArrayAdapter<String> emailsAdapter = new ArrayAdapter<String>(
                 getActivity(),
@@ -79,6 +95,16 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         mEmail.setThreshold(3);
         mEmail.setAdapter(emailsAdapter);
         mEmail.setText(emails[0]);
+        mEmail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    submitEmail();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -104,8 +130,8 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         ArrayList<String> emails = new ArrayList<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
         AccountManager accountManager = AccountManager.get(getActivity());
-        Account[] accounts = accountManager.getAccountsByType("com.google");
-        for (Account account : accounts) {
+        android.accounts.Account[] accounts = accountManager.getAccountsByType("com.google");
+        for (android.accounts.Account account : accounts) {
             if (emailPattern.matcher(account.name).matches()) {
                 String possibleEmail = account.name;
                 emails.add(possibleEmail);
@@ -113,6 +139,16 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         }
 
         return emails.toArray(new String[emails.size()]);
+    }
+
+    private List<Account> getAccounts() {
+        AccountManager accountManager = AccountManager.get(getActivity());
+        android.accounts.Account[] accounts = accountManager.getAccounts();
+        List<Account> accountList = new ArrayList<>();
+        for (android.accounts.Account account : accounts){
+            accountList.add(new Account(account.name, account.type));
+        }
+        return accountList;
     }
 
     public void verifyOTP() {
@@ -130,14 +166,16 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                         //Todo: Handle error condition
                         @Override
                         public void onError(Throwable e) {
-                        if (e instanceof HttpException) {
-			                Logger.d(String.valueOf(((HttpException) e).code()));
-                            if (((HttpException) e).code() == 502) {
-                                //handle network error
-                            } else {
-                                //handle error message from server
+                            if (e instanceof HttpException) {
+//                                handleNetworkException(e);
+                                if (((HttpException) e).code() == 502) {
+                                    //handle network error
+                                } else if (((HttpException) e).code() == 400) {
+                                    //handle error message from server
+                                } else if (((HttpException) e).code() == 404) {
+                                    //
+                                }
                             }
-                        }
                             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             Logger.e(e.getMessage());
                         }
@@ -158,6 +196,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     @Override
     public void onSmsReceived(String otp) {
         mSMSCode.setText(otp);
+        mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "auto_verify", "otp");
         verifyOTP();
     }
 
@@ -166,19 +205,30 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         String mobile_number = SharedPrefHelper.getString(R.string.pref_mobile_number);
         String device_id = SharedPrefHelper.getString(R.string.pref_device_id);
 
+        mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "resend", "otp");
+
         //Todo: Handle error condition
-        mHttpClient.login(mobile_number, device_id, new ArrayList<String>())
-                .subscribe(new Action1<String>() {
+        mHttpClient.login(mobile_number, device_id)
+                .subscribe(new Subscriber<Response<String>>() {
                     @Override
-                    public void call(String s) {
-                        Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+                    public void onCompleted() {
+
                     }
-                }, new Action1<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
-                        Logger.d(throwable.getMessage() + " due to " + throwable.getCause());
-                        mSMSCode.setError(throwable.getMessage());
-                        Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                    public void onError(Throwable e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Logger.e(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Response<String> stringResponse) {
+                        if (stringResponse.isSuccess()) {
+                            Toast.makeText(getContext(), stringResponse.body(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), stringResponse.message(), Toast.LENGTH_SHORT).show();
+                            Logger.e(stringResponse.message());
+                        }
                     }
                 });
     }
@@ -188,10 +238,12 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         final String email = mEmail.getText().toString();
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mEmail.setError(null);
-            mHttpClient.submitEmail(email, mToken)
+            mHttpClient.finishLogin(email, mToken, getAccounts())
                     .subscribe(new Action1<String>() {
                         @Override
                         public void call(String access_token) {
+                            mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "submit", "email");
+
                             AppConstants.UserInfo.INSTANCE.setAuthToken(access_token);
                             AppConstants.UserInfo.INSTANCE.setEmail(email);
 

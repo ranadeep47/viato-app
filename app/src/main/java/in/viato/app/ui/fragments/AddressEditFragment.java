@@ -1,6 +1,8 @@
 package in.viato.app.ui.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -15,14 +17,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -36,26 +41,40 @@ import in.viato.app.http.models.Address;
 import in.viato.app.http.models.Locality;
 import in.viato.app.ui.activities.AddressListActivity;
 import in.viato.app.ui.adapters.PlaceAutocompleteAdapter;
+import retrofit.HttpException;
 import rx.Subscriber;
 
-public class AddressEditFragment extends AbstractFragment
-        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class AddressEditFragment extends AbstractFragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = AddressEditFragment.class.getSimpleName();
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+
+    private Location mLastLocation;
+
+    // Google client to interact with Google API
+    private GoogleApiClient mGoogleApiClient;
+
+    // boolean flag to toggle periodic location updates
+    private boolean mRequestingLocationUpdates = false;
+
+    private LocationRequest mLocationRequest;
+
+    // Location updates intervals in sec
+    private static int UPDATE_INTERVAL = 10000; // 10 sec
+    private static int FATEST_INTERVAL = 5000; // 5 sec
+    private static int DISPLACEMENT = 10; // 10 meters
 
     public static final String ARG_SELECTED_ADDRESS = "selectedAddress";
     public static final String ARG_ADDRESS = "address";
     public static final String ARG_LENGTH = "listSize";
 
-    private static final LatLngBounds BOUNDS_INDIA = null;
-//    new LatLngBounds(new LatLng(8.06, 77.5), new LatLng(37.4, 75.4))
-
     public static final String ARG_ACTION = "action";
-    public static final int CREATE_ADDRESS = 0;
 
+    public static final int CREATE_ADDRESS = 0;
     public static final int EDIT_ADDRESS = 1;
 
-    protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
 
     @Bind(R.id.editText_label)
@@ -72,12 +91,15 @@ public class AddressEditFragment extends AbstractFragment
 
     @Bind(R.id.editText_locality)
     @NotEmpty
-    AutoCompleteTextView locality;
+    AutoCompleteTextView localityTV;
+
+    @Bind(R.id.scrollView) ScrollView mScrollView;
 
     private int mAction;
     private int mSelectedAddress;
     private int mListLength;
     private String placeId;
+    private String placeName;
     private Address mAddress;
     private Validator mValidator;
 
@@ -107,14 +129,6 @@ public class AddressEditFragment extends AbstractFragment
 
         setHasOptionsMenu(true);
 
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
         mValidator = new Validator(this);
         mValidator.setValidationListener(new Validator.ValidationListener() {
             @Override
@@ -122,7 +136,7 @@ public class AddressEditFragment extends AbstractFragment
                 mAddress.setLabel(label.getText().toString());
                 mAddress.setFlat(flat.getText().toString());
                 mAddress.setStreet(street.getText().toString());
-                mAddress.setLocality(new Locality(placeId, locality.getText().toString()));
+                mAddress.setLocality(new Locality(placeId, localityTV.getText().toString()));
 
                 switch (mAction) {
                     case EDIT_ADDRESS:
@@ -173,38 +187,20 @@ public class AddressEditFragment extends AbstractFragment
             }
         });
 
-        /*get current place
-        Collection<Integer> filterTypes = new ArrayList<Integer>();
-        filterTypes.add(Place.TYPE_ESTABLISHMENT);
-        PlaceFilter pf = new PlaceFilter(filterTypes, false, null, null);
-
-        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                .getCurrentPlace(mGoogleApiClient, pf);
-        result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-            @Override
-            public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                Logger.d(likelyPlaces.getCount() + "");
-                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                    Log.i(TAG, String.format("Place '%s' of type '%s' has likelihood: %g",
-                            placeLikelihood.getPlace().getName(),
-                            placeLikelihood.getPlace().getPlaceTypes().toString(),
-                            placeLikelihood.getLikelihood()));
-                }
-                likelyPlaces.release();
-            }
-        });*/
-
         if(mAddress.getLocality() == null) {
-            //Todo: get from fused location api
-            placeId = "";
+            if (checkPlayServices()) {
+                buildGoogleApiClient();
+                getLocality();
+            }
         } else {
-            locality.setText(mAddress.getLocality().getName());
             placeId = mAddress.getLocality().getPlaceId();
+            placeName = mAddress.getLocality().getName();
         }
 
-        mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, BOUNDS_INDIA, null);
-        locality.setOnItemClickListener(mAutocompleteClickListener);
-        locality.setAdapter(mAdapter);
+        mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, null, null);
+        localityTV.setAdapter(mAdapter);
+        localityTV.setText(placeName);
+        localityTV.setOnItemClickListener(mAutocompleteClickListener);
     }
 
     @Override
@@ -229,15 +225,17 @@ public class AddressEditFragment extends AbstractFragment
     @Override
     public void onStart() {
         super.onStart();
-
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -248,49 +246,13 @@ public class AddressEditFragment extends AbstractFragment
         mGoogleApiClient = null;
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-        Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
-
-        // TODO(Developer): Check error code and notify the user of error state and resolution.
-        Toast.makeText(getActivity(),
-                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-                Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Listener that handles selections from suggestions from the AutoCompleteTextView that
-     * displays Place suggestions.
-     * Gets the place id of the selected item and issues a request to the Places Geo Data API
-     * to retrieve more details about the place.
-     *
-     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
-     * String...)
-     */
     private AdapterView.OnItemClickListener mAutocompleteClickListener
             = new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    /*
-                     Retrieve the place ID of the selected item from the Adapter.
-                     The adapter stores each Place suggestion in a AutocompletePrediction from which we
-                     read the place ID and title.
-                      */
                     final AutocompletePrediction item = mAdapter.getItem(position);
-                    final String placeId = item.getPlaceId();
-                    final CharSequence primaryText = item.getPrimaryText(null);
-
-
-                    Log.i(TAG, "Autocomplete item selected: " + primaryText);
-
-                    /*
-                     Issue a request to the Places Geo Data API to retrieve a Place object with additional
-                     details about the place.
-                      */
-        //            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-        //                    .getPlaceById(mGoogleApiClient, placeId);
-        //            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+                    placeId = item.getPlaceId();
+                    placeName = (String)item.getPrimaryText(null);
                 }
             };
 
@@ -306,14 +268,14 @@ public class AddressEditFragment extends AbstractFragment
                     @Override
                     public void onError(Throwable e) {
                         Logger.e(e.getMessage());
-                        Logger.d("error in creating error");
+                        Snackbar.make(mScrollView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onNext(Address address) {
                         Toast.makeText(getContext(), "New Address Added", Toast.LENGTH_SHORT).show();
                         mSelectedAddress = mListLength;
-                        setResult(getActivity().RESULT_OK, address);
+                        setResult(Activity.RESULT_OK, address);
                     }
                 });
     }
@@ -329,13 +291,14 @@ public class AddressEditFragment extends AbstractFragment
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Logger.e(e.getMessage());
+                        Snackbar.make(mScrollView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onNext(Address address) {
+                        setResult(Activity.RESULT_OK, address);
                         Toast.makeText(getContext(), "Address Updated", Toast.LENGTH_SHORT).show();
-                        setResult(getActivity().RESULT_OK, address);
                     }
                 });
     }
@@ -348,46 +311,83 @@ public class AddressEditFragment extends AbstractFragment
         getActivity().finish();
     }
 
-//    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
-//            = new ResultCallback<PlaceBuffer>() {
-//        @Override
-//        public void onResult(PlaceBuffer places) {
-//            if (!places.getStatus().isSuccess()) {
-//                // Request did not complete successfully
-//                Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
-//                places.release();
-//                return;
-//            }
-//            // Get the Place object from the buffer.
-//            final Place place = places.get(0);
-//
-//            // Format details of the place for display and show it in a TextView.
-//            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
-//                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-//                    place.getWebsiteUri()));
-//
-//            // Display the third party attributions if set.
-//            final CharSequence thirdPartyAttribution = places.getAttributions();
-//            if (thirdPartyAttribution == null) {
-//                mPlaceDetailsAttribution.setVisibility(View.GONE);
-//            } else {
-//                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-//                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
-//            }
-//
-//            Log.i(TAG, "Place details received: " + place.getName());
-//
-//            places.release();
-//        }
-//    };
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+        mGoogleApiClient.connect();
+    }
+
+    public void getLocality() {
+        mLastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation == null) {
+            return;
+        }
+
+        double latitude = mLastLocation.getLatitude();
+        double longitude = mLastLocation.getLongitude();
+
+        mViatoAPI.getLocality(String.valueOf(latitude), String.valueOf(longitude))
+                .subscribe(new Subscriber<Locality>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof HttpException) {
+                            Logger.e("Error Code : %d", ((HttpException) e).code());
+                            Logger.e(e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Locality locality) {
+                        setLocality(locality);
+                    }
+                });
+    }
+
+    public void setLocality(Locality locality) {
+        if (locality != null){
+            placeId = locality.getPlaceId();
+            placeName = locality.getName();
+            localityTV.setText(placeName);
+        }
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        getLocality();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 }

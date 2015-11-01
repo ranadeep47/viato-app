@@ -30,7 +30,7 @@ import in.viato.app.utils.barcode.CameraSourcePreview;
 /**
  * Created by ranadeep on 22/09/15.
  */
-public class BarcodeScannerActivity extends AppCompatActivity {
+public class BarcodeScannerActivity extends AbstractActivity {
     private static final String TAG = "BarcodeScanner";
     private static final int RC_HANDLE_GMS = 9001;
 
@@ -225,6 +225,8 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     }
 
     private void sendISBN(String isbn){
+        mViatoApp.trackEvent(getString(R.string.barcode_scanner_activity),
+                "barcode_scanner", "scan", "book", isbn);
         if (getCallingActivity() == null) {
             String query = isbn;
             Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);

@@ -37,6 +37,10 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
+import com.google.android.gms.analytics.ecommerce.ProductAction;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -182,9 +186,13 @@ public class BookDetailFragment extends AbstractFragment {
         int id = item.getItemId();
         switch(id) {
             case R.id.action_cart:
+                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                        "cart", "clicked", "icon", "", "bookDetail_menu");
                 startActivity(new Intent(getActivity(), CheckoutActivity.class));
                 return true;
             case R.id.action_share:
+                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                        "share", "clicked", "icon", mBookDetail.get_id(), "bookDetail_menu");
                 letShare();
                 return true;
             default:
@@ -234,6 +242,29 @@ public class BookDetailFragment extends AbstractFragment {
                 String rentalId = mBookDetail.getPricing().getRental().get(0).get_id();
                 Boolean available = mBookDetail.getAvailable();
                 float rent = mBookDetail.getPricing().getRental().get(0).getRent();
+
+                // TODO: 01/11/15 Confirm the id
+                Product product =  new Product()
+                        .setId(catalogueId)
+                        .setName(mBookDetail.getTitle())
+                        .setPrice(mBookDetail.getPricing().getRental().get(0).getRent())
+                        .setQuantity(1)
+                        .setCustomDimension(getResources().getInteger(R.integer.availability),
+                                available ? getString(R.string.available) : getString(R.string.not_available));
+
+                ProductAction productAction = new ProductAction(ProductAction.ACTION_ADD);
+                HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                        .addProduct(product)
+                        .setProductAction(productAction);
+
+                Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+                t.setScreenName(getString(R.string.book_detail_fragment));
+                t.send(builder.build());
+                t.setScreenName(null);
+
+                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                        "cart", "add", "book", mBookId, mBookDetail.getTitle());
+
                 if ((!available) || (rent == 0)) {
                     //Todo: Trigger analytics event
                     Snackbar.make(v, "This book is currently unavailable for rental. We will let you know once it's available.", Snackbar.LENGTH_LONG).show();
@@ -265,14 +296,35 @@ public class BookDetailFragment extends AbstractFragment {
     @OnClick(R.id.btn_wish_list)
     public void toggleWishList(Button button) {
         Boolean inWishList = mBookDetail.getIsInWishList();
+        Product product =  new Product()
+                .setId(mBookDetail.get_id())
+                .setName(mBookDetail.getTitle())
+                .setPrice(mBookDetail.getPricing().getRental().get(0).getRent())
+                .setQuantity(1);
+        HitBuilders.ScreenViewBuilder builder;
+
         //Todo: make server call
         if (inWishList) {
             button.setText(R.string.add_to_wish_list);
             Snackbar.make(button, R.string.removed_from_wish_list, Snackbar.LENGTH_SHORT).show();
+
+            builder = new HitBuilders.ScreenViewBuilder()
+                    .addImpression(product, "Remove from wish list");
+
         } else {
             button.setText(R.string.added_to_wish_list);
             Snackbar.make(button, R.string.added_to_wish_list, Snackbar.LENGTH_SHORT).show();
+
+            builder = new HitBuilders.ScreenViewBuilder()
+                    .addImpression(product, "Add to wish list");
         }
+
+        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+        t.setScreenName(getString(R.string.book_detail_fragment));
+        t.send(builder.build());
+        t.setScreenName(null);
+
+        mViatoApp.trackEvent(getString(R.string.book_detail_fragment), "wish_list", "add", "book", mBookDetail.get_id());
         mBookDetail.setIsInWishList(!inWishList);
     }
 

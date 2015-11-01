@@ -292,7 +292,6 @@ public class AddressListFragment extends AbstractFragment {
     }
 
     public void setResult(){
-        Logger.d("set Result");
         Intent intent = new Intent();
         if(mAddresses.size() == 0){
             return;
@@ -300,5 +299,11 @@ public class AddressListFragment extends AbstractFragment {
         intent.putExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
         intent.putExtra(AddressListActivity.ARG_ADDRESS, mAddresses.get(mSelectedAddress));
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        setResult();
+        return super.onBackPressed();
     }
 }

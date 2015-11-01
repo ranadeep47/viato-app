@@ -1,5 +1,7 @@
 package in.viato.app.ui.activities;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -11,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -30,6 +33,7 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
     @Bind(R.id.main_container) CoordinatorLayout mCoordinatorLayout ;
 
     private final Context mContext = this;
+
     private Handler mHandler = new Handler();
 
     // delay to launch nav drawer item, to allow close animation to play
@@ -69,12 +73,23 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
     }
 
     private void setupDrawerContent(final NavigationView navigationView) {
+        final int selfItem = getSelfNavDrawerItem();
+
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu_white);
+
+        navigationView
+                .getMenu()
+                .getItem(selfItem)
+                .setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem menuItem) {
+                if(menuItem.getOrder() == selfItem) {
+                    mDrawerLayout.closeDrawers();
+                    return true;
+                }
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
                 return mHandler.postDelayed(new Runnable() {
@@ -122,5 +137,18 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                 }
             }
         });
+    }
+
+    protected int getSelfNavDrawerItem() {
+        return getResources().getInteger(R.integer.nav_item_home);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

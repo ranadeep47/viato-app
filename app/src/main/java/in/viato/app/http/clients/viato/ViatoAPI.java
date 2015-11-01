@@ -1,5 +1,6 @@
 package in.viato.app.http.clients.viato;
 
+import com.orhanobut.logger.Logger;
 import com.squareup.moshi.Moshi;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -8,6 +9,7 @@ import in.viato.app.http.clients.ClientUtils;
 import in.viato.app.http.clients.Rfc3339DateJsonAdapter;
 import in.viato.app.http.clients.ToStringConverterFactory;
 import in.viato.app.http.models.Address;
+import in.viato.app.http.models.Locality;
 import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
 import in.viato.app.http.models.request.CartItem;
@@ -28,6 +30,8 @@ import java.util.List;
 
 import in.viato.app.http.models.response.CoverQuote;
 import in.viato.app.http.models.response.MyBooksReadResponse;
+import retrofit.http.GET;
+import retrofit.http.Query;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -75,6 +79,13 @@ public class ViatoAPI {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
 
+    }
+
+    public Observable<CategoryGrid> getTrending(int page){
+        return mViatoService
+                .getTrending(page)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
     public Observable<List<BookItem>> search(String query){
@@ -238,6 +249,14 @@ public class ViatoAPI {
     public Observable<Response<String>> returnRental(RentalBody body) {
         return mViatoService
                 .returnRental(body)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Locality> getLocality(String latitude, String longitude) {
+        Logger.d("Requesting locality for %s and %s", latitude, longitude);
+        return mViatoService
+                .getLocality(latitude, longitude)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

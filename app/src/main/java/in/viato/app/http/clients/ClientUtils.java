@@ -19,6 +19,7 @@ public class ClientUtils {
         client.setConnectTimeout(10, SECONDS);
         client.setReadTimeout(10, SECONDS);
         client.setWriteTimeout(10, SECONDS);
+        client.setRetryOnConnectionFailure(true);
 
         int DISK_CACHE_SIZE = 1024*1024*10;
         // Install an HTTP cache in the application cache directory.

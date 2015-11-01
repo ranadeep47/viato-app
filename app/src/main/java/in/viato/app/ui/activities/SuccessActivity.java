@@ -28,6 +28,11 @@ public class SuccessActivity extends AbstractActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bare);
+
+        FrameLayout view =  (FrameLayout) findViewById(R.id.frame_content);
+        NestedScrollView view1 = (NestedScrollView) getLayoutInflater().inflate(R.layout.activity_success, null);
+        view.addView(view1);
+
         Intent intent = getIntent();
         if (intent == null){
             return;
@@ -39,12 +44,6 @@ public class SuccessActivity extends AbstractActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        FrameLayout view =  (FrameLayout) findViewById(R.id.frame_content);
-        NestedScrollView view1 = (NestedScrollView) getLayoutInflater().inflate(R.layout.activity_success, null);
-        view.addView(view1);
-
-        ButterKnife.bind(this, view);
 
         orderIdTV.setText(orderId);
         deliveryDateTV.setText(deliveryDate);

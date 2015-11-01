@@ -3,13 +3,19 @@ package in.viato.app.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
+import com.google.android.gms.analytics.ecommerce.ProductAction;
 import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
@@ -103,7 +109,24 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        BookItem item = data.getParcelableExtra("book"); //TODO , replace the string with a resource
+        BookItem item = data.getParcelableExtra("book"); // TODO: 01/11/15 replace the string with a resource
+
+        Product product = new Product()
+                .setId(item.getCatalogueId())
+                .setName(item.getTitle())
+                .setCustomDimension(getResources().getInteger(R.integer.source),
+                        getString(R.string.title_activity_my_books));
+
+        HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                .addImpression(product, "add to read list");
+
+        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+        t.setScreenName(getString(R.string.title_activity_my_books));
+        t.send(builder.build());
+        t.setScreenName(null);
+
+        mViatoApp.trackEvent(getString(R.string.title_activity_my_books), "read_list", "add", "book", item.getCatalogueId(), getString(R.string.title_activity_my_books));
+
         mViatoAPI
                 .addToRead(item.getCatalogueId())
                 .subscribe(new Subscriber<BookItem>() {
@@ -133,6 +156,23 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
     }
 
     private void removeFromList(BookItem book, final int position) {
+        Product product = new Product()
+                .setId(book.getCatalogueId())
+                .setName(book.getTitle())
+                .setCustomDimension(getResources().getInteger(R.integer.source),
+                        getString(R.string.title_activity_my_books));
+
+        HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                .addImpression(product, "remove from read list");
+
+        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+        t.setScreenName(getString(R.string.title_activity_my_books));
+        t.send(builder.build());
+        t.setScreenName(null);
+
+        mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
+                "read_list", "remove", "book", book.getCatalogueId(), getString(R.string.title_activity_my_books));
+
         mViatoAPI
                 .removeFromRead(book.get_id())
                 .subscribe(new Subscriber<String>() {
@@ -143,12 +183,13 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("Error removing from wishlist");
+                        Snackbar.make(container, "Error removing book from read list", Snackbar.LENGTH_LONG).show();
+                        Logger.e(e.getMessage());
                     }
 
                     @Override
                     public void onNext(String s) {
-                        Logger.d("Removed from wishlist");
+                        Logger.d("Removed from read list");
                         adapter.remove(position);
                     }
                 });

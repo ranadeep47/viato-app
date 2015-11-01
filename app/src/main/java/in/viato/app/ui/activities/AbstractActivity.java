@@ -22,6 +22,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
@@ -31,6 +33,7 @@ import in.viato.app.receivers.NetworkStateReceiver;
 import in.viato.app.ui.fragments.AbstractFragment;
 import in.viato.app.ui.fragments.FragmentTransition;
 import in.viato.app.utils.RxUtils;
+import in.viato.app.utils.SharedPrefHelper;
 import rx.subscriptions.CompositeSubscription;
 
 /**

@@ -23,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
@@ -151,6 +154,10 @@ public class BookSearchActivity extends AbstractActivity {
             mSearchView.setIconified(false);
             mSearchView.setQuery(query, true);
             performQuery(query);
+
+            mViatoApp.trackEvent(getString(R.string.home_activity),
+                    "search", "submit", "query", query, getString(R.string.book_search_activity));
+
             Logger.d("ISBN received : %s", query);
         }
     }
@@ -259,6 +266,22 @@ public class BookSearchActivity extends AbstractActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplication(), BookDetailActivity.class);
                     intent.putExtra(BookDetailActivity.ARG_BOOK_ID, result.getCatalogueId());
+
+                    Product product = new Product()
+                            .setId(result.getCatalogueId())
+                            .setName(result.getTitle())
+                            .setPosition(position)
+                            .setCustomMetric(getResources().getInteger(R.integer.extra_key), getItemCount());
+                    HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                            .addImpression(product, "Search Results");
+                    Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+                    t.setScreenName(getString(R.string.book_search_activity));
+                    t.send(builder.build());
+                    t.setScreenName(null);
+
+                    mViatoApp.trackEvent(getString(R.string.book_search_activity),
+                            "search", "selected", "result", String.valueOf(position));
+
                     startActivity(intent);
                 }
             });

@@ -7,10 +7,13 @@ import java.util.List;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.ClientUtils;
 import in.viato.app.http.clients.ToStringConverterFactory;
+import in.viato.app.http.models.request.Account;
 import in.viato.app.http.models.request.EmailBody;
 import in.viato.app.http.models.request.LoginBody;
 import in.viato.app.http.models.request.OtpBody;
 import retrofit.MoshiConverterFactory;
+import retrofit.Response;
+import retrofit.Result;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
@@ -41,9 +44,9 @@ public class HttpClient {
         mHttpService = retrofit.create(HttpService.class);
     }
 
-    public Observable<String> login(String mobile, String deviceId, List<String> accounts){
+    public Observable<Response<String>> login(String mobile, String deviceId){
         return mHttpService
-                .login(new LoginBody(mobile, deviceId, accounts))
+                .login(new LoginBody(mobile, deviceId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
@@ -56,9 +59,9 @@ public class HttpClient {
 
     }
 
-    public Observable<String> submitEmail(String email, String token) {
+    public Observable<String> finishLogin(String email, String token, List<Account> accounts) {
         return mHttpService
-                .submitEmail(new EmailBody(email, token))
+                .finishLogin(new EmailBody(email, token, accounts))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
 

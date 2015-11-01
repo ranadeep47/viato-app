@@ -3,6 +3,8 @@ package in.viato.app.http.clients.login;
 import in.viato.app.http.models.request.EmailBody;
 import in.viato.app.http.models.request.LoginBody;
 import in.viato.app.http.models.request.OtpBody;
+import retrofit.Response;
+import retrofit.Result;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import rx.Observable;
@@ -11,15 +13,15 @@ import rx.Observable;
  * Created by saiteja on 15/10/15.
  */
 public interface HttpService {
-    String baseUrl = "http://viato.in";
+    String baseUrl = "http://viato.in/";
 
-    @POST("/login/")
-    Observable<String> login(@Body LoginBody body);
+    @POST("login")
+    Observable<Response<String>> login(@Body LoginBody body);
 
-    @POST("/login/otp/verify/")
+    @POST("login/otp/verify")
     Observable<String> verifyOtp(@Body OtpBody otp);
 
-    @POST("/login/complete/")
-    Observable<String> submitEmail(@Body EmailBody otp);
+    @POST("login/complete")
+    Observable<String> finishLogin(@Body EmailBody otp);
 }
 

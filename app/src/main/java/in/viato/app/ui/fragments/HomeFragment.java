@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
+import com.google.android.gms.analytics.ecommerce.ProductAction;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -155,6 +159,10 @@ public class HomeFragment extends AbstractFragment {
                     Intent intent = new Intent(getContext(), CategoryBooksActivity.class);
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_ID, category.get_id());
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_NAME, category.getTitle());
+
+                    mViatoApp.trackEvent(getString(R.string.category_books_fragment),
+                           "category" ,"selected", category.getTitle(), category.get_id());
+
                     startActivity(intent);
                 }
             });

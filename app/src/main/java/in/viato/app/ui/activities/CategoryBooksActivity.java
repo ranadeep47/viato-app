@@ -26,7 +26,8 @@ public class CategoryBooksActivity extends AbstractActivity {
 
         Intent intent = getIntent();
         String id = intent.getStringExtra(ARG_CATEGORY_ID);
-        CategoryBooksFragment fragment = CategoryBooksFragment.newInstance(id);
+        String name = intent.getStringExtra(ARG_CATEGORY_NAME);
+        CategoryBooksFragment fragment = CategoryBooksFragment.newInstance(id, name);
         loadFragment(R.id.frame_content, fragment, CategoryBooksFragment.TAG, false, CategoryBooksFragment.TAG);
     }
 

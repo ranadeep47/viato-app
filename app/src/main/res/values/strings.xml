@@ -184,6 +184,7 @@
 
 
     <!-- Screen Names -->
+    <string name="home_activity">Home Activity</string>
     <string name="barcode_scanner_activity">Barcode Scanner Activity</string>
     <string name="book_search_activity">Book Search Activity</string>
     <string name="notification_activity">Notification Activity</string>
@@ -196,4 +197,8 @@
     <string name="booking_detail_fragment">Bookings Detail Fragment</string>
     <string name="login_fragment">Login Fragment</string>
     <string name="login_confirm_fragment">Login Confirm Fragment</string>
+
+    <!-- Availability status-->
+    <string name="available">Available</string>
+    <string name="not_available">Not Available</string>
 </resources>

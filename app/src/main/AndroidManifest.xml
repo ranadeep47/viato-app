@@ -9,15 +9,17 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <!-- Get permission for reliable local dispatching on non-Google Play devices. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:name=".ViatoApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/Theme.Viato" >
         <meta-data
             android:name="android.app.default_searchable"
@@ -174,7 +176,7 @@
             android:value="barcode" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDcf2JFLjIBHKYycS8WNbqM6rm8_jH5ZXI" />
+            android:value="@string/google_places_api_key" />
 
         <!--
           Optionally, register AnalyticsReceiver and AnalyticsService to support background

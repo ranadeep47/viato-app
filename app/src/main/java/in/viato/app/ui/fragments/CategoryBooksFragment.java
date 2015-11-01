@@ -40,11 +40,12 @@ public class CategoryBooksFragment extends AbstractFragment{
     public static final String TAG = CategoryBooksFragment.class.getSimpleName();
 
     private static final String ARG_CATEGORY_ID = "categoryId";
-
+    private static final String ARG_CATEGORY_NAME = "categoryName";
 
     private final int mSpanCount = 3;
 
     private String mCategoryId;
+    private String mCategoryName;
 
     private int page = 0;
     private boolean isFull = false;
@@ -60,9 +61,10 @@ public class CategoryBooksFragment extends AbstractFragment{
     @Bind(R.id.error_title) TextView errorTitle;
     @Bind(R.id.error_message) TextView errorMessage;
 
-    public static CategoryBooksFragment newInstance(String categoryId) {
+    public static CategoryBooksFragment newInstance(String categoryId, String categoryName) {
         Bundle args = new Bundle();
         args.putString(ARG_CATEGORY_ID, categoryId);
+        args.putString(ARG_CATEGORY_NAME, categoryName);
         CategoryBooksFragment fragment = new CategoryBooksFragment();
         fragment.setArguments(args);
         return fragment;
@@ -79,6 +81,7 @@ public class CategoryBooksFragment extends AbstractFragment{
         super.onCreateView(inflater, container, savedInstanceState);
         Bundle args = getArguments();
         mCategoryId = args.getString(ARG_CATEGORY_ID);
+        mCategoryName = args.getString(ARG_CATEGORY_NAME);
         return inflater.inflate(R.layout.fragment_category_books, container, false);
     }
 
@@ -86,7 +89,7 @@ public class CategoryBooksFragment extends AbstractFragment{
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //ButterKnife views set. Play with them now
-        adapter = new CategoryBooksGridAdapter();
+        adapter = new CategoryBooksGridAdapter(mCategoryName);
         layoutManager = new GridLayoutManager(getActivity(), mSpanCount);
 
         grid.setAdapter(adapter);
@@ -139,7 +142,11 @@ public class CategoryBooksFragment extends AbstractFragment{
     }
 
     private Observable<CategoryGrid> getBooks(int page){
-        return mViatoAPI.getBooksByCategory(mCategoryId, page);
+        if (mCategoryId == "trending") {
+            return mViatoAPI.getTrending(page);
+        } else {
+            return mViatoAPI.getBooksByCategory(mCategoryId, page);
+        }
     }
 
     private Subscription loadFirstPage(){

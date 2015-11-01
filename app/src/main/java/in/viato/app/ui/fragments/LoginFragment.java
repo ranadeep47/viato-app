@@ -1,6 +1,5 @@
 package in.viato.app.ui.fragments;
 
-
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -21,8 +20,6 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
-import java.util.ArrayList;
-
 import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.ViatoApplication;
@@ -30,7 +27,9 @@ import in.viato.app.http.clients.login.HttpClient;
 import in.viato.app.ui.widgets.CirclePageIndicator;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.SharedPrefHelper;
-import rx.functions.Action1;
+import retrofit.HttpException;
+import retrofit.Response;
+import rx.Subscriber;
 
 /**
  * Created by ranadeep on 15/09/15.
@@ -139,24 +138,35 @@ public class LoginFragment extends AbstractFragment implements ViewPager.OnPageC
             AppConstants.UserInfo.INSTANCE.setMobileNumber(mobile_number);
             AppConstants.UserInfo.INSTANCE.setDeviceId(device_id);
 
-            mHttpClient.login(mobile_number, device_id, new ArrayList<String>())
-                    .subscribe(new Action1<String>() {
+            mHttpClient.login(mobile_number, device_id)
+                    .subscribe(new Subscriber<Response<String>>() {
                         @Override
-                        public void call(String s) {
-                            hideKeyboard(mMobileInput);
-                            loadFragment(R.id.frame_content,
-                                    LoginConfirmFragment.newInstance(),
-                                    LoginConfirmFragment.TAG,
-                                    true,
-                                    LoginConfirmFragment.TAG
-                            );
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            Logger.d(throwable.getMessage() + " due to " + throwable.getCause());
-                            Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                        public void onCompleted() {
 
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Logger.e(e.getMessage());
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onNext(Response<String> stringResult) {
+                            if (stringResult.isSuccess()) {
+                                mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "submit", "phone");
+                                Toast.makeText(getContext(), stringResult.body(), Toast.LENGTH_SHORT).show();
+                                hideKeyboard(mMobileInput);
+                                loadFragment(R.id.frame_content,
+                                        LoginConfirmFragment.newInstance(),
+                                        LoginConfirmFragment.TAG,
+                                        true,
+                                        LoginConfirmFragment.TAG
+                                );
+                            } else {
+                                Logger.e(stringResult.message());
+                                Toast.makeText(getContext(), stringResult.message(), Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
         }

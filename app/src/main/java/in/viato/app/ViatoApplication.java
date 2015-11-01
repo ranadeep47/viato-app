@@ -55,7 +55,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         builder.downloader(new OkHttpDownloader(this, MiscUtils.calculateDiskCacheSize(this.getCacheDir())));
         Picasso built = builder.build();
         built.setIndicatorsEnabled(BuildConfig.DEBUG);
-        built.setLoggingEnabled(BuildConfig.DEBUG);
+        built.setLoggingEnabled(false);
         Picasso.setSingletonInstance(built);
 
 //        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
@@ -144,11 +144,8 @@ public class ViatoApplication extends Application implements NetworkStateReceive
      */
     private void saveCurrentAppDetailsIntoPreferences() {
         PackageInfo info = MiscUtils.getPackageInfo();
-        SharedPrefHelper
-                .set(R.string.pref_last_version_code, info.versionCode);
-        SharedPrefHelper
-                .set(R.string.pref_last_version_name, info.versionName);
-
+        SharedPrefHelper.set(R.string.pref_last_version_code, info.versionCode);
+        SharedPrefHelper.set(R.string.pref_last_version_name, info.versionName);
         SharedPrefHelper.set(R.string.pref_device_id, MiscUtils.getDeviceId());
     }
 
@@ -214,11 +211,37 @@ public class ViatoApplication extends Application implements NetworkStateReceive
      * @param action   action of the event
      * @param label    label
      */
+
     public void trackEvent(String screenName, String category, String action, String label) {
+        trackEvent(screenName, category, action, label, "");
+    }
+
+    public void trackEvent(String screenName, String category, String action, String label, String extra_key) {
+        Tracker t = getGoogleAnalyticsTracker();
+
+        t.setScreenName(screenName);
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(category)
+                .setAction(action)
+                .setLabel(label)
+                .setCustomDimension(getResources().getInteger(R.integer.extra_key), extra_key)
+                .build());
+        GoogleAnalytics.getInstance(this).dispatchLocalHits();
+        t.setScreenName(null);
+    }
+
+    public void trackEvent(String screenName, String category, String action, String label, String extra_key, String source) {
         Tracker t = getGoogleAnalyticsTracker();
         t.setScreenName(screenName);
         // Build and send an Event.
-        t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(category)
+                .setAction(action)
+                .setLabel(label)
+                .setCustomDimension(getResources().getInteger(R.integer.extra_key), extra_key)
+                .setCustomDimension(getResources().getInteger(R.integer.source), source)
+                .build());
         GoogleAnalytics.getInstance(this).dispatchLocalHits();
         t.setScreenName(null);
     }

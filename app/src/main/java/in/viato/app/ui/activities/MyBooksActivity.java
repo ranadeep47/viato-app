@@ -3,6 +3,8 @@ package in.viato.app.ui.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -53,7 +55,7 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.activity_drawer_tablayout);
         mActivity = this;
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
@@ -64,6 +66,10 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
         quoter = (TextView) coverContainer.findViewById(R.id.cover_quote_quoter);
 
         fab = (FloatingActionButton)((ViewStub) findViewById(R.id.stub_fab_add_books)).inflate();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
     }
 
     @Override
@@ -223,5 +229,10 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
         }
+    }
+
+    @Override
+    protected int getSelfNavDrawerItem() {
+        return getResources().getInteger(R.integer.nav_item_my_books);
     }
 }

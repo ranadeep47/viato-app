@@ -40,7 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="OTP"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:imeOptions="actionNext"/>
             <Button
                 android:id="@+id/btn_resend_otp"
                 android:layout_width="wrap_content"
@@ -117,6 +118,7 @@
         <TextView
             android:text="@string/complete"
             style="@style/BoldButton"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </FrameLayout>

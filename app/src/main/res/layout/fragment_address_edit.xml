@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:isScrollContainer="false">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -66,4 +67,4 @@
                       android:imeOptions="actionDone"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

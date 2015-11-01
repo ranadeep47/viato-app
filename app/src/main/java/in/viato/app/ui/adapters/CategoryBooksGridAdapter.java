@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
+import com.google.android.gms.analytics.ecommerce.ProductAction;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.activities.BookDetailActivity;
 
@@ -26,8 +31,10 @@ import in.viato.app.ui.activities.BookDetailActivity;
  */
 public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooksGridAdapter.CategoryBookItemHolder> {
 
+    private ViatoApplication mViatoApp = ViatoApplication.get();
     private List<BookItem> mBooks = new ArrayList<>();
     private Context mContext;
+    private String mCategoryName;
 
     @Override
     public int getItemCount() {
@@ -39,6 +46,9 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
         notifyDataSetChanged();
     }
 
+    public CategoryBooksGridAdapter(String categoryName) {
+        mCategoryName = categoryName;
+    }
 
     @Override
     public void onBindViewHolder(CategoryBookItemHolder holder, final int position) {
@@ -46,13 +56,31 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
 
         holder.title.setText(book.getTitle());
         holder.author.setText(book.getAuthors());
-//        holder.rent.setText(book.getRent());
         holder.itemView.setTag(R.string.book_id, book.getCatalogueId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, BookDetailActivity.class);
                 intent.putExtra(BookDetailActivity.ARG_BOOK_ID, book.getCatalogueId());
+
+                Product product =  new Product()
+                        .setId(book.getCatalogueId())
+                        .setName(book.getTitle())
+                        .setCategory(mCategoryName)
+                        .setPosition(position);
+                ProductAction productAction = new ProductAction(ProductAction.ACTION_DETAIL)
+                        .setProductActionList("Category List");
+                HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
+                        .addProduct(product)
+                        .setProductAction(productAction);
+
+                Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+                t.setScreenName(mContext.getString(R.string.category_books_fragment));
+                t.send(builder.build());
+                t.setScreenName(null);
+
+                mViatoApp.trackEvent(mContext.getString(R.string.category_books_fragment), "category", "clicked", "book", book.getCatalogueId());
+
                 mContext.startActivity(intent);
             }
         });

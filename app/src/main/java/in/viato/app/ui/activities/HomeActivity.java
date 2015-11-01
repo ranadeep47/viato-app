@@ -1,6 +1,9 @@
 package in.viato.app.ui.activities;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -11,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -27,6 +31,7 @@ import android.widget.TextView;
 
 
 import com.crashlytics.android.Crashlytics;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -60,12 +65,11 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
-
-        String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
+        setContentView(R.layout.activity_drawer_tablayout);
 
         mActivity = this;
 
+        String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
         if(access_token.length() == 0) {
             startActivity(new Intent(this, RegistrationActivity.class));
             finish();
@@ -85,6 +89,12 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
         handleIntent(getIntent());
+
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String getSimSerialNumber = telephonyManager.getSimSerialNumber();
+        String getSimNumber = telephonyManager.getLine1Number();
+        Logger.d(getSimNumber);
+
     }
 
     @Override
@@ -113,10 +123,14 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         switch (item.getItemId()) {
             case R.id.menu_search:
                 startActivity(new Intent(this, BookSearchActivity.class));
+                mViatoApp.trackEvent(getString(R.string.home_activity),
+                        "search", "clicked", "icon", "", "home_menu");
 //                overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_fade_out);
                 break;
             case R.id.menu_cart:
                 startActivity(new Intent(this, CheckoutActivity.class));
+                mViatoApp.trackEvent(getString(R.string.home_activity),
+                        "cart", "clicked", "icon", "", "home_menu");
                 break;
         }
         return true;
@@ -170,7 +184,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(HomeFragment.newInstance(), "Category");
         adapter.addFrag(
-                CategoryBooksFragment.newInstance("trending"),
+                CategoryBooksFragment.newInstance("trending", getResources().getString(R.string.trending)),
                 getResources().getString(R.string.trending)
         );
 
@@ -216,6 +230,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
                     intent.putExtra(SearchManager.QUERY, query);
                     intent.setAction("android.intent.action.SEARCH");
                     startActivity(intent);
+                    mViatoApp.trackEvent(getString(R.string.home_activity),
+                            "search", "submit", "query", query, getString(R.string.home_activity));
                     searchBar.setText("");
                     return true;
                 }
@@ -257,6 +273,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
                         } else {
                             //start barcode activity
                             startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
+                            mViatoApp.trackEvent(getString(R.string.home_activity),
+                                    "barcode_scanner", "clicked", "icon", "", "searchbar_home");
                         }
                         return true;
                     }
@@ -287,5 +305,10 @@ public class HomeActivity extends AbstractNavDrawerActivity {
                     null);
 
         }
+    }
+
+    @Override
+    protected int getSelfNavDrawerItem() {
+        return getResources().getInteger(R.integer.nav_item_home);
     }
 }
