@@ -11,15 +11,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/header">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/icn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_close_black"
+            android:tint="@color/black_54"
             android:padding="@dimen/activity_horizontal_margin"
-            android:background="?android:attr/selectableItemBackground"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            style="@style/Widget.AppCompat.Light.ActionButton"
             android:layout_alignBottom="@+id/header_text"/>
         <TextView
             android:id="@+id/header_text"

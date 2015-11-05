@@ -1,6 +1,7 @@
 package in.viato.app.ui.activities;
 
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,6 +61,9 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        overridePendingTransition(R.anim.activity_slide_in_bottom, 0);
+
         mViatoApp = ViatoApplication.get();
         mViatoAPI = mViatoApp.getViatoAPI();
     }
@@ -214,10 +219,10 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
         mMainActivityIsOpen = mainActivityIsOpen;
     }
 
-    public ProgressDialog showProgressDialog() {
+    public ProgressDialog showProgressDialog(String message) {
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage("Loading");
+        mProgressDialog.setMessage(message);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setProgress(0);
         return mProgressDialog;
@@ -286,7 +291,8 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
 
     }
 
-    protected void setTitle(String title){
+    @Override
+    public void setTitle(CharSequence title) {
         if(mTitle != null) {
             mTitle.setText(title);
         }
@@ -298,7 +304,7 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
             label = getResources().getString(
                     getPackageManager().getActivityInfo(getComponentName(), 0).labelRes);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Logger.e(e, "error");
             label = getResources().getString(R.string.app_name);
         }
 

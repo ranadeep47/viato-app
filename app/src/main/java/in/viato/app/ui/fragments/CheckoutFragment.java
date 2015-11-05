@@ -119,12 +119,11 @@ public class CheckoutFragment extends AbstractFragment {
 
     @OnClick(R.id.place_order)
     public void placeOrder(final View v) {
-        if(addresses.size() == 0){
+        if(addresses.size() == 0 || mSelectedAddress == -1) {
             Snackbar.make(v, "Please Select a address", Snackbar.LENGTH_LONG).show();
             return;
         }
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(getContext(), "Please wait ...", "Placing your order", true);
-        ringProgressDialog.setCancelable(false);
+        final ProgressDialog progressDialog = showProgressDialog("Placing your order...");
         mViatoAPI.placeOrder(new BookingBody(addresses.get(mSelectedAddress).getId()))
             .subscribe(new Subscriber<Response<String>>() {
                 @Override
@@ -139,7 +138,7 @@ public class CheckoutFragment extends AbstractFragment {
 
                 @Override
                 public void onNext(Response<String> stringResponse) {
-                    ringProgressDialog.dismiss();
+                    progressDialog.dismiss();
                     if (stringResponse.isSuccess()) {
                         String body = stringResponse.body();
                         String orderId = body;
@@ -147,7 +146,7 @@ public class CheckoutFragment extends AbstractFragment {
                         intent.putExtra(SuccessActivity.ARG_ORDER_ID, orderId);
                         intent.putExtra(SuccessActivity.ARG_DELIVERY_DATE, deliveryDate);
 
-                        Product product =  new Product()
+                        Product product = new Product()
                                 .setId(orderId)
                                 .setPrice(total)
                                 .setQuantity(1);
@@ -171,7 +170,7 @@ public class CheckoutFragment extends AbstractFragment {
                         try {
                             Snackbar.make(v, stringResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Logger.e(e, "error");
                         }
                     }
                 }
@@ -188,7 +187,6 @@ public class CheckoutFragment extends AbstractFragment {
     }
     
     public void setupBooksList() {
-        checkoutListRV.setHasFixedSize(true);
 
         LinearLayoutManager linearLayoutManager = new MyVerticalLlm(getContext(), LinearLayoutManager.VERTICAL, false);
         checkoutListRV.setLayoutManager(linearLayoutManager);
@@ -240,7 +238,7 @@ public class CheckoutFragment extends AbstractFragment {
                 return;
             }
 
-            mAddressLabel.setText(Character.toUpperCase(address.getLabel().charAt(0)) + address.getLabel().substring(1));
+            mAddressLabel.setText(address.getLabel());
             mAddressFlat.setText(address.getFlat());
             mAddressStreet.setText(address.getStreet());
             mAddressLocality.setText(address.getLocality().getName());
@@ -282,22 +280,25 @@ public class CheckoutFragment extends AbstractFragment {
         }
 
         if (requestCode == REQUEST_ADDRESS) {
+            Logger.d("Got some data");
             if(data != null){
-                if (data.getParcelableExtra(AddressListActivity.ARG_ADDRESS) == null) {
+                mSelectedAddress = data.getIntExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
+                Address address = data.getParcelableExtra(AddressListActivity.ARG_ADDRESS);
+
+                if (mSelectedAddress == -1) {
                     Logger.d("No address found");
                     addAddress.setVisibility(View.VISIBLE);
                     alreadyAddress.setVisibility(View.GONE);
                     return;
                 }
 
-                Address address = data.getParcelableExtra(AddressListActivity.ARG_ADDRESS);
-                mSelectedAddress = data.getIntExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
-
                 if(mSelectedAddress == addresses.size()) {
                     addresses.add(address);
-                    addAddress.setVisibility(View.GONE);
-                    alreadyAddress.setVisibility(View.VISIBLE);
                 }
+
+                addresses.set(mSelectedAddress, address);
+
+                Logger.d(address.toString());
 
                 String flat = address.getFlat();
                 String street = address.getStreet();
@@ -308,6 +309,9 @@ public class CheckoutFragment extends AbstractFragment {
                 mAddressStreet.setText(street);
                 mAddressLocality.setText(locality);
                 mAddressLabel.setText(Character.toUpperCase(label.charAt(0)) + label.substring(1));
+
+                addAddress.setVisibility(View.GONE);
+                alreadyAddress.setVisibility(View.VISIBLE);
             } else {
                 Logger.e("empty data");
             }
@@ -392,6 +396,7 @@ public class CheckoutFragment extends AbstractFragment {
             holder.mRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
+                    final ProgressDialog dialog = showProgressDialog("Removing from cart...");
                     final BookItem removed = sBookList.get(position);
                     mViatoAPI.removeFromCart(removed.get_id())
                             .subscribe(new Subscriber<String>() {
@@ -408,6 +413,7 @@ public class CheckoutFragment extends AbstractFragment {
 
                                 @Override
                                 public void onNext(String s) {
+                                    dialog.dismiss();
                                     sBookList.remove(position);
                                     notifyDataSetChanged();
 

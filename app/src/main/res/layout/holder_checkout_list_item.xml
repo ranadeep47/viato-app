@@ -49,9 +49,9 @@
         android:id="@+id/remove"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:tint="@color/black_12"
+        android:tint="@color/black_38"
         android:src="@drawable/ic_close_black"
-        android:background="?attr/selectableItemBackground"
+        style="@style/Widget.AppCompat.Light.ActionButton"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>

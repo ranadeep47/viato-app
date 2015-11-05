@@ -3,21 +3,16 @@ package in.viato.app.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.analytics.ecommerce.Product;
-import com.google.android.gms.analytics.ecommerce.ProductAction;
-import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -29,6 +24,7 @@ import butterknife.Bind;
 import in.viato.app.R;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.ui.activities.CategoryBooksActivity;
+import in.viato.app.ui.widgets.BetterViewAnimator;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import retrofit.HttpException;
 import rx.Subscriber;
@@ -43,7 +39,12 @@ public class HomeFragment extends AbstractFragment {
     private static final String STATE_POSITION_INDEX = "state_position_index";
     private static final String STATE_POSITION_OFFSET = "state_position_offset";
 
+    @Bind(R.id.animator) BetterViewAnimator mAnimator;
+    @Bind(R.id.progress_bar) ProgressBar mProgressBar;
     @Bind(R.id.categories_list) RecyclerView list;
+    @Bind(R.id.error_template) LinearLayout errorContainer;
+    @Bind(R.id.error_title) TextView errorTitle;
+    @Bind(R.id.error_message) TextView errorMessage;
 
     private LinearLayoutManager layoutManager;
     private CategoryListAdapter adapter;
@@ -80,18 +81,18 @@ public class HomeFragment extends AbstractFragment {
 
             @Override
             public void onError(Throwable e) {
-                Logger.e(e.getMessage());
                 if (e instanceof HttpException) {
-                    Logger.e(((HttpException) e).code() + "");
-                    Snackbar.make(view, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                    Logger.e(e, "Cannot cannot to internet");
-//                    showError("Check your internet connection.");
+                    handleNetworkException((HttpException)e);
+                    errorTitle.setText("Network Error");
+                    errorMessage.setText(e.getMessage());
+                    mAnimator.setDisplayedChildView(errorContainer);
                 }
             }
 
             @Override
             public void onNext(List<CategoryItem> categories) {
                 adapter.setCategories(categories);
+                mAnimator.setDisplayedChildView(list);
             }
         });
     }
@@ -127,10 +128,8 @@ public class HomeFragment extends AbstractFragment {
         @Override
         public void onBindViewHolder(final CategoryViewHolder holder, int position) {
             final CategoryItem category = categories.get(position);
-            //TODO load category into imageView
             holder.titleView.setText(category.getTitle());
-            Picasso
-                    .with(getActivity())
+            Picasso.with(getActivity())
                     .load(category.getImages().getCover())
                     .transform(new ColorFilterTransformation(R.color.black))
                     .networkPolicy(NetworkPolicy.OFFLINE)
@@ -153,9 +152,6 @@ public class HomeFragment extends AbstractFragment {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO start an intent based on category information
-//                    Toast.makeText(getActivity(), category.getTitle(), Toast.LENGTH_SHORT).show();
-//                    loadFragment(R.id.frame_content, CategoryBooksFragment.newInstance(category.getId()), CategoryBooksFragment.TAG, true, CategoryBooksFragment.TAG);
                     Intent intent = new Intent(getContext(), CategoryBooksActivity.class);
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_ID, category.get_id());
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_NAME, category.getTitle());
@@ -190,6 +186,4 @@ public class HomeFragment extends AbstractFragment {
             imageView = (ImageView) itemView.findViewById(R.id.category_image);
         }
     }
-
-
 }

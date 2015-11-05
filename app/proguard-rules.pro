@@ -170,3 +170,12 @@
 # Fabric
 -keep class com.crashlytics.** { *; }
 -keep class com.crashlytics.android.**
+
+# Saripaar
+-keep class com.mobsandgeeks.saripaar.** {*;}
+-keep @com.mobsandgeeks.saripaar.annotation.ValidateUsing class * {*;}
+
+# Remove any verbose log statements directly from the bytecode
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+}

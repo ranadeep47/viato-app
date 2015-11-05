@@ -82,8 +82,8 @@ dependencies {
     compile "com.google.android.gms:play-services-appinvite:$GOOGLE_PLAY_SERVICES_VERSION"
     compile "com.google.android.gms:play-services-vision:$GOOGLE_PLAY_SERVICES_VERSION"
     compile "com.google.android.gms:play-services-location:$GOOGLE_PLAY_SERVICES_VERSION"
-//    compile "com.google.android.gms:play-services-analytics:$GOOGLE_PLAY_SERVICES_VERSION"
-
+    compile "com.google.android.gms:play-services-analytics:$GOOGLE_PLAY_SERVICES_VERSION"
+    compile "com.google.android.gms:play-services-gcm:$GOOGLE_PLAY_SERVICES_VERSION"
 
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'

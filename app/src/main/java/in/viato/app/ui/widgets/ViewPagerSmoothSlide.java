@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 
+import com.orhanobut.logger.Logger;
+
 import java.lang.reflect.Field;
 
 /**
@@ -27,7 +29,7 @@ public class ViewPagerSmoothSlide extends ViewPager {
             scroller.set(this, new MyScroller(getContext()));
         } catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.e(e, "error");
         }
     }
 

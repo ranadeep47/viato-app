@@ -20,7 +20,6 @@ import com.google.android.gms.vision.FocusingProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import in.viato.app.R;
@@ -30,7 +29,7 @@ import in.viato.app.utils.barcode.CameraSourcePreview;
 /**
  * Created by ranadeep on 22/09/15.
  */
-public class BarcodeScannerActivity extends AbstractActivity {
+public class BarcodeScannerActivity extends AppCompatActivity {
     private static final String TAG = "BarcodeScanner";
     private static final int RC_HANDLE_GMS = 9001;
 
@@ -137,7 +136,6 @@ public class BarcodeScannerActivity extends AbstractActivity {
                         }
                     }
                     isbn = item.rawValue;
-                    Logger.d("ISBN code : %s", item.rawValue);
                     sendISBN(isbn);
                 }
                 else if (len == 12){
@@ -147,7 +145,6 @@ public class BarcodeScannerActivity extends AbstractActivity {
                 else {
                     message = "Strange !";
                     showErrorMessage(message);
-                    Logger.d("I shouldn't ever print !");
                 }
 
             }
@@ -225,7 +222,7 @@ public class BarcodeScannerActivity extends AbstractActivity {
     }
 
     private void sendISBN(String isbn){
-        mViatoApp.trackEvent(getString(R.string.barcode_scanner_activity),
+        ViatoApplication.get().trackEvent(getString(R.string.barcode_scanner_activity),
                 "barcode_scanner", "scan", "book", isbn);
         if (getCallingActivity() == null) {
             String query = isbn;

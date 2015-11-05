@@ -1,6 +1,5 @@
 package in.viato.app.ui.fragments;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,10 +7,8 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +16,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,13 +37,9 @@ import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Rental;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.DividerItemDecoration;
-import in.viato.app.ui.widgets.MyHorizantalLlm;
 import in.viato.app.ui.widgets.MyVerticalLlm;
 import retrofit.Response;
-import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class BookingDetailFragment extends AbstractFragment {
     public static final String TAG = BookingDetailFragment.class.getSimpleName();
@@ -69,6 +60,7 @@ public class BookingDetailFragment extends AbstractFragment {
 
     @Bind(R.id.order_id) TextView mOrderId;
     @Bind(R.id.placed_on) TextView mPlacedOn;
+    @Bind(R.id.order_status) TextView mOrderStatus;
     @Bind(R.id.order_items_rv) RecyclerView mOrderItemsList;
     @Bind(R.id.order_value) TextView mOrderValue;
     @Bind(R.id.payment_status) TextView mPaymentStatus;
@@ -76,8 +68,6 @@ public class BookingDetailFragment extends AbstractFragment {
     @Bind(R.id.flat) TextView mAddressFlat;
     @Bind(R.id.street) TextView mAddressStreet;
     @Bind(R.id.locality) TextView mAddressLocality;
-//    @Bind(R.id.btn_cancel_order) Button mCancelOrder;
-//    @Bind(R.id.btn_review_order) Button mReviewOrder;
 
 
     public static BookingDetailFragment newInstance(String orderId) {
@@ -85,6 +75,7 @@ public class BookingDetailFragment extends AbstractFragment {
         Bundle args = new Bundle();
         args.putString(ARG_ORDER_ID, orderId);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -99,7 +90,7 @@ public class BookingDetailFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_order_description, container, false);
+        return inflater.inflate(R.layout.fragment_booking_detail, container, false);
     }
 
     @Override
@@ -141,20 +132,25 @@ public class BookingDetailFragment extends AbstractFragment {
                                 mAnimator.setDisplayedChildView(mBookingDetails);
                             }
                         } else {
-                            Snackbar.make(mCoordinatorLayout, bookingResponse.message(), Snackbar.LENGTH_LONG).show();
-                            Logger.e(bookingResponse.message());
+                            try {
+                                Snackbar.make(mCoordinatorLayout, bookingResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
+                                Logger.e(bookingResponse.errorBody().string());
+                            } catch (IOException e) {
+                                Logger.e(e, "error");
+                            }
                         }
                     }
                 });
     }
 
     public void setDetails() {
-        mOrderId.setText("#" + booking.getOrder_id());
+        mOrderId.setText(booking.getOrder_id());
 
         DateFormat dateFormat = new SimpleDateFormat("d MMM y");
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(booking.getBooked_at()); // sets calendar time/date
         mPlacedOn.setText(dateFormat.format(cal.getTime()));
+        mOrderStatus.setText(booking.getStatus());
 
         List<Rental> rentalList = booking.getRentals();
 
@@ -183,14 +179,11 @@ public class BookingDetailFragment extends AbstractFragment {
             @Bind(R.id.cover) ImageView mCover;
             @Bind(R.id.title) TextView mTitle;
             @Bind(R.id.sub_title) TextView mSubtitle;
+            @Bind(R.id.status) TextView mStatus;
             @Bind(R.id.price) TextView mPrice;
             @Bind(R.id.btn_extend) Button mBtnExtend;
             @Bind(R.id.btn_return) Button mBtnReturn;
-//            @Bind(R.id.not_delivered) LinearLayout mNotDelivered;
-            @Bind(R.id.delivery_estimate) TextView mDeliveryEstimate;
-//            @Bind(R.id.delivered) LinearLayout mDelivered;
             @Bind(R.id.delivered_date) TextView mDeliveredDate;
-//            @Bind(R.id.return_) LinearLayout mReturn;
             @Bind(R.id.return_date) TextView mReturnDate;
             @Bind(R.id.price_extend) TextView mPriceExtended;
 
@@ -218,14 +211,19 @@ public class BookingDetailFragment extends AbstractFragment {
 
             holder.mTitle.setText(rental.getItem().getTitle());
             holder.mSubtitle.setText(rental.getItem().getAuthors());
-            holder.mPrice.setText("Rs. " + (int)rental.getItem().getPricing().getRent() + "");
+            holder.mStatus.setText(rental.getStatus());
+            holder.mPrice.setText("Rs. " + (int) rental.getItem().getPricing().getRent() + "");
             holder.mBtnExtend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Logger.d(rental.get_id());
+
+                    int period = rental.getItem().getPricing().getPeriod();
+                    int price = (int) rental.getItem().getPricing().getRent();
+
                     new android.app.AlertDialog.Builder(getContext())
-                            .setTitle("Extend rental?")
-                            .setMessage("You can extend the rental period for x days for Rs. y")
+                            .setTitle("Extend")
+                            .setMessage("You can extend the rental tenure for " + period + " days at Rs. " + price +".")
                             .setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -242,8 +240,8 @@ public class BookingDetailFragment extends AbstractFragment {
                 @Override
                 public void onClick(View v) {
                     new android.app.AlertDialog.Builder(getContext())
-                            .setTitle("Return rental?")
-                            .setMessage("return  message")
+                            .setTitle("Return")
+                            .setMessage("Pickup for this book will be initiated. You can order another book.")
                             .setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -259,55 +257,42 @@ public class BookingDetailFragment extends AbstractFragment {
 
             if (rental.getExpected_delivery_at() != null) {
                 cal.setTime(rental.getExpected_delivery_at());
-                Logger.d("confirmed. delivery on " + dateFormat.format(cal.getTime()));
-                holder.mDeliveryEstimate.setVisibility(View.VISIBLE);
-                holder.mDeliveryEstimate.setText("Estimated Delivery: " + dateFormat.format(cal.getTime()));
-            } else {
-                Logger.d("not confirmed");
-//                holder.mDeliveryEstimate.setVisibility(View.GONE);
+                holder.mDeliveredDate.setText("Estimated Delivery: " + dateFormat.format(cal.getTime()));
+                holder.mDeliveredDate.setVisibility(View.VISIBLE);
             }
 
             if(rental.getDelivered_at() != null) {
-                Logger.d("delivery on %s", rental.getDelivered_at().toString());
-                holder.mDeliveryEstimate.setVisibility(View.GONE);
                 holder.mBtnExtend.setVisibility(View.VISIBLE);
                 holder.mBtnReturn.setVisibility(View.VISIBLE);
-                holder.mDeliveredDate.setVisibility(View.VISIBLE);
-                holder.mReturnDate.setVisibility(View.VISIBLE);
 
                 cal.setTime(rental.getDelivered_at());
                 holder.mDeliveredDate.setText("Delivered on: " + dateFormat.format(cal.getTime()));
                 cal.setTime(rental.getExpires_at());
                 holder.mReturnDate.setText("Return on: " + dateFormat.format(cal.getTime()));
-            } else {
-                Logger.d("not delivered");
-//                holder.mBtnExtend.setVisibility(View.GONE);
-//                holder.mReturnDate.setVisibility(View.GONE);
-//                holder.mDeliveredDate.setVisibility(View.GONE);
-//                holder.mReturn.setVisibility(View.GONE);
+
+                holder.mDeliveredDate.setVisibility(View.VISIBLE);
+                holder.mReturnDate.setVisibility(View.VISIBLE);
             }
 
             if (rental.getExtended_at() != null) {
-                Logger.d("extended on %s", rental.getExtended_at().toString());
-
                 cal.setTime(rental.getExtended_at());
                 holder.mPriceExtended.setText("+ Rs. " + (int) rental.getExtension_payment().getTotal_payable());
+                holder.mDeliveredDate.setText("Extended on: " + dateFormat.format(cal.getTime()));
+
                 holder.mBtnExtend.setVisibility(View.GONE);
-            } else {
-                Logger.d("not extended");
-//                holder.mBtnExtend.setVisibility(View.VISIBLE);
             }
 
-            if (rental.getPickup_requested_at() != null) {
-                Logger.d("pickup requested on %s", rental.getPickup_requested_at().toString());
-                holder.mBtnExtend.setVisibility(View.GONE);
+            if (rental.getPickup_requested_at() != null || rental.getExpires_at().before(new Date()) || rental.getStatus() == "CANCELLED") {
                 holder.mBtnReturn.setVisibility(View.GONE);
-            } else {
-                Logger.d("pickup not requested");
+                holder.mBtnExtend.setVisibility(View.GONE);
+                holder.mDeliveredDate.setVisibility(View.GONE);
+                holder.mReturnDate.setVisibility(View.GONE);
             }
 
-            if(rental.getExpires_at().after(new Date())) {
-                holder.mBtnReturn.setVisibility(View.GONE);
+            if (rental.getPickup_done_at() != null) {
+                cal.setTime(rental.getPickup_done_at());
+                holder.mReturnDate.setText("Returned on: " + dateFormat.format(cal.getTime()));
+                holder.mReturnDate.setVisibility(View.VISIBLE);
             }
         }
 
@@ -331,16 +316,14 @@ public class BookingDetailFragment extends AbstractFragment {
     public void setupDeliveryAddress() {
         Address deliveryAddress = booking.getDelivery_address();
 
-        String input = deliveryAddress.getLabel();
-        mAddressLabel.setText("(" + Character.toUpperCase(input.charAt(0)) + input.substring(1) + ")");
+        mAddressLabel.setText(deliveryAddress.getLabel());
         mAddressFlat.setText(deliveryAddress.getFlat());
         mAddressStreet.setText(deliveryAddress.getStreet());
         mAddressLocality.setText(deliveryAddress.getLocality().getName());
     }
 
     public void extendRental(String id) {
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(getContext(), "Please wait ...", "Extending your rental period", true);
-        ringProgressDialog.setCancelable(false);
+        final ProgressDialog progressDialog = showProgressDialog("Extending rental period...");
 
         mViatoAPI.extendRental(new RentalBody(id))
                 .subscribe(new Subscriber<Response<String>>() {
@@ -356,22 +339,29 @@ public class BookingDetailFragment extends AbstractFragment {
 
                     @Override
                     public void onNext(Response<String> stringResponse) {
-                        ringProgressDialog.dismiss();
+                        progressDialog.dismiss();
                         if (stringResponse.isSuccess()) {
                             Snackbar.make(mCoordinatorLayout, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
                             mAnimator.setDisplayedChildView(mProgressBar);
                             getBookingDetail();
                         } else {
-                            Snackbar.make(mCoordinatorLayout, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
-                            Logger.e(stringResponse.message());
+                            try {
+                                Snackbar.make(mCoordinatorLayout, stringResponse.errorBody().string(), Snackbar.LENGTH_SHORT).show();
+                                Logger.e(stringResponse.errorBody().string());
+                            } catch (IOException e) {
+                                Logger.e(e, "error");
+                            }
                         }
                     }
                 });
     }
 
     public void returnRental(String id) {
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(getContext(), "Please wait ...", "Requesting return", true);
-        ringProgressDialog.setCancelable(false);
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Requesting pickup...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
 
         mViatoAPI.returnRental(new RentalBody(id))
                 .subscribe(new Subscriber<Response<String>>() {
@@ -387,85 +377,24 @@ public class BookingDetailFragment extends AbstractFragment {
 
                     @Override
                     public void onNext(Response<String> stringResponse) {
-                        ringProgressDialog.dismiss();
+                        progressDialog.dismiss();
                         if (stringResponse.isSuccess()) {
                             Snackbar.make(mCoordinatorLayout, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
                             mAnimator.setDisplayedChildView(mProgressBar);
                             getBookingDetail();
                         } else {
-                            Snackbar.make(mCoordinatorLayout, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
-                            Logger.e(stringResponse.message());
+                            try {
+                                Snackbar.make(mCoordinatorLayout, stringResponse.errorBody().string(), Snackbar.LENGTH_SHORT).show();
+                                Logger.e(stringResponse.errorBody().string());
+                            } catch (IOException e) {
+                                Logger.e(e, "error");
+                            }
                         }
                     }
                 });
     }
 
-//    public void confirmRequest(int mAction, String id){
-//        String title = "";
-//
-//        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_modify_order, null);
-//
-//        final BetterViewAnimator mContainer = (BetterViewAnimator) view.findViewById(R.id.container_animator);
-//        final RelativeLayout mConfirmReturn = (RelativeLayout) view.findViewById(R.id.confirm_return);
-//        final RelativeLayout mConfirmExtend = (RelativeLayout) view.findViewById(R.id.confirm_extend);
-//        final LinearLayout mBar = (LinearLayout) view.findViewById(R.id.progress_bar);
-//        final LinearLayout mSuccess = (LinearLayout) view.findViewById(R.id.success);
-//
-//        switch(mAction) {
-//            case REQUEST_EXTEND:
-//                title = "Want to extend return period?";
-//                mContainer.setDisplayedChildView(mConfirmExtend);
-//                break;
-//            case REQUEST_RETURN:
-//                title = "Want to return the book?";
-//                mContainer.setDisplayedChildView(mConfirmExtend);
-//                break;
-//            default:
-//                break;
-//        }
-//
-//        new AlertDialog.Builder(getActivity())
-//                .setView(view)
-//                .setTitle(title)
-//                .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(final DialogInterface dialog, int which) {
-//                        mContainer.setDisplayedChildView(mBar);
-//                        askServer();
-//                    }
-//                })
-//                .setNegativeButton(R.string.cancel, null)
-//                .create()
-//                .show();
-//
-//    }
-//
-//    public void askServer(){
-//        final ProgressDialog ringProgressDialog = ProgressDialog.show(getContext(), "Please wait ...", "Confirming availability", true);
-//        Observable.timer(5000, TimeUnit.MILLISECONDS)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber() {
-//                    @Override
-//                    public void onCompleted() {
-//                        ringProgressDialog.dismiss();
-//                        showSuccess();
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Object o) {
-//
-//                    }
-//                });
-//    }
-//
-//    public void showSuccess() {
-//        Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
-//        new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen).show();
-//    }
+    public void getTransactions() {
+
+    }
 }

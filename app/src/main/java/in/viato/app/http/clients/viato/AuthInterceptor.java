@@ -1,6 +1,5 @@
 package in.viato.app.http.clients.viato;
 
-import com.orhanobut.logger.Logger;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -22,6 +21,7 @@ public class AuthInterceptor implements Interceptor {
         builder.header("Authorization", "Bearer " + UserInfo.INSTANCE.getAccessToken());
         builder.header("X-APP-VERSION", String.valueOf(UserInfo.INSTANCE.getAppVersion()));
         builder.header("X-DEVICE-ID", UserInfo.INSTANCE.getDeviceId());
+        builder.header("X-APP-TOKEN", UserInfo.INSTANCE.getAccessToken());
         return chain.proceed(builder.build());
     }
 

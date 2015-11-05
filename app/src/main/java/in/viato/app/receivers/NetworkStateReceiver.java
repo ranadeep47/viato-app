@@ -5,14 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
-
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import in.viato.app.ViatoApplication;
 
 /**
  * Created by ranadeep on 11/09/15.

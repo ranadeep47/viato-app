@@ -2,6 +2,8 @@ package in.viato.app.http.models.response;
 
 import java.util.Date;
 
+import retrofit.http.Body;
+
 /**
  * Created by saiteja on 22/10/15.
  */
@@ -22,6 +24,8 @@ public class Rental {
     private Boolean is_delivered;
     private Date delivered_at;
     private Date expected_delivery_at;
+
+    private ItemPricing extension_pricing;
 
     public String get_id() {
         return _id;
@@ -48,7 +52,7 @@ public class Rental {
     }
 
     public String getStatus() {
-        return status;
+        return Character.toUpperCase(status.charAt(0)) + status.substring(1);
     }
 
     public void setStatus(String status) {
@@ -125,5 +129,13 @@ public class Rental {
 
     public void setExpected_delivery_at(Date expected_delivery_at) {
         this.expected_delivery_at = expected_delivery_at;
+    }
+
+    public ItemPricing getExtension_pricing() {
+        return extension_pricing;
+    }
+
+    public void setExtension_pricing(ItemPricing extension_pricing) {
+        this.extension_pricing = extension_pricing;
     }
 }

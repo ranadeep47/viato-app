@@ -56,6 +56,7 @@ public class AppConstants {
         private String mEmail;
         private String mMobileNumber;
         private String mId;
+        private String mAppToken;
 
         private String mDeviceId;
         private String mName;
@@ -127,6 +128,13 @@ public class AppConstants {
             mDeviceId = deviceId;
         }
 
+        public String getAppToken() {
+            return mAppToken;
+        }
+
+        public void setAppToken(String appToken) {
+            mAppToken = appToken;
+        }
     }
 
     /**
@@ -185,13 +193,5 @@ public class AppConstants {
 
     public static interface Keys {
         public static final String UP_NAVIGATION_TAG = "up_navigation_tag";
-    }
-
-    public static interface ORDER_STATUS {
-        public static final int ORDER_PLACED = 0;
-        public static final int ORDER_CANCELED = 1;
-        public static final int ORDER_DELIVERED = 2;
-        public static final int ORDER_EXTENDED = 3;
-        public static final int ORDER_RETURNED = 4;
     }
 }

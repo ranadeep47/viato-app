@@ -47,7 +47,10 @@ public class Address implements Parcelable {
     }
 
     public String getLabel() {
-        return label;
+        if (label == null) {
+            return null;
+        }
+        return Character.toUpperCase(label.charAt(0)) + label.substring(1);
     }
 
     public void setLabel(String label) {
@@ -98,5 +101,16 @@ public class Address implements Parcelable {
             return new Address[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "Address { " +
+                " _id: " + getId() +
+                ", flat: " + getFlat() +
+                ", street: " + getStreet() +
+                ", locality name: " + getLocality().getName() +
+                ", locality id: " + getLocality().getPlaceId() +
+                ", label: " + getLabel();
+    }
 }
 

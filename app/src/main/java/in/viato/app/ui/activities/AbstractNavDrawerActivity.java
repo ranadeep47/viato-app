@@ -1,26 +1,26 @@
 package in.viato.app.ui.activities;
 
-import android.app.ActivityManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.orhanobut.logger.Logger;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import in.viato.app.R;
+import in.viato.app.utils.SharedPrefHelper;
 
 /**
  * Created by ranadeep on 14/09/15.
@@ -32,7 +32,9 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
     @Bind(R.id.nav_view) protected NavigationView mNavigationView;
     @Bind(R.id.main_container) CoordinatorLayout mCoordinatorLayout ;
 
-    private final Context mContext = this;
+    private final AbstractActivity mActivity = this;
+
+    private static final int MAIN_CONTENT_FADEOUT_DURATION = 150;
 
     private Handler mHandler = new Handler();
 
@@ -99,27 +101,24 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
 
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home:
-                                intent = new Intent(mContext, HomeActivity.class);
+                                intent = new Intent(mActivity, HomeActivity.class);
                                 startActivity(intent);
                                 finish();
                                 break;
                             case R.id.nav_my_books:
-                                intent = new Intent(mContext, MyBooksActivity.class);
-                                startActivity(intent);
-                                finish();
+                                intent = new Intent(mActivity, MyBooksActivity.class);
+                                createBackStack(intent);
                                 break;
                             case R.id.nav_lends:
-                                intent = new Intent(mContext, PreviousOrders.class);
-                                startActivity(intent);
-                                finish();
+                                intent = new Intent(mActivity, PreviousOrders.class);
+                                createBackStack(intent);
                                 break;
-                            case R.id.nav_notifications:
-                                intent = new Intent(mContext, NotificationsActivity.class);
-                                startActivity(intent);
-                                finish();
-                                break;
+//                            case R.id.nav_notifications:
+//                                intent = new Intent(mActivity, NotificationsActivity.class);
+//                                createBackStack(intent);
+//                                break;
                             case R.id.nav_help:
-                                Snackbar.make(mCoordinatorLayout, R.string.coming_soon, Snackbar.LENGTH_SHORT).show();
+                                sendEmail();
                                 break;
                         }
                     }
@@ -149,6 +148,37 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
             mDrawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    /**
+     * Enables back navigation for activities that are launched from the NavBar. See
+     * {@code AndroidManifest.xml} to find out the parent activity names for each activity.
+     * @param intent
+     */
+    private void createBackStack(Intent intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            TaskStackBuilder builder = TaskStackBuilder.create(this);
+            builder.addNextIntentWithParentStack(intent);
+            builder.startActivities();
+        } else {
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    public void sendEmail() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        String phone = SharedPrefHelper.getString(R.string.pref_mobile_number);
+        String text = "[Phone: " + phone + "]";
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"captain.viato@gmail.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT,  text);
+        i.putExtra(Intent.EXTRA_TEXT   , "");
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
     }
 }

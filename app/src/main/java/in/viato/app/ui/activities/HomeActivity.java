@@ -1,22 +1,23 @@
 package in.viato.app.ui.activities;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,33 +30,50 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.crashlytics.android.Crashlytics;
-import com.orhanobut.logger.Logger;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.ViatoApplication;
+import in.viato.app.http.models.response.Serviceability;
+import in.viato.app.service.RegistrationIntentService;
 import in.viato.app.ui.fragments.CategoryBooksFragment;
 import in.viato.app.ui.fragments.HomeFragment;
 import in.viato.app.utils.SharedPrefHelper;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
+import retrofit.Response;
+import rx.Subscriber;
 
 /**
  * Created by ranadeep on 19/09/15.
  */
-public class HomeActivity extends AbstractNavDrawerActivity {
+public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private AbstractActivity mActivity;
     private ViewPager mViewPager;
     private TabLayout mTabs;
     private EditText searchBar;
 
+    private Location mLastLocation;
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+
+    // Google client to interact with Google API
+    private GoogleApiClient mGoogleApiClient;
+
     @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
+    @Bind(R.id.main_container) CoordinatorLayout mMainContainer;
 
     public static final int TAB_CATEGORIES = '0';
     public static final int TAB_TRENDING = '1';
@@ -69,6 +87,11 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
         mActivity = this;
 
+        Boolean checkedAvailable =  SharedPrefHelper.getBoolean(R.string.pref_show_unavailable);
+        if(!checkedAvailable && checkPlayServices()) {
+            buildGoogleApiClient();
+        }
+
         String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
         if(access_token.length() == 0) {
             startActivity(new Intent(this, RegistrationActivity.class));
@@ -76,9 +99,8 @@ public class HomeActivity extends AbstractNavDrawerActivity {
             return;
         } else {
             // TODO: 30/10/15 replace 1 with user id
-            String userId = "1";
+            String userId = SharedPrefHelper.getString(R.string.pref_user_id);
             String email = SharedPrefHelper.getString(R.string.pref_email);
-            String phone = SharedPrefHelper.getString(R.string.pref_mobile_number);
 
 //            Analytics.with(this).identify(userId, new Traits().putEmail(email).putPhone(phone), null);
             Crashlytics.setUserIdentifier(userId);
@@ -89,12 +111,6 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
         handleIntent(getIntent());
-
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String getSimSerialNumber = telephonyManager.getSimSerialNumber();
-        String getSimNumber = telephonyManager.getLine1Number();
-        Logger.d(getSimNumber);
-
     }
 
     @Override
@@ -108,6 +124,9 @@ public class HomeActivity extends AbstractNavDrawerActivity {
                 .into(coverImage);
 
 //        http://192.168.1.101:8080/image/cover
+
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
     }
 
     @Override
@@ -119,21 +138,19 @@ public class HomeActivity extends AbstractNavDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.menu_search:
                 startActivity(new Intent(this, BookSearchActivity.class));
                 mViatoApp.trackEvent(getString(R.string.home_activity),
                         "search", "clicked", "icon", "", "home_menu");
-//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_fade_out);
-                break;
+                return true;
             case R.id.menu_cart:
                 startActivity(new Intent(this, CheckoutActivity.class));
                 mViatoApp.trackEvent(getString(R.string.home_activity),
                         "cart", "clicked", "icon", "", "home_menu");
-                break;
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -183,8 +200,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(HomeFragment.newInstance(), "Category");
-        adapter.addFrag(
-                CategoryBooksFragment.newInstance("trending", getResources().getString(R.string.trending)),
+        adapter.addFrag(CategoryBooksFragment.newInstance("trending", getResources().getString(R.string.trending)),
                 getResources().getString(R.string.trending)
         );
 
@@ -301,7 +317,7 @@ public class HomeActivity extends AbstractNavDrawerActivity {
         } else {
             searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
                     null,
-                    mActivity.getResources().getDrawable(R.drawable.ic_barcode_black_18dp),
+                    mActivity.getResources().getDrawable(R.drawable.ic_barcode_black),
                     null);
 
         }
@@ -311,4 +327,127 @@ public class HomeActivity extends AbstractNavDrawerActivity {
     protected int getSelfNavDrawerItem() {
         return getResources().getInteger(R.integer.nav_item_home);
     }
+
+    public Boolean checkServiceability() {
+        mLastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
+//        Log.d( "qwe3", mLastLocation + "");
+
+        if (mLastLocation == null) {
+            return true;
+        }
+
+        double latitude = mLastLocation.getLatitude();
+        double longitude = mLastLocation.getLongitude();
+
+        Log.d("Location: %f, %f" ," latitude, longitude");
+
+        mViatoAPI.getServiceability(String.valueOf(latitude), String.valueOf(longitude))
+                .subscribe(new Subscriber<Response<Serviceability>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<Serviceability> serviceabilityResponse) {
+                        if (serviceabilityResponse.isSuccess()) {
+                            Serviceability serviceability = serviceabilityResponse.body();
+                            Boolean aBoolean = serviceability.getIs_supported();
+                            String places = serviceability.getSupported_localities();
+                            if (!aBoolean) {
+                                new AlertDialog.Builder(mActivity)
+                                        .setTitle("Sorry")
+                                        .setMessage("We currently serve following localities:\n" + places)
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                SharedPrefHelper.set(R.string.pref_show_unavailable, true);
+                                            }
+                                        })
+                                        .create()
+                                        .show();
+                            } else {
+                                SharedPrefHelper.set(R.string.pref_show_unavailable, true);
+                            }
+                        } else {
+                            try {
+                                Log.e("HomeActivity", serviceabilityResponse.errorBody().string());
+                            } catch (IOException e) {
+                                com.orhanobut.logger.Logger.e(e, "error");
+                            }
+                        }
+                    }
+                });
+
+
+        return false;
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        checkServiceability();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mGoogleApiClient = null;
+    }
+
 }

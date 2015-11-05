@@ -27,7 +27,7 @@ public class Booking {
     }
 
     public String getOrder_id() {
-        return order_id;
+        return "#" + order_id;
     }
 
     public void setOrder_id(String order_id) {
@@ -35,7 +35,7 @@ public class Booking {
     }
 
     public String getStatus() {
-        return status;
+        return Character.toUpperCase(status.charAt(0)) + status.substring(1);
     }
 
     public void setStatus(String status) {

@@ -82,4 +82,15 @@
     <style name="TransparentText" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/transparent</item>
     </style>
+
+    <style name="borderButton" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:color">@color/primary</item>
+        <item name="android:background">@drawable/border_button</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+    <style name="filledButton" parent="android:Widget.Button">
+        <item name="android:color">@color/white</item>
+        <item name="android:background">@color/primary</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

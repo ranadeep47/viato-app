@@ -39,7 +39,7 @@ import rx.Subscriber;
 /**
  * Created by ranadeep on 24/09/15.
  */
-public class MyBooksActivity extends AbstractNavDrawerActivity {
+public class  MyBooksActivity extends AbstractNavDrawerActivity {
 
     private AbstractActivity mActivity;
     private ViewPager mViewPager;
@@ -81,12 +81,11 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
         mViatoAPI.getQuotes().subscribe(new Subscriber<List<CoverQuote>>() {
             @Override
             public void onCompleted() {
-                Logger.d("Quotes loaded");
             }
 
             @Override
             public void onError(Throwable e) {
-                Logger.d(e.getMessage());
+                Logger.e(e, e.getMessage());
             }
 
             @Override
@@ -124,8 +123,8 @@ public class MyBooksActivity extends AbstractNavDrawerActivity {
 
     private void setupViewPager(){
         Adapter mAdapter = new Adapter(getSupportFragmentManager());
-        mAdapter.add(new BooksReadFragment(), "Read");
         mAdapter.add(new BooksWishlistFragment(), "Wish List");
+        mAdapter.add(new BooksReadFragment(), "Read");
 
         mViewPager.setAdapter(mAdapter);
         mTabs.setupWithViewPager(mViewPager);

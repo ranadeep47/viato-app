@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_places_api_key">AIzaSyDcf2JFLjIBHKYycS8WNbqM6rm8_jH5ZXI</string>
+    <string name="c2d_message_permission">in.viato.app.debug.permission.C2D_MESSAGE</string>
 </resources>

@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/categories_list"
+<in.viato.app.ui.widgets.BetterViewAnimator
+    android:id="@+id/animator"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:layout_height="match_parent"
+    android:background="@color/grey_bg"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <include
+        layout="@layout/progress_bar"
+        android:id="@+id/progress_bar"></include>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/categories_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!--<include-->
+        <!--layout="@layout/error_template"-->
+        <!--android:id="@+id/error_template" />-->
+    <LinearLayout
+        android:id="@+id/error_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:padding="48dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/error"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/error_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/spacing_vv_small"
+            android:layout_marginBottom="@dimen/spacing_vv_small"
+            android:textSize="@dimen/text_xx_medium"
+            android:textColor="?android:attr/textColorPrimary" />
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="?android:attr/textColorSecondary" />
+    </LinearLayout>
+</in.viato.app.ui.widgets.BetterViewAnimator>

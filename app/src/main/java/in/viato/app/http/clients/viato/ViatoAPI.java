@@ -20,6 +20,7 @@ import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Cart;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
+import in.viato.app.http.models.response.Serviceability;
 import retrofit.MoshiConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -30,10 +31,9 @@ import java.util.List;
 
 import in.viato.app.http.models.response.CoverQuote;
 import in.viato.app.http.models.response.MyBooksReadResponse;
-import retrofit.http.GET;
-import retrofit.http.Query;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.Subscribers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -188,7 +188,6 @@ public class ViatoAPI {
                 .deleteAddress(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
-
     }
 
     public Observable<Cart> getCart() {
@@ -198,7 +197,7 @@ public class ViatoAPI {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<Cart> addToCart(CartItem cartItem) {
+    public Observable<Response<Cart>> addToCart(CartItem cartItem) {
         return mViatoService
                 .addToCart(cartItem)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -254,9 +253,21 @@ public class ViatoAPI {
     }
 
     public Observable<Locality> getLocality(String latitude, String longitude) {
-        Logger.d("Requesting locality for %s and %s", latitude, longitude);
         return mViatoService
                 .getLocality(latitude, longitude)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<String>> isInWishList(String id) {
+        return mViatoService
+                .isInWishList(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<Serviceability>> getServiceability(String latitude, String longitude) {
+        return  mViatoService.getServiceability(latitude, longitude)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

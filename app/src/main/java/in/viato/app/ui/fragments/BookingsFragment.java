@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,12 +30,11 @@ import in.viato.app.R;
 import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Rental;
 import in.viato.app.ui.activities.HomeActivity;
-import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
+import in.viato.app.ui.adapters.TitleAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
-import in.viato.app.ui.widgets.MyHorizantalLlm;
+import in.viato.app.ui.widgets.MyVerticalLlm;
 import retrofit.HttpException;
 import retrofit.Response;
-import retrofit.Retrofit;
 import rx.Subscriber;
 
 public class BookingsFragment extends AbstractFragment {
@@ -62,11 +62,6 @@ public class BookingsFragment extends AbstractFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /*recyclerView = (RecyclerView) LayoutInflater
-                .from(getContext())
-                .inflate(R.layout.recycler_view, container, false);
-        recyclerView.setHasFixedSize(true);
-        return recyclerView;*/
         return inflater.inflate(R.layout.fragment_bookings, container, false);
     }
 
@@ -92,9 +87,8 @@ public class BookingsFragment extends AbstractFragment {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof HttpException) {
-                            Snackbar.make(mCoordinatorLayout, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            handleNetworkException((HttpException) e);
                         }
-                        Logger.e(e.getMessage() + " due to " + e.getCause());
                     }
 
                     @Override
@@ -108,12 +102,12 @@ public class BookingsFragment extends AbstractFragment {
                                 mAnimator.setDisplayedChildView(mBookingsList);
                             }
                         } else {
+                            mAnimator.setDisplayedChildView(mNoConnection);
                             try {
-                                mAnimator.setDisplayedChildView(mNoConnection);
                                 Snackbar.make(mCoordinatorLayout, listResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
                                 Logger.e(listResponse.errorBody().string());
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                Logger.e(e, "error");
                             }
                         }
                     }
@@ -143,10 +137,11 @@ public class BookingsFragment extends AbstractFragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            @Bind(R.id.book_covers) RecyclerView bookCovers;
+            @Bind(R.id.booking_id) TextView orderId;
+            @Bind(R.id.date_placed) TextView datePlaced;
+            @Bind(R.id.books) RecyclerView books;
             @Bind(R.id.status) TextView status;
-            @Bind(R.id.placed_on) TextView date;
-            @Bind(R.id.amount) TextView amount;
+            @Bind(R.id.view_details) Button viewDetails;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -156,7 +151,8 @@ public class BookingsFragment extends AbstractFragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_booking_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.holder_booking_item, parent, false);
             return new ViewHolder(view);
         }
 
@@ -164,28 +160,20 @@ public class BookingsFragment extends AbstractFragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             final Booking booking = mBookings.get(position);
-            final List<String> covers = new ArrayList<>();
-            for (Rental rental : booking.getRentals()) {
-                String cover  = rental.getItem().getThumbs().get(0);
-                covers.add(cover);
-            }
+            final List<Rental> rentals =  booking.getRentals();
 
             cal.setTime(booking.getBooked_at()); // sets calendar time/date
-            holder.date.setText(dateFormat.format(cal.getTime()));
+
+            holder.orderId.setText(booking.getOrder_id());
+            holder.datePlaced.setText(dateFormat.format(cal.getTime()));
             holder.status.setText(booking.getStatus());
-            holder.amount.setText("Rs. " + ((int) booking.getBooking_payment().getTotal_payable()) + "");
-
-            LinearLayoutManager layoutManager = new MyHorizantalLlm(getContext(), LinearLayoutManager.HORIZONTAL, false);
-            RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(R.layout.holder_thumbnail_small, covers, true);
-
-            holder.bookCovers.setAdapter(adapter);
-            holder.bookCovers.setLayoutManager(layoutManager);
-            holder.bookCovers.hasFixedSize();
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.books.setLayoutManager(new MyVerticalLlm(getContext(), LinearLayoutManager.VERTICAL, false));
+            holder.books.setAdapter(new TitleAdapter(rentals));
+            holder.viewDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadFragment(R.id.frame_content, BookingDetailFragment.newInstance(booking.get_id()), BookingDetailFragment.TAG, true, BookingDetailFragment.TAG);
+                loadFragment(R.id.frame_content, BookingDetailFragment.newInstance(booking.get_id()),
+                        BookingDetailFragment.TAG, true, BookingDetailFragment.TAG);
                 }
             });
         }

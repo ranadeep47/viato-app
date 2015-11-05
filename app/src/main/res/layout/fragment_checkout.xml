@@ -60,7 +60,6 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:padding="@dimen/activity_horizontal_margin">
-
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -68,7 +67,6 @@
                                     android:textSize="20sp"
                                     android:textAllCaps="true"
                                     android:text="Order Total"/>
-
                                 <TextView
                                     android:id="@+id/total"
                                     android:layout_width="0dp"
@@ -77,7 +75,6 @@
                                     android:textSize="20sp"
                                     android:gravity="end"
                                     android:textColor="#8BC34A"/>
-
                             </LinearLayout>
 
                         </LinearLayout>
@@ -102,7 +99,7 @@
                                 layout="@layout/holder_add_address"
                                 android:id="@+id/add_address"
                                 android:visibility="gone"/>
-                            <!-- android:id="@+id/address_item"-->
+                             <!--android:id="@+id/address_item"-->
                             <LinearLayout
                                 android:id="@+id/already_address"
                                 android:layout_width="match_parent"
@@ -110,53 +107,50 @@
                                 android:orientation="vertical"
                                 android:padding="@dimen/activity_vertical_margin"
                                 android:visibility="gone">
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
                                     <TextView
                                         android:id="@+id/tv_address_label"
-                                        android:layout_width="0dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1"
                                         android:textColor="@color/text"
-                                        android:textStyle="bold"
                                         android:textSize="14sp"
-                                        android:fontFamily="sans-serif-medium" />
+                                        android:singleLine="true"
+                                        android:ellipsize="marquee"
+                                        android:fontFamily="sans-serif-medium"
+                                        android:text="Home"
+                                        android:layout_toLeftOf="@+id/change"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_alignParentLeft="true"/>
                                     <TextView
-                                        android:layout_width="0dp"
+                                        android:id="@+id/change"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:gravity="end"
                                         android:textColor="@color/hint_text"
                                         android:textSize="12sp"
                                         android:text="@string/change"
-                                        android:layout_gravity="center_vertical" />
-                                </LinearLayout>
+                                        android:layout_alignParentTop="true"
+                                        android:layout_alignParentRight="true"/>
+                                </RelativeLayout>
                                 <TextView
                                     android:id="@+id/tv_address_flat"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/tv_address_label"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="12sp"
-                                    android:lineSpacingMultiplier="2" />
+                                    android:textSize="12sp"/>
                                 <TextView
                                     android:id="@+id/tv_address_street"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/tv_address_flat"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="12sp"
-                                    android:lineSpacingMultiplier="2" />
+                                    android:textSize="12sp" />
                                 <TextView
                                     android:id="@+id/tv_address_locality"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/tv_address_street"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="12sp"
-                                    android:lineSpacingMultiplier="2" />
+                                    android:textSize="12sp" />
                             </LinearLayout>
 
                         </LinearLayout>
@@ -195,7 +189,6 @@
                                     android:id="@+id/delivery_date"
                                     android:layout_width="0dp"
                                     android:textColor="@color/text"
-                                    android:textStyle="bold"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="4"
                                     android:gravity="end"/>
@@ -220,7 +213,6 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/text"
-                                    android:textStyle="bold"
                                     android:layout_weight="4"
                                     android:gravity="end"/>
 

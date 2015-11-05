@@ -1,86 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:background="@color/test_green"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:orientation="vertical"
-        tools:context="in.viato.app.ui.activities.SuccessActivity">
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:fitsSystemWindows="true">
+            <RelativeLayout
+                android:layout_width="@dimen/avatar_large"
+                android:layout_height="@dimen/avatar_large"
+                android:background="@drawable/circle"
+                android:layout_gravity="center_horizontal"
+                android:elevation="@dimen/spacing_vv_small"
+                android:id="@+id/icon_success">
+                <ImageView
+                    android:layout_width="@dimen/avatar_normal"
+                    android:layout_height="@dimen/avatar_normal"
+                    android:tint="#3FC277"
+                    android:src="@drawable/ic_done_white_48dp"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/icon_success"
+                android:text="Success!"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/spacing_vv_small"
+                android:textSize="@dimen/text_huge"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:gravity="center"
+                android:text="Sit back and relax.\n Your book(s) will be delivered soon."
+                android:textColor="@color/white"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Order Placed"
+                android:gravity="center"
+                android:textSize="@dimen/text_xx_large"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_xx_largee"/>
+            <TextView
+                android:id="@+id/orderid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Order id: 4r5544"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textSize="@dimen/text_x_medium" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estimated Delivery"
+                android:gravity="center"
+                android:textSize="@dimen/text_xx_large"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_xx_medium"/>
+            <TextView
+                android:id="@+id/delivery_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="12-Sep-15"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textSize="@dimen/text_x_medium"
+                android:layout_marginTop="@dimen/spacing_vvv_small"/>
+            <Button
+                android:id="@+id/letShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_xx_largee"
+                android:visibility="gone"
+                android:text="Tell your friends"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="and"
+                android:visibility="gone"
+                android:gravity="center_horizontal"/>
+        </LinearLayout>
         <RelativeLayout
-            android:layout_width="@dimen/avatar_large"
-            android:layout_height="@dimen/avatar_large"
-            android:background="@drawable/circle"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/icon_success">
-            <ImageView
-                android:layout_width="@dimen/avatar_normal"
-                android:layout_height="@dimen/avatar_normal"
-                android:src="@drawable/ic_done_white"
-                android:layout_centerInParent="true"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/test_green_dark">
+            <Button
+                android:id="@+id/trendingBooks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_alignParentRight="true"
+                android:text="Ok"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_gravity="center_horizontal"/>
         </RelativeLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/icon_success"
-            android:text="Hurray!"
-            android:gravity="center"
-            android:textColor="#9ECB54"
-            android:layout_marginTop="@dimen/spacing_vv_small"
-            android:textSize="@dimen/text_huge"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Order Placed"
-            android:gravity="center"
-            android:textSize="@dimen/text_xx_large"
-            android:layout_marginTop="@dimen/spacing_xx_largee"/>
-        <TextView
-            android:id="@+id/order_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Order id: 4r5544"
-            android:gravity="center"
-            android:textSize="@dimen/text_x_medium" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Estimated Delivery"
-            android:gravity="center"
-            android:textSize="@dimen/text_xx_large"
-            android:layout_marginTop="@dimen/spacing_xx_medium"/>
-        <TextView
-            android:id="@+id/delivery_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="12-Sep-15"
-            android:gravity="center"
-            android:textSize="@dimen/text_x_medium"
-            android:layout_marginTop="@dimen/spacing_vvv_small"/>
-        <Button
-            android:id="@+id/letShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_xx_largee"
-            android:text="Tell your friends"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="and"
-            android:gravity="center_horizontal"/>
-        <Button
-            android:id="@+id/trendingBooks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Browse More Books"/>
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+    </RelativeLayout>
+</LinearLayout>

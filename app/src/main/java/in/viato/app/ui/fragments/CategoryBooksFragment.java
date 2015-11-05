@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
@@ -18,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import in.viato.app.R;
-import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.ui.adapters.CategoryBooksGridAdapter;
@@ -51,15 +51,15 @@ public class CategoryBooksFragment extends AbstractFragment{
     private boolean isFull = false;
 
     private Observable<Void> pageDetector;
-    private Subscription firstFetchSub;
 
     private CategoryBooksGridAdapter adapter;
     private GridLayoutManager layoutManager;
 
-    @Bind(R.id.category_books_animator) BetterViewAnimator container;
+    @Bind(R.id.category_books_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.category_books_grid) RecyclerView grid;
     @Bind(R.id.error_title) TextView errorTitle;
     @Bind(R.id.error_message) TextView errorMessage;
+    @Bind(R.id.paging_progress_bar) ProgressBar mProgressBar;
 
     public static CategoryBooksFragment newInstance(String categoryId, String categoryName) {
         Bundle args = new Bundle();
@@ -92,6 +92,9 @@ public class CategoryBooksFragment extends AbstractFragment{
         adapter = new CategoryBooksGridAdapter(mCategoryName);
         layoutManager = new GridLayoutManager(getActivity(), mSpanCount);
 
+        if (mCategoryId != "trending") {
+            getActivity().setTitle(mCategoryName);
+        }
         grid.setAdapter(adapter);
         grid.setLayoutManager(layoutManager);
         grid.setItemAnimator(new DefaultItemAnimator());
@@ -101,14 +104,14 @@ public class CategoryBooksFragment extends AbstractFragment{
             public void call(final Subscriber<? super Void> subscriber) {
                 grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     int pastVisibleItems, visibleItemCount, totalItemCount;
+
                     @Override
                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                         visibleItemCount = layoutManager.getChildCount();
                         totalItemCount = layoutManager.getItemCount();
                         pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
 
-                        if ((visibleItemCount+pastVisibleItems) >= totalItemCount) {
-                            Logger.d("Wants the next page !");
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             subscriber.onNext(null);
                         }
                     }
@@ -116,7 +119,8 @@ public class CategoryBooksFragment extends AbstractFragment{
             }
         }).debounce(400, TimeUnit.MILLISECONDS);
 
-        firstFetchSub = loadFirstPage();
+
+        loadFirstPage();
     }
 
     @Override
@@ -137,7 +141,6 @@ public class CategoryBooksFragment extends AbstractFragment{
 
     @Override
     public void onDestroy() {
-        firstFetchSub.unsubscribe();
         super.onDestroy();
     }
 
@@ -150,8 +153,7 @@ public class CategoryBooksFragment extends AbstractFragment{
     }
 
     private Subscription loadFirstPage(){
-        container.setDisplayedChildId(R.id.category_books_loading);
-
+        mAnimator.setDisplayedChildId(R.id.category_books_loading);
         return  getBooks(page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CategoryGrid>() {
@@ -164,17 +166,16 @@ public class CategoryBooksFragment extends AbstractFragment{
                     public void onError(Throwable e) {
                         errorTitle.setText("Network Error");
                         errorMessage.setText(e.getMessage());
-                        container.setDisplayedChildId(R.id.category_books_error);
+                        mAnimator.setDisplayedChildId(R.id.category_books_error);
                     }
 
                     @Override
                     public void onNext(CategoryGrid categoryGrid) {
                         List<BookItem> books = categoryGrid.getList();
-                        if(books == null || books.size() == 0){
-                            container.setDisplayedChildId(R.id.category_books_empty);
-                        }
-                        else {
-                            container.setDisplayedChildId(R.id.category_books_grid);
+                        if (books == null || books.size() == 0) {
+                            mAnimator.setDisplayedChildId(R.id.category_books_empty);
+                        } else {
+                            mAnimator.setDisplayedChildId(R.id.grid_container);
                             adapter.addAll(books);
                         }
                     }
@@ -183,30 +184,32 @@ public class CategoryBooksFragment extends AbstractFragment{
 
     private void setupInfiniteLoader(){
         mRxSubs.add(pageDetector
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<Void, Observable<CategoryGrid>>() {
                              @Override
                              public Observable<CategoryGrid> call(Void aVoid) {
                                  if (!isFull) {
+                                     toggleProgressBar();
                                      ++page;
-                                     return getBooks(page);
-                                 }
-                                 else return Observable.empty();
+                                     return getBooks(page).observeOn(AndroidSchedulers.mainThread());
+                                 } else return Observable.empty();
                              }
                          }
                 )
                 .subscribe(new Subscriber<CategoryGrid>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("Books loaded for page %i", page);
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        showError(e.getMessage());
+                        Logger.d(e.getMessage());
                     }
 
                     @Override
                     public void onNext(CategoryGrid categoryGrid) {
+                        toggleProgressBar();
                         List<BookItem> books = categoryGrid.getList();
                         if (books.size() == 0) {
                             isFull = true;
@@ -216,6 +219,14 @@ public class CategoryBooksFragment extends AbstractFragment{
                     }
                 }));
 
+    }
+
+    public void toggleProgressBar() {
+        if (mProgressBar.getVisibility() == View.VISIBLE) {
+            mProgressBar.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
 }

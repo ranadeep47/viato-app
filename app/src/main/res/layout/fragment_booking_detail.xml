@@ -8,6 +8,7 @@
         android:id="@+id/main_animator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:measureAllChildren="false"
         android:inAnimation="@android:anim/fade_in"
         android:outAnimation="@android:anim/fade_out">
         <include
@@ -25,51 +26,67 @@
                 android:padding="@dimen/activity_vertical_margin">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="1"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin">
+                        android:layout_marginTop="@dimen/spacing_vvv_small">
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/hint_text"
+                            android:textColor="@color/secondary_text"
                             android:text="Order id: "/>
                         <TextView
                             android:id="@+id/order_id"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text="#no3esd"
+                            android:textAllCaps="true"
                             android:textColor="@color/text" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="right">
+                        android:layout_marginTop="@dimen/spacing_vvv_small">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Order Placed On"
-                            android:textColor="@color/hint_text"/>
+                            android:text="Placed On"
+                            android:textColor="@color/secondary_text"/>
                         <TextView
                             android:id="@+id/placed_on"
                             android:layout_width="wrap_content"
+                            android:layout_alignParentRight="true"
                             android:layout_height="wrap_content"
+                            android:text="2 Nov 2025"
                             android:textColor="@color/text"/>
-                    </LinearLayout>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_vvv_small">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/secondary_text"
+                            android:text="Status: "/>
+                        <TextView
+                            android:id="@+id/order_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text="Placed"
+                            android:textColor="@color/text" />
+                    </RelativeLayout>
                 </LinearLayout>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,105 +95,84 @@
                         android:id="@+id/order_items_rv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/activity_horizontal_margin"
-                        android:layout_marginTop="@dimen/spacing_vv_small"
-                        android:background="@color/light_grey">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="50"
-                            android:textSize="20sp"
-                            android:textAllCaps="true"
-                            android:text="Order Total"/>
-                        <TextView
-                            android:id="@+id/order_value"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="50"
-                            android:text="Rs. 245"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
-                            android:gravity="end"
-                            android:textColor="@color/white"/>
-                    </LinearLayout>
-                </LinearLayout>
-                <!--<Button-->
-                    <!--android:id="@+id/btn_cancel_order"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="Cancel Order"-->
-                    <!--android:layout_marginTop="@dimen/activity_horizontal_margin"/>-->
-
-                <!--<Button-->
-                    <!--android:id="@+id/btn_review_order"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="Review Order"-->
-                    <!--android:layout_marginTop="@dimen/activity_horizontal_margin"/>-->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin">
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Shipping Address"/>
+                            android:textSize="@dimen/text_xx_medium"
+                            android:textColor="@color/text"
+                            android:text="Total"/>
                         <TextView
-                            android:id="@+id/label"
+                            android:id="@+id/order_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="Rs. 245"
                             android:textColor="@color/text"
-                            android:textSize="14sp"
-                            android:layout_marginLeft="@dimen/spacing_vv_small"/>
-                    </LinearLayout>
-                    <TextView
-                        android:id="@+id/flat"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="12sp"
-                        android:layout_marginTop="6dp" />
-                    <TextView
-                        android:id="@+id/street"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="12sp"
-                        android:layout_marginTop="6dp" />
-                    <TextView
-                        android:id="@+id/locality"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="12sp"
-                        android:layout_marginTop="2dp" />
+                            android:textSize="@dimen/text_xx_medium"
+                            android:layout_alignParentRight="true"/>
+                    </RelativeLayout>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary"
+                        android:textStyle="bold"
+                        android:text="Shipping Address"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/spacing_vv_small">
+                        <TextView
+                            android:id="@+id/label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/flat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/street"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/locality"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:visibility="gone"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin">
+                    android:visibility="gone">
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/spacing_vv_small"
                         android:text="Transactions"/>
                     <TextView
                         android:id="@+id/payment_status"
@@ -210,7 +206,7 @@
                 android:gravity="center_horizontal"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:textSize="34sp"
-                android:textColor="?android:attr/textColorPrimary"
+                android:textColor="@color/text"
                 android:text="Its empty here"
                 />
             <TextView

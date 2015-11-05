@@ -19,9 +19,6 @@ package in.viato.app.http.clients;
  * limitations under the License.
  */
 
-import android.util.JsonToken;
-
-import com.orhanobut.logger.Logger;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;

@@ -53,12 +53,9 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            @Bind(R.id.notification_heading)
-            TextView mTitle;
-            @Bind(R.id.notification_body)
-            TextView mBody;
-            @Bind(R.id.notification_date)
-            TextView mDate;
+            @Bind(R.id.notification_heading) TextView mTitle;
+            @Bind(R.id.notification_body) TextView mBody;
+            @Bind(R.id.notification_date) TextView mDate;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -90,22 +87,7 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
 //                @Override
 //                public void onClick(View v) {
 //                    Logger.d("Clicked");
-//                    Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                    Intent intent = new Intent();
-//                    intent.setClassName("in.viato.app", "in.viato.app.ui.activities.HomeActivity");
-//                    intent.putExtra(HomeActivity.EXTRA_SELECT_TAB, HomeActivity.TAB_TRENDING);
-//                    PendingIntent resultPendingIntent = PendingIntent.getActivity(mActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//                    NotificationCompat.Builder mBuilder =
-//                            new NotificationCompat.Builder(getApplicationContext())
-//                                    .setSmallIcon(R.drawable.ic_launcher)
-//                                    .setContentTitle("My notification")
-//                                    .setContentText("Hello World!")
-//                                    .setAutoCancel(true)
-//                                    .setSound(soundUri)
-//                                    .setContentIntent(resultPendingIntent);
-//                    int mNotificationId = 001;
-//                    NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
+//                    open activity
 //                }
 //            });
 //        }

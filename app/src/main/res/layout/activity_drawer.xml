@@ -42,13 +42,13 @@
                     android:layout_height="?attr/actionBarSize"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:layout_collapseMode="pin">
-                    <TextView
+                    <in.viato.app.ui.widgets.CustomTextView
                         android:textColor="@color/text_inverse"
-                        android:textAllCaps="true"
                         android:id="@+id/activity_title"
-                        android:textSize="20sp"
-                        android:fontFamily="sans-serif-medium"
-                        android:layout_width="wrap_content"
+                        android:textSize="18sp"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </android.support.v7.widget.Toolbar>
                 <ViewStub

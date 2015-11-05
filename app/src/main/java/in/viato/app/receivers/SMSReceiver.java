@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
@@ -63,7 +62,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 }
             }
         } catch(Exception e) {
-            Logger.e("Exception smsReceiver : " + e.getMessage());
+            Logger.e(e, e.getMessage());
         }
     }
 

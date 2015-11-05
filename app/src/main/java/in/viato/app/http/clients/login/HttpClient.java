@@ -11,6 +11,7 @@ import in.viato.app.http.models.request.Account;
 import in.viato.app.http.models.request.EmailBody;
 import in.viato.app.http.models.request.LoginBody;
 import in.viato.app.http.models.request.OtpBody;
+import in.viato.app.http.models.response.LoginResponse;
 import retrofit.MoshiConverterFactory;
 import retrofit.Response;
 import retrofit.Result;
@@ -51,7 +52,7 @@ public class HttpClient {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<String> verifyOTP(String otp, String mobile){
+    public Observable<Response<String>> verifyOTP(String otp, String mobile){
         return mHttpService
                 .verifyOtp(new OtpBody(otp, mobile))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -59,7 +60,7 @@ public class HttpClient {
 
     }
 
-    public Observable<String> finishLogin(String email, String token, List<Account> accounts) {
+    public Observable<Response<LoginResponse>> finishLogin(String email, String token, List<Account> accounts) {
         return mHttpService
                 .finishLogin(new EmailBody(email, token, accounts))
                 .observeOn(AndroidSchedulers.mainThread())

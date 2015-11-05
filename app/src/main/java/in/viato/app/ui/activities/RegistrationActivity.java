@@ -1,10 +1,16 @@
 package in.viato.app.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
 import in.viato.app.R;
+import in.viato.app.service.RegistrationIntentService;
 import in.viato.app.ui.fragments.LoginConfirmFragment;
 import in.viato.app.ui.fragments.LoginFragment;
 import in.viato.app.utils.AppConstants;
@@ -14,6 +20,7 @@ import in.viato.app.utils.SharedPrefHelper;
  * Created by ranadeep on 15/09/15.
  */
 public class RegistrationActivity extends AbstractActivity {
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,19 +30,15 @@ public class RegistrationActivity extends AbstractActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_bare);
 
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
 
         LoginFragment loginFragment = LoginFragment.newInstance();
         loadFragment(R.id.frame_content, loginFragment, LoginFragment.TAG, false, LoginFragment.TAG);
 
-//        SharedPrefHelper.set(R.string.pref_mobile_number, "8452062307");
-//        SharedPrefHelper.set(R.string.pref_device_id, "8452062307");
-//
-//        AppConstants.UserInfo.INSTANCE.setMobileNumber("8452062307");
-//        AppConstants.UserInfo.INSTANCE.setDeviceId("8452062307");
-//
-//        loadFragment(R.id.frame_content, LoginConfirmFragment.newInstance(), LoginConfirmFragment.TAG, false, LoginConfirmFragment.TAG);
-
-        //Prevent keybaord from automatically popping up when there is only EditText in LoginFragment
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
@@ -50,4 +53,19 @@ public class RegistrationActivity extends AbstractActivity {
 
     }
 
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
 }

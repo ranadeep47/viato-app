@@ -3,6 +3,8 @@ package in.viato.app;
 import android.app.Application;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.graphics.Typeface;
+import android.os.Looper;
 
 import com.crashlytics.android.Crashlytics;
 import in.viato.app.http.clients.login.HttpClient;
@@ -14,6 +16,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
+import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -45,6 +48,8 @@ public class ViatoApplication extends Application implements NetworkStateReceive
 
     private Tracker mTracker;
 
+    public static Typeface montserrat;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -58,12 +63,13 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         built.setLoggingEnabled(false);
         Picasso.setSingletonInstance(built);
 
-//        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-//                .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
-//                .setFontAttrId(R.attr.fontPath)
-//                .build());
+        montserrat = Typeface.createFromAsset(getAssets(), "fonts/Montserrat-Regular.ttf");
 
-        Logger.init(mTAG);
+        if (BuildConfig.DEBUG) {
+            Logger.init(mTAG);
+        } else {
+            Logger.init(mTAG).setLogLevel(LogLevel.NONE);
+        }
 
         setupNetworkChangeReceiver();
         saveCurrentAppDetailsIntoPreferences();
@@ -125,8 +131,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
      * it in the Singleton for in memory access
      */
     private void readUserInfoFromSharedPref() {
-        UserInfo.INSTANCE.setAuthToken(SharedPrefHelper
-                .getString(R.string.pref_access_token));
+        UserInfo.INSTANCE.setAuthToken(SharedPrefHelper.getString(R.string.pref_access_token));
         UserInfo.INSTANCE.setId(SharedPrefHelper
                 .getString(R.string.pref_user_id));
         UserInfo.INSTANCE.setEmail(SharedPrefHelper
@@ -136,6 +141,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         UserInfo.INSTANCE.setMobileNumber(SharedPrefHelper.getString(R.string.pref_mobile_number));
         UserInfo.INSTANCE.setDeviceId(SharedPrefHelper.getString(R.string.pref_device_id));
         UserInfo.INSTANCE.setAppVersion(SharedPrefHelper.getInt(R.string.pref_last_version_code));
+        UserInfo.INSTANCE.setAppToken(SharedPrefHelper.getString(R.string.pref_gcm_reg_token));
     }
 
     /**

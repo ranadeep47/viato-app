@@ -53,7 +53,7 @@ public class BookDetail {
     }
 
     public String getAuthors() {
-        if(TextUtils.join(",", authors) == null){
+        if(TextUtils.join(", ", authors) == null){
             return "";
         }
         return TextUtils.join(",", authors);

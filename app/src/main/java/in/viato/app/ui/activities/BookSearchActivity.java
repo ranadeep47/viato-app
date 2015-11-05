@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.ecommerce.Product;
-import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -157,8 +156,6 @@ public class BookSearchActivity extends AbstractActivity {
 
             mViatoApp.trackEvent(getString(R.string.home_activity),
                     "search", "submit", "query", query, getString(R.string.book_search_activity));
-
-            Logger.d("ISBN received : %s", query);
         }
     }
 
@@ -179,7 +176,6 @@ public class BookSearchActivity extends AbstractActivity {
             isSearchToAdd = intent.getBooleanExtra(ARG_ACTION_TO_ADD, false);
             query = intent.getStringExtra(SearchManager.QUERY);
             if(query == null || query.equals("")) return;
-            Logger.d("Query is %s", query);
             performQuery(query);
         }
     }
@@ -190,10 +186,8 @@ public class BookSearchActivity extends AbstractActivity {
 
 
     private void performQuery(String query){
-        Logger.d(String.valueOf(isSearchToAdd));
         container.setDisplayedChildId(R.id.search_books_loading);
         int len = query.length();
-        Logger.d(String.valueOf(len));
         if(len == 0 && mAdapter != null) {
             mAdapter.clear();
             return;
@@ -203,12 +197,11 @@ public class BookSearchActivity extends AbstractActivity {
                 .subscribe(new Subscriber<List<BookItem>>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("Query completed");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d(e.getMessage());
                         container.setDisplayedChildId(R.id.search_books_error);
                     }
 

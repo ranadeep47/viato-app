@@ -1,5 +1,6 @@
 package in.viato.app.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,11 +23,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.orhanobut.logger.Logger;
+
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.clients.viato.ViatoAPI;
 import in.viato.app.ui.activities.AbstractActivity;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.RxUtils;
+import retrofit.HttpException;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -35,6 +39,8 @@ import rx.subscriptions.CompositeSubscription;
 
 public abstract class AbstractFragment extends Fragment {
     private boolean mIsAttached;
+
+    private ProgressDialog mProgressDialog;
 
     //Props that need to be inherited. API Services, Composite Subscribers, Listener buses etc..
     protected CompositeSubscription mRxSubs;
@@ -126,7 +132,7 @@ public abstract class AbstractFragment extends Fragment {
     /**
      * Helper method to load fragments into layout
      *
-     * @param containerResId The container resource Id in the content view into which to load the
+     * @param containerResId The mAnimator resource Id in the content view into which to load the
      *                       fragment
      * @param fragment       The fragment to load
      * @param tag            The fragment tag
@@ -196,5 +202,49 @@ public abstract class AbstractFragment extends Fragment {
         else {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void handleNetworkException(HttpException e) {
+        /* TODO: 02/11/15 change findViewById() parameter to coordination layout id after making sure that every activity has one*/
+        View view = ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
+        int duration = Snackbar.LENGTH_LONG;
+        String message;
+
+        switch (((HttpException) e).code()) {
+            case 400:
+                message = "Bad request! Check your request and  try after sometime";
+                break;
+            case 401:
+                message = "Please login properly before using our service";
+                break;
+            case 404:
+                message = "The content you are looking for is not found";
+                break;
+            case 500:
+                message = "Internal Server Error! Give us some time to fix it.";
+                break;
+            case 502:
+                message = "We are upgrading our servers. Please try after some time";
+                break;
+            default:
+                message = "Something went wrong. Please try after some time";
+                break;
+        }
+
+        Snackbar.make(view, message, duration).show();
+        Logger.e(e, e.message());
+    }
+
+    public ProgressDialog showProgressDialog(String message) {
+        if (message.length() == 0 ){
+            message = "Loading...";
+        }
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage(message);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgress(0);
+        mProgressDialog.show();
+        return mProgressDialog;
     }
 }

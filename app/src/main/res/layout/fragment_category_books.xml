@@ -6,8 +6,37 @@
     android:inAnimation="@android:anim/fade_in"
     android:outAnimation="@android:anim/fade_out"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <include layout="@layout/progress_bar"
-             android:id="@+id/category_books_loading" />
+    <include
+        layout="@layout/progress_bar"
+        android:id="@+id/category_books_loading" />
+    <RelativeLayout
+        android:id="@+id/grid_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/frame_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/paging_progress_bar">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/category_books_grid"
+                android:padding="@dimen/spacing_vvv_small"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+        <ProgressBar
+            android:id="@+id/paging_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:indeterminateTint="@color/primary"
+            android:indeterminateTintMode="src_in"
+            android:layout_alignParentBottom="true"
+            style="?android:attr/android:progressBarStyleSmall"
+            android:visibility="gone"
+            xmlns:android="http://schemas.android.com/apk/res/android"/>
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/category_books_error"
         android:layout_width="match_parent"
@@ -74,10 +103,5 @@
             android:text="No books found. We are updating this section. Please try again soon !"
             />
     </RelativeLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/category_books_grid"
-        android:padding="@dimen/spacing_vvv_small"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </in.viato.app.ui.widgets.BetterViewAnimator>

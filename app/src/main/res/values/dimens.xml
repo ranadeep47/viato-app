@@ -19,6 +19,8 @@
     <dimen name="spacing_xx_largee">28dp</dimen>
 
     <dimen name="spacing_huge">32dp</dimen>
+    <dimen name="spacing_v_huge">64dp</dimen>
+
 
     <dimen name="navdrawer_width">300dp</dimen>
     <dimen name="navheader_height">192dp</dimen>

@@ -293,11 +293,10 @@ public class AddressListFragment extends AbstractFragment {
 
     public void setResult(){
         Intent intent = new Intent();
-        if(mAddresses.size() == 0){
-            return;
-        }
         intent.putExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
-        intent.putExtra(AddressListActivity.ARG_ADDRESS, mAddresses.get(mSelectedAddress));
+        if (mSelectedAddress > -1) {
+            intent.putExtra(AddressListActivity.ARG_ADDRESS, mAddresses.get(mSelectedAddress));
+        }
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 

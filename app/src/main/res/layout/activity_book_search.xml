@@ -18,8 +18,7 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:padding="@dimen/spacing_medium"
-                android:src="@drawable/barcode"
-                android:tint="@color/secondary_text"
+                android:src="@drawable/ic_barcode_black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView

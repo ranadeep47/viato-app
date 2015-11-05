@@ -17,6 +17,7 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
+import in.viato.app.http.models.response.Serviceability;
 import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -33,7 +34,7 @@ import rx.Observable;
  */
 public interface ViatoService {
 
-    String baseUrl = "http://viato.in/api/";
+    String baseUrl = "https://viato.in/api/";
 
     @GET("feed/home")
     Observable<List<CategoryItem>> getCategories();
@@ -94,7 +95,7 @@ public interface ViatoService {
     Observable<Cart> getCart();
 
     @POST("user/cart")
-    Observable<Cart> addToCart(@Body CartItem cartItem);
+    Observable<Response<Cart>> addToCart(@Body CartItem cartItem);
 
     @DELETE("user/cart/{id}")
     Observable<String> removeFromCart(@Path("id") String id);
@@ -120,6 +121,15 @@ public interface ViatoService {
             @Query("lon") String lon
     );
 
+    @GET("user/mybooks/wishlist/status/{id}")
+    Observable<Response<String>> isInWishList(@Path("id") String id);
+
 //    @GET("test")
 //    Observable<MyDate> getDate();
+
+    @GET("geo/supported/status")
+    Observable<Response<Serviceability>> getServiceability(
+            @Query("lat") String lat,
+            @Query("lon") String lon
+    );
 }

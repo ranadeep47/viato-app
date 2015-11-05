@@ -2,12 +2,8 @@ package in.viato.app.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
-import com.orhanobut.logger.Logger;
 
 import in.viato.app.R;
-import in.viato.app.ViatoApplication;
 import in.viato.app.ui.fragments.AddressEditFragment;
 import in.viato.app.ui.fragments.AddressListFragment;
 

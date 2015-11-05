@@ -2,6 +2,7 @@ package in.viato.app.ui.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -17,11 +18,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.graphics.Palette;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +37,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -42,9 +46,10 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.ecommerce.Product;
 import com.google.android.gms.analytics.ecommerce.ProductAction;
 import com.orhanobut.logger.Logger;
-import com.squareup.picasso.Callback;
+
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,15 +59,18 @@ import in.viato.app.R;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.request.CartItem;
 import in.viato.app.http.models.response.BookDetail;
+import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.Cart;
 import in.viato.app.model.Review;
 import in.viato.app.ui.activities.AbstractActivity;
+import in.viato.app.ui.activities.BookSearchActivity;
 import in.viato.app.ui.activities.CheckoutActivity;
 import in.viato.app.ui.adapters.RelatedBooksRVAdapter;
 import in.viato.app.ui.adapters.ReviewRVAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import retrofit.Response;
 import rx.Subscriber;
 import rx.functions.Action1;
 
@@ -80,6 +88,8 @@ public class BookDetailFragment extends AbstractFragment {
 
     private String mBookId;
 
+    private Boolean inWishList = false;
+
     private static Boolean isFullDesc = false;
 
     private AbstractActivity mActivity;
@@ -94,12 +104,14 @@ public class BookDetailFragment extends AbstractFragment {
     @Bind(R.id.book_rating) TextView mBookRating;
     @Bind(R.id.retail_price) TextView mRetailPrice;
     @Bind(R.id.rental_price) TextView mRentalPrice;
-    @Bind(R.id.btn_wish_list) Button mWishListButton;
     @Bind(R.id.description) TextView mDescription;
     @Bind(R.id.btn_desc_more) Button mBtn_desc_more;
+    @Bind(R.id.rental_period) TextView mRentalPeriod;
 
     @Bind(R.id.book_detail_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @Bind(R.id.books_detail_loading) ProgressBar mProgressBar;
+
     @Bind(R.id.related_books_list) RecyclerView mRelatedBooksRV;
     @Bind(R.id.review_list_small) RecyclerView mReviewList;
     @Bind(R.id.user_review) TextView mUserReview;
@@ -154,6 +166,7 @@ public class BookDetailFragment extends AbstractFragment {
                     public void call(BookDetail bookDetail) {
                         mBookDetail = bookDetail;
                         setVariables(bookDetail);
+                        setupWishList(bookDetail.get_id());
                         mAnimator.setDisplayedChildId(R.id.book_container);
                     }
                 }, new Action1<Throwable>() {
@@ -183,18 +196,25 @@ public class BookDetailFragment extends AbstractFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch(id) {
-            case R.id.action_cart:
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                startActivity(new Intent(getActivity(), BookSearchActivity.class));
+                mViatoApp.trackEvent(getString(R.string.home_activity),
+                        "search", "clicked", "icon", "", "bookDetail_menu");
+                return true;
+            case R.id.menu_cart:
+                startActivity(new Intent(getActivity(), CheckoutActivity.class));
                 mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
                         "cart", "clicked", "icon", "", "bookDetail_menu");
-                startActivity(new Intent(getActivity(), CheckoutActivity.class));
                 return true;
-            case R.id.action_share:
-                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                        "share", "clicked", "icon", mBookDetail.get_id(), "bookDetail_menu");
-                letShare();
+            case R.id.action_favorite:
+                toggleFavourite();
                 return true;
+            //            case R.id.action_share:
+//                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+//                        "share", "clicked", "icon", mBookDetail.get_id(), "bookDetail_menu");
+//                letShare();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -235,7 +255,9 @@ public class BookDetailFragment extends AbstractFragment {
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if(mBookDetail == null){
+                final ProgressDialog progressDialog = showProgressDialog("Adding to cart...");
+
+                if (mBookDetail == null) {
                     return;
                 }
                 String catalogueId = mBookDetail.get_id();
@@ -244,7 +266,7 @@ public class BookDetailFragment extends AbstractFragment {
                 float rent = mBookDetail.getPricing().getRental().get(0).getRent();
 
                 // TODO: 01/11/15 Confirm the id
-                Product product =  new Product()
+                Product product = new Product()
                         .setId(catalogueId)
                         .setName(mBookDetail.getTitle())
                         .setPrice(mBookDetail.getPricing().getRental().get(0).getRent())
@@ -262,70 +284,47 @@ public class BookDetailFragment extends AbstractFragment {
                 t.send(builder.build());
                 t.setScreenName(null);
 
-                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                        "cart", "add", "book", mBookId, mBookDetail.getTitle());
-
                 if ((!available) || (rent == 0)) {
-                    //Todo: Trigger analytics event
+                    mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                            "cart", "cannot_add", "book", mBookId, mBookDetail.getTitle());
                     Snackbar.make(v, "This book is currently unavailable for rental. We will let you know once it's available.", Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
                 mViatoAPI.addToCart(new CartItem(catalogueId, rentalId))
-                        .subscribe(new Subscriber<Cart>() {
+                        .subscribe(new Subscriber<Response<Cart>>() {
                             @Override
                             public void onCompleted() {
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                Logger.d("Item not added to cart " + R.string.due_to + e.getMessage());
+                                progressDialog.dismiss();
+//                                Logger.d("Item not added to cart " + R.string.due_to + e.getMessage());
+                                mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                                        "cart", "cannot_add", "book", mBookId, mBookDetail.getTitle());
                                 Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             }
 
                             @Override
-                            public void onNext(Cart cart) {
-                                startActivity(new Intent(getActivity(), CheckoutActivity.class));
+                            public void onNext(Response<Cart> cart) {
+                                progressDialog.dismiss();
+                                if (cart.isSuccess()) {
+                                    startActivity(new Intent(getActivity(), CheckoutActivity.class));
+                                    mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                                            "cart", "added", "book", mBookId, mBookDetail.getTitle());
+                                } else {
+                                    try {
+                                        Snackbar.make(v, cart.errorBody().string(), Snackbar.LENGTH_LONG).show();
+                                    } catch (IOException e) {
+                                        Logger.e(e, "error");
+                                    }
+                                }
                             }
                         });
 
             }
         });
-    }
-
-    @OnClick(R.id.btn_wish_list)
-    public void toggleWishList(Button button) {
-        Boolean inWishList = mBookDetail.getIsInWishList();
-        Product product =  new Product()
-                .setId(mBookDetail.get_id())
-                .setName(mBookDetail.getTitle())
-                .setPrice(mBookDetail.getPricing().getRental().get(0).getRent())
-                .setQuantity(1);
-        HitBuilders.ScreenViewBuilder builder;
-
-        //Todo: make server call
-        if (inWishList) {
-            button.setText(R.string.add_to_wish_list);
-            Snackbar.make(button, R.string.removed_from_wish_list, Snackbar.LENGTH_SHORT).show();
-
-            builder = new HitBuilders.ScreenViewBuilder()
-                    .addImpression(product, "Remove from wish list");
-
-        } else {
-            button.setText(R.string.added_to_wish_list);
-            Snackbar.make(button, R.string.added_to_wish_list, Snackbar.LENGTH_SHORT).show();
-
-            builder = new HitBuilders.ScreenViewBuilder()
-                    .addImpression(product, "Add to wish list");
-        }
-
-        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
-        t.setScreenName(getString(R.string.book_detail_fragment));
-        t.send(builder.build());
-        t.setScreenName(null);
-
-        mViatoApp.trackEvent(getString(R.string.book_detail_fragment), "wish_list", "add", "book", mBookDetail.get_id());
-        mBookDetail.setIsInWishList(!inWishList);
     }
 
     @OnClick(R.id.btn_desc_more)
@@ -421,13 +420,8 @@ public class BookDetailFragment extends AbstractFragment {
         //set price and strike through retail price
         mRetailPrice.setText("Buy at Rs. " + book.getPricing().getOwning().getMrp());
         mRetailPrice.setPaintFlags(mRetailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        mRentalPrice.setText("Rent at Rs. " + book.getPricing().getRental().get(0).getRent());
-        //set wish list button
-        if(book.getIsInWishList()) {
-            mWishListButton.setText(R.string.added_to_wish_list);
-        } else {
-            mWishListButton.setText(R.string.add_to_wish_list);
-        }
+        mRentalPrice.setText("Rent at Rs. " + (int) book.getPricing().getRental().get(0).getRent());
+        mRentalPeriod.setText("for " + book.getPricing().getRental().get(0).getPeriod() + " days");
 
         //set description
         Spanned sp = Html.fromHtml(mBookDetail.getDescription());
@@ -481,5 +475,115 @@ public class BookDetailFragment extends AbstractFragment {
 
         mActivity = null;
         mContext = null;
+    }
+
+    public void setupWishList(String id) {
+        mViatoAPI.isInWishList(id)
+                .subscribe(new Subscriber<Response<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<String> stringResponse) {
+                        if (stringResponse.isSuccess()) {
+                            inWishList = Boolean.valueOf(stringResponse.body());
+                            ActionMenuItemView menuItem = (ActionMenuItemView)getActivity().findViewById(R.id.action_favorite);
+
+                            if (inWishList){
+                                menuItem.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white));
+                            } else {
+                                menuItem.setIcon(getResources().getDrawable(R.drawable.ic_favorite_outline));
+                            }
+                        } else {
+//                            Log.e("Book", stringResponse.errorBody().string());
+                        }
+                    }
+                });
+    }
+
+    public void addToWishlist() {
+        mViatoAPI.addToWishlist(mBookDetail.get_id())
+                .subscribe(new Subscriber<BookItem>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.e(e.getMessage());
+                        Snackbar.make(mCollapsingToolbarLayout, "Something went wrong please try again", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onNext(BookItem bookItem) {
+
+                    }
+                });
+    }
+
+    public void removeFromWishlist() {
+        mViatoAPI.removeFromWishlist(mBookDetail.get_id())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.e(e.getMessage());
+                        Snackbar.make(mCollapsingToolbarLayout, "Something went wrong please try again", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+                });
+    }
+
+    public void toggleFavourite() {
+        if (mBookDetail == null) { return; }
+
+        Product product =  new Product()
+                .setId(mBookDetail.get_id())
+                .setName(mBookDetail.getTitle())
+                .setPrice(mBookDetail.getPricing().getRental().get(0).getRent())
+                .setQuantity(1);
+
+        HitBuilders.ScreenViewBuilder builder;
+
+        ActionMenuItemView menuItem = (ActionMenuItemView) getActivity().findViewById(R.id.action_favorite);
+
+        if (inWishList) {
+            menuItem.setIcon(getResources().getDrawable(R.drawable.ic_favorite_outline));
+            inWishList = !inWishList;
+            removeFromWishlist();
+            builder = new HitBuilders.ScreenViewBuilder()
+                    .addImpression(product, "removed from wish list");
+            mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                    "wish_list", "remove", "book", mBookDetail.get_id());
+        } else {
+            menuItem.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white));
+            inWishList = !inWishList;
+            addToWishlist();
+            builder = new HitBuilders.ScreenViewBuilder()
+                    .addImpression(product, "added to wish list");
+            mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
+                    "wish_list", "add", "book", mBookDetail.get_id());
+        }
+
+        Tracker t = mViatoApp.getGoogleAnalyticsTracker();
+        t.setScreenName(getString(R.string.book_detail_fragment));
+        t.send(builder.build());
+        t.setScreenName(null);
     }
 }

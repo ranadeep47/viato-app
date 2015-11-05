@@ -40,7 +40,6 @@
             android:layout_below="@+id/tv_address_label"
             android:textColor="@color/secondary_text"
             android:textSize="12sp"
-            android:lineSpacingMultiplier="2"
             android:text="Saiteja Parsi, #108, B Wing" />
         <TextView
             android:id="@+id/tv_address_street"
@@ -49,7 +48,6 @@
             android:layout_below="@+id/tv_address_flat"
             android:textColor="@color/secondary_text"
             android:textSize="12sp"
-            android:lineSpacingMultiplier="2"
             android:text="Building No. 32, Sahyadri CHS, MHADA" />
         <TextView
             android:id="@+id/tv_address_locality"
@@ -58,7 +56,6 @@
             android:layout_below="@+id/tv_address_street"
             android:text="Chandivali, Mumbai - 400072"
             android:textColor="@color/secondary_text"
-            android:textSize="12sp"
-            android:lineSpacingMultiplier="2" />
+            android:textSize="12sp" />
     </LinearLayout>
 </RelativeLayout>

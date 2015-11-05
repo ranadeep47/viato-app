@@ -24,6 +24,7 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import retrofit.HttpException;
 import rx.Subscriber;
 
 /**
@@ -55,7 +56,9 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
 
             @Override
             public void onError(Throwable e) {
-                Logger.d(e.getMessage());
+                if (e instanceof HttpException) {
+                    handleNetworkException((HttpException) e);
+                }
                 container.setDisplayedChildId(R.id.books_read_error);
             }
 

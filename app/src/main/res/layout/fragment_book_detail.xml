@@ -23,15 +23,6 @@
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@style/TransparentText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <!--<ImageView-->
-            <!--android:id="@+id/header"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@drawable/img_header"-->
-            <!--android:fitsSystemWindows="true"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--app:layout_collapseMode="parallax"-->
-            <!--/>-->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_height="?attr/actionBarSize"
@@ -94,72 +85,74 @@
                         android:layout_alignParentTop="true">
                         <TextView
                             android:id="@+id/title"
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="18sp"
                             android:textColor="@color/text" />
-                        <!--<TextView-->
-                            <!--android:layout_width="fill_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_toRightOf="@+id/img_header"-->
-                            <!--android:id="@+id/subtitle"-->
-                            <!--android:layout_alignParentTop="true"-->
-                            <!--android:layout_below="@id/subtitle"-->
-                            <!--android:textSize="14sp"-->
-                            <!--android:textColor="@color/text"-->
-                            <!--android:text="Windows 10 all-in-one for"-->
-                            <!--android:visibility="visible"/>-->
                     </LinearLayout>
-                    <TextView
-                        android:id="@+id/author"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/img_header"
-                        android:layout_below="@+id/title_wrapper" />
                     <LinearLayout
-                        android:id="@+id/rating_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/author"
-                        android:layout_toRightOf="@id/img_header">
-                        <RatingBar
-                            android:id="@+id/book_rating_stars"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:stepSize="0.5"
-                            style="?android:attr/ratingBarStyleSmall"/>
+                        android:orientation="vertical"
+                        android:layout_toRightOf="@+id/img_header"
+                        android:layout_below="@+id/title_wrapper" >
                         <TextView
-                            android:id="@+id/book_rating"
+                            android:id="@+id/author"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <RatingBar
+                                android:id="@+id/book_rating_stars"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:numStars="5"
+                                android:stepSize="0.5"
+                                style="?android:attr/ratingBarStyleSmall"/>
+                            <TextView
+                                android:id="@+id/book_rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#212121"
+                                android:layout_marginLeft="4dp"/>
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/retail_price"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/hint_text"
+                            android:layout_marginTop="4dp"/>
+                        <TextView
+                            android:id="@+id/rental_price"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="#212121"
-                            android:layout_marginLeft="4dp"/>
+                            android:textSize="20sp"/>
+                        <TextView
+                            android:id="@+id/rental_period"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_small"
+                            android:textColor="@color/hint_text"/>
                     </LinearLayout>
-                    <TextView
-                        android:id="@+id/retail_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/img_header"
-                        android:layout_below="@+id/rating_holder"
-                        android:textColor="@color/hint_text"
-                        android:layout_marginTop="4dp"/>
-                    <TextView
-                        android:id="@+id/rental_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/img_header"
-                        android:layout_below="@+id/retail_price"
-                        android:textColor="#212121"
-                        android:textSize="20sp"/>
-                    <!--android:layout_below="@+id/author"-->
+
                 </RelativeLayout>
-                <Button
-                    android:id="@+id/btn_wish_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Add to Wish list"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+                <!--<Button-->
+                    <!--android:id="@+id/btn_wish_list"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:text="@string/add_to_wish_list"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:background="@color/primary"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:paddingTop="@dimen/spacing_vv_small"-->
+                    <!--android:paddingBottom="@dimen/spacing_vv_small"-->
+                    <!--android:paddingRight="@dimen/spacing_large"-->
+                    <!--android:paddingLeft="@dimen/spacing_large"-->
+                    <!--style="@style/borderButton"-->
+                    <!--android:layout_marginBottom="@dimen/activity_horizontal_margin"/>-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
