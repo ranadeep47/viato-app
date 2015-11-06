@@ -62,7 +62,7 @@
     <string name="fetching_message">Fetching data…</string>
     <string name="enter_phone_number">Please enter your phone number</string>
     <string name="enter_valid_phone_number">Please enter a valid phone number</string>
-    <string name="sms_not_send">Sms could not send</string>
+    <string name="sms_not_send">Error sending SMS</string>
     <string name="retro_error">Network Error</string>
     <string name="api_error">Something went wrong&#8230; Please try again later</string>
     <string name="label_enter_sms">Enter code received in SMS</string>
@@ -127,13 +127,13 @@
     <string name="enter_mobile_number">Mobile Number</string>
     <string name="error_mobile_input">Enter a 10 digit indian mobile number</string>
     <string name="error_email_input">Enter a valid email</string>
-    <string name="error_otp_input">Enter a 4 digit otp sent to your mobile</string>
+    <string name="error_otp_input">Enter the 4 digit otp received in the sms </string>
 
     <!--LoginConfirm Fragment-->
     <string name="valid_email">Select your email</string>
     <string name="set_email">Your Email address</string>
     <string name="complete">Complete</string>
-    <string name="wait_for_sms">Please enter the code from the SMS you will soon receive</string>
+    <string name="wait_for_sms">Please wait while we send an OTP in an SMS to verify your mobile</string>
     <string name="verify">VERIFY</string>
     <string name="resend">RESEND</string>
 
@@ -165,9 +165,9 @@
     <string name="regex_email">android.util.Patterns.EMAIL_ADDRESS</string>
 
     <!--wish list-->
-    <string name="add_to_wish_list">Add to Wish List</string>
-    <string name="added_to_wish_list">Added to wish list</string>
-    <string name="removed_from_wish_list">Removed from wish list</string>
+    <string name="add_to_wish_list">Add to wishlist</string>
+    <string name="added_to_wish_list">Added to wishlist</string>
+    <string name="removed_from_wish_list">Removed from wishlist</string>
 
     <!--show more/less-->
     <string name="show_more">Show More</string>
