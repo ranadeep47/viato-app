@@ -139,8 +139,8 @@ public class AddressListFragment extends AbstractFragment {
                 return true;
             case R.id.action_delete:
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Delete Selected Address?")
-                        .setMessage("Deleted address cannot be recovered. But you can create new address")
+                        .setTitle("Remove")
+                        .setMessage("Remove this address ?")
                         .setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

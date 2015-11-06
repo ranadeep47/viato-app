@@ -287,7 +287,7 @@ public class BookDetailFragment extends AbstractFragment {
                 if ((!available) || (rent == 0)) {
                     mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
                             "cart", "cannot_add", "book", mBookId, mBookDetail.getTitle());
-                    Snackbar.make(v, "This book is currently unavailable for rental. We will let you know once it's available.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(v, "Sorry, this book is unavailable for rental.Checkout after some time, we update our collection everyday", Snackbar.LENGTH_LONG).show();
                     return;
                 }
 

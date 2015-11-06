@@ -273,7 +273,7 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
                     @Override
                     public void onNext(Address address) {
-                        Toast.makeText(getContext(), "New Address Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Address added", Toast.LENGTH_SHORT).show();
                         mSelectedAddress = mListLength;
                         setResult(Activity.RESULT_OK, address);
                     }
@@ -298,7 +298,7 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
                     @Override
                     public void onNext(Address address) {
                         setResult(Activity.RESULT_OK, address);
-                        Toast.makeText(getContext(), "Address Updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Address updated", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

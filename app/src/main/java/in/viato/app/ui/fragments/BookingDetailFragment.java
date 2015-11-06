@@ -241,7 +241,7 @@ public class BookingDetailFragment extends AbstractFragment {
                 public void onClick(View v) {
                     new android.app.AlertDialog.Builder(getContext())
                             .setTitle("Return")
-                            .setMessage("Pickup for this book will be initiated. You can order another book.")
+                            .setMessage("Pickup for this book will be initiated. You can order another book now.")
                             .setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

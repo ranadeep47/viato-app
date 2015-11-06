@@ -270,7 +270,7 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:textSize="34sp"
                 android:textColor="?android:attr/textColorPrimary"
-                android:text="Its empty here"
+                android:text="Its lonely here"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -278,7 +278,7 @@
                 android:layout_below="@id/empty_image"
                 android:layout_marginTop="4dp"
                 android:gravity="center_horizontal"
-                android:text="Seams like you already bought your favourite.\nCheckout some new trending."
+                android:text="A reader lives a thousand lives before he dies. The man who never reads lives only one"
                 />
             <Button
                 android:id="@+id/btn_empty_action"
@@ -286,7 +286,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="Checkout Trending Books"/>
+                android:text="Explore"/>
         </LinearLayout>
     </in.viato.app.ui.widgets.BetterViewAnimator>
 </android.support.design.widget.CoordinatorLayout>

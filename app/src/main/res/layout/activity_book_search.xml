@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/empty_image"
             android:gravity="center_horizontal"
-            android:text="No books found. Try ISBN number to get accurate results"
+            android:text="No books found.Try searching with author / ISBN"
             />
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView

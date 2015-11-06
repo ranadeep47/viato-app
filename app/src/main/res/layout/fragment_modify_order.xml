@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="By extending the return period, the return date will be postponed to 12-Sep_13. blah blah blah"/>
+            android:text="Extend the rental period to a few more days."/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -61,6 +61,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Do you really wanna return this book. Come on read 1 more time."/>
+            android:text="Request a pickup for the book."/>
     </RelativeLayout>
 </in.viato.app.ui.widgets.BetterViewAnimator>
