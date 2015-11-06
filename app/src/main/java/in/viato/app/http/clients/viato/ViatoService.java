@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.viato.app.http.models.Address;
+import in.viato.app.http.models.ForceUpdate;
 import in.viato.app.http.models.Locality;
 import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
@@ -131,5 +132,14 @@ public interface ViatoService {
     Observable<Response<Serviceability>> getServiceability(
             @Query("lat") String lat,
             @Query("lon") String lon
+    );
+
+    @GET("geo/supported/all")
+    Observable<Response<List<String>>> getServiceLocalities();
+
+    @GET("version/check")
+    Observable<Response<ForceUpdate>> checkForceUpdate(
+        @Query("build") String build,
+        @Query("version") int version
     );
 }

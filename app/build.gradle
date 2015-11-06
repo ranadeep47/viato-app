@@ -45,7 +45,7 @@ android {
         applicationId "in.viato.app"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
+        versionCode 100
         versionName "1.0"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
@@ -58,6 +58,8 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
+            debuggable true
+            minifyEnabled false
             applicationIdSuffix ".debug"
 //            ext.enableCrashlytics = false
         }

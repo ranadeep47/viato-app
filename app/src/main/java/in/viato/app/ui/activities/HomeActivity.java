@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +39,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.squareup.picasso.Picasso;
 
@@ -44,11 +48,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import in.viato.app.BuildConfig;
 import in.viato.app.R;
+import in.viato.app.http.models.ForceUpdate;
 import in.viato.app.http.models.response.Serviceability;
 import in.viato.app.service.RegistrationIntentService;
 import in.viato.app.ui.fragments.CategoryBooksFragment;
 import in.viato.app.ui.fragments.HomeFragment;
+import in.viato.app.utils.MiscUtils;
 import in.viato.app.utils.SharedPrefHelper;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import retrofit.Response;
@@ -111,6 +118,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         mTabs = (TabLayout)((ViewStub) findViewById(R.id.stub_tabs_my_books)).inflate();
 
         handleIntent(getIntent());
+        checkForceUpdate();
     }
 
     @Override
@@ -199,7 +207,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(HomeFragment.newInstance(), "Category");
+        adapter.addFrag(HomeFragment.newInstance(), "Genres");
         adapter.addFrag(CategoryBooksFragment.newInstance("trending", getResources().getString(R.string.trending)),
                 getResources().getString(R.string.trending)
         );
@@ -335,6 +343,36 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 //        Log.d( "qwe3", mLastLocation + "");
 
         if (mLastLocation == null) {
+            mViatoAPI.getServiceLocations().subscribe(new Subscriber<Response<List<String>>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Response<List<String>> listResponse) {
+                    if (listResponse.isSuccess()) {
+                        List<String> body = listResponse.body();
+                        String places = TextUtils.join(", ", body);
+                        new AlertDialog.Builder(mActivity)
+                                .setTitle("Sorry")
+                                .setMessage("We currently serve following localities:\n" + places)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SharedPrefHelper.set(R.string.pref_show_unavailable, true);
+                                    }
+                                })
+                                .create()
+                                .show();
+                    }
+                }
+            });
             return true;
         }
 
@@ -450,4 +488,55 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         mGoogleApiClient = null;
     }
 
+    public void checkForceUpdate() {
+        String build = BuildConfig.BUILD_TYPE.toUpperCase();
+        int versionCode = MiscUtils.getPackageInfo().versionCode;
+        mViatoAPI.checkForceUpdate(build, versionCode)
+                .subscribe(new Subscriber<Response<ForceUpdate>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<ForceUpdate> forceUpdateResponse) {
+                        if (forceUpdateResponse.isSuccess()) {
+                            ForceUpdate body = forceUpdateResponse.body();
+                            if (body.getUpdate()){
+                                showUpdateDialog(body);
+                            }
+                        } else {
+                            try {
+                                com.orhanobut.logger.Logger.e(forceUpdateResponse.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void showUpdateDialog(final ForceUpdate body) {
+        new AlertDialog.Builder(mActivity)
+                .setTitle("Please update")
+                .setMessage(body.getMessage())
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=in.viato.app"));
+                        startActivity(browserIntent);
+                        showUpdateDialog(body);
+                    }
+                })
+                .create()
+                .show();
+    }
 }
+
+

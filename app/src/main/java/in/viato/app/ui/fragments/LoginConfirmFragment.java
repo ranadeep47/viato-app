@@ -121,7 +121,9 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+            if(mOtpButton != null){
                 mOtpButton.setVisibility(View.VISIBLE);
+            }
             }
         }, OTP_DISPLAY_DELAY);
     }

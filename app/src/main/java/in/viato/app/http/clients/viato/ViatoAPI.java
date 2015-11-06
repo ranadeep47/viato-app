@@ -1,6 +1,5 @@
 package in.viato.app.http.clients.viato;
 
-import com.orhanobut.logger.Logger;
 import com.squareup.moshi.Moshi;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -9,6 +8,7 @@ import in.viato.app.http.clients.ClientUtils;
 import in.viato.app.http.clients.Rfc3339DateJsonAdapter;
 import in.viato.app.http.clients.ToStringConverterFactory;
 import in.viato.app.http.models.Address;
+import in.viato.app.http.models.ForceUpdate;
 import in.viato.app.http.models.Locality;
 import in.viato.app.http.models.request.BookCatalogueId;
 import in.viato.app.http.models.request.BookingBody;
@@ -23,6 +23,7 @@ import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.http.models.response.Serviceability;
 import retrofit.MoshiConverterFactory;
 import retrofit.Response;
+import retrofit.Result;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 
@@ -268,6 +269,18 @@ public class ViatoAPI {
 
     public Observable<Response<Serviceability>> getServiceability(String latitude, String longitude) {
         return  mViatoService.getServiceability(latitude, longitude)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<List<String>>> getServiceLocations() {
+        return  mViatoService.getServiceLocalities()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Response<ForceUpdate>> checkForceUpdate(String build, int version) {
+        return mViatoService.checkForceUpdate(build, version)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

@@ -62,8 +62,9 @@
             <EditText android:id="@+id/editText_label"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:hint="Nickname"
+                      android:hint="Label"
                       android:singleLine="true"
+                      android:text="Home"
                       android:imeOptions="actionDone"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>

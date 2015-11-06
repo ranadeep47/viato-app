@@ -114,7 +114,6 @@ public class LoginFragment extends AbstractFragment {
         display.getSize(size);
         int width = (int)ViewUtils.convertPixelsToDp(size.x, getContext());
         int height = (int)ViewUtils.convertPixelsToDp(size.y, getContext());
-        Logger.d("height " + width + " " + height);
         mBanner.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.intro_cover, width, height));
 
