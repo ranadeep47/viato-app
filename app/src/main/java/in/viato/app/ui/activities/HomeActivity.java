@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,19 +28,18 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.squareup.picasso.Picasso;
 
@@ -235,6 +235,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         mViewPager.addOnPageChangeListener(listener);
         listener.onPageSelected(0);
     }
+
     protected void showCoverImage(){
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -509,7 +510,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                     public void onNext(Response<ForceUpdate> forceUpdateResponse) {
                         if (forceUpdateResponse.isSuccess()) {
                             ForceUpdate body = forceUpdateResponse.body();
-                            if (body.getUpdate()){
+                            if (body.getUpdate()) {
                                 showUpdateDialog(body);
                             }
                         } else {

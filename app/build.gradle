@@ -44,7 +44,7 @@ android {
     defaultConfig {
         applicationId "in.viato.app"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 101
         versionName "1.0.1"
         renderscriptTargetApi 23

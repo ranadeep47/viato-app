@@ -68,6 +68,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
     private Boolean isOtpVerified = false;
     private Boolean isEmailVerified = false;
+    private Boolean isFinishClicked = false;
 
     public static LoginConfirmFragment newInstance() {
         return new LoginConfirmFragment();
@@ -99,13 +100,16 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         });
 
         String[] emails = getEmails();
-        ArrayAdapter<String> emailsAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_dropdown_item_1line,
-                emails);
-        mEmail.setThreshold(3);
-        mEmail.setAdapter(emailsAdapter);
-        mEmail.setText(emails[0]);
+        if (emails.length > 0) {
+            ArrayAdapter<String> emailsAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    emails);
+            mEmail.setThreshold(3);
+            mEmail.setAdapter(emailsAdapter);
+            mEmail.setText(emails[0]);
+        }
+
         mEmail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -202,6 +206,10 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                                 mToken = response.body();
                                 otpInputContainer.setVisibility(View.GONE);
                                 mOtpSuccessContainer.setVisibility(View.VISIBLE);
+
+                                if(isFinishClicked){
+                                    finishLogin();
+                                }
                             } else {
                                 try {
                                     Toast.makeText(getContext(), response.errorBody().string(), Toast.LENGTH_LONG).show();
@@ -264,6 +272,8 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
     @OnClick(R.id.btn_submit)
     public void finishLogin() {
+        isFinishClicked = true;
+
         if(!isOtpVerified) {
             verifyOTP();
             return;
@@ -322,7 +332,9 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                                 SharedPrefHelper.set(R.string.pref_user_id, user_id);
                                 SharedPrefHelper.set(R.string.pref_email, email);
 
-                                finishLogin();
+                                if(isFinishClicked){
+                                    finishLogin();
+                                }
                             } else {
                                 try {
                                     Toast.makeText(getContext(), loginResponse.errorBody().string(), Toast.LENGTH_LONG).show();

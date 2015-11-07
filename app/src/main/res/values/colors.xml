@@ -2,6 +2,7 @@
 <resources>
     <!-- greyscale -->
     <color name="white">#FFFFFF</color>
+    <color name="white_inactive">#EEEEEE</color>
 
     <color name="grey_bg">#E9E9E9</color>
     <color name="light_grey">#D4D4D4</color>
