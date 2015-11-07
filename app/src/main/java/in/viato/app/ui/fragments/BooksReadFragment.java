@@ -26,6 +26,7 @@ import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import retrofit.HttpException;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by ranadeep on 24/09/15.
@@ -38,6 +39,8 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
     @Bind(R.id.books_reading_grid) RecyclerView readGrid;
 
+    private CompositeSubscription mSubs;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +51,7 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViatoAPI.getRead().subscribe(new Subscriber<MyBooksReadResponse>() {
+        mSubs.add(mViatoAPI.getRead().subscribe(new Subscriber<MyBooksReadResponse>() {
             @Override
             public void onCompleted() {
 
@@ -66,7 +69,13 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
             public void onNext(MyBooksReadResponse myBooksReadResponse) {
                 setupGrids(myBooksReadResponse);
             }
-        });
+        }));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     private void setupGrids(MyBooksReadResponse myBooksReadResponse){

@@ -29,6 +29,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by ranadeep on 21/09/15.
@@ -55,6 +56,8 @@ public class CategoryBooksFragment extends AbstractFragment{
 
     private CategoryBooksGridAdapter adapter;
     private GridLayoutManager layoutManager;
+
+    private CompositeSubscription mSubs;
 
     @Bind(R.id.category_books_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.category_books_grid) RecyclerView grid;
@@ -120,7 +123,7 @@ public class CategoryBooksFragment extends AbstractFragment{
             }
         }).debounce(400, TimeUnit.MILLISECONDS);
 
-        loadFirstPage();
+        mSubs.add(loadFirstPage());
         setupInfiniteLoader();
     }
 
@@ -134,6 +137,13 @@ public class CategoryBooksFragment extends AbstractFragment{
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     @Override
@@ -179,7 +189,7 @@ public class CategoryBooksFragment extends AbstractFragment{
     }
 
     private void setupInfiniteLoader(){
-        pageDetector
+        mSubs.add(pageDetector
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<Void, Observable<CategoryGrid>>() {
@@ -214,7 +224,7 @@ public class CategoryBooksFragment extends AbstractFragment{
                         }
                         adapter.addAll(books);
                     }
-                });
+                }));
 
     }
 

@@ -25,9 +25,11 @@ import in.viato.app.R;
 import in.viato.app.http.models.response.CategoryItem;
 import in.viato.app.ui.activities.CategoryBooksActivity;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import in.viato.app.utils.RxUtils;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import retrofit.HttpException;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by ranadeep on 19/09/15.
@@ -48,6 +50,8 @@ public class HomeFragment extends AbstractFragment {
 
     private LinearLayoutManager layoutManager;
     private CategoryListAdapter adapter;
+
+    private CompositeSubscription mSubs;
 
     public static HomeFragment newInstance() {
         Bundle args = new Bundle();
@@ -73,7 +77,7 @@ public class HomeFragment extends AbstractFragment {
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
 
-        mViatoAPI.getCategories().subscribe(new Subscriber<List<CategoryItem>>() {
+        mSubs.add(mViatoAPI.getCategories().subscribe(new Subscriber<List<CategoryItem>>() {
             @Override
             public void onCompleted() {
 
@@ -82,7 +86,7 @@ public class HomeFragment extends AbstractFragment {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof HttpException) {
-                    handleNetworkException((HttpException)e);
+                    handleNetworkException((HttpException) e);
                     errorTitle.setText("Network Error");
                     errorMessage.setText(e.getMessage());
                     mAnimator.setDisplayedChildView(errorContainer);
@@ -94,13 +98,19 @@ public class HomeFragment extends AbstractFragment {
                 adapter.setCategories(categories);
                 mAnimator.setDisplayedChildView(list);
             }
-        });
+        }));
     }
 
     @Override
     public boolean onBackPressed() {
         //Disable back button, home fragment !
         return true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     private class CategoryListAdapter extends RecyclerView.Adapter<CategoryViewHolder> {

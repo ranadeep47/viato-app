@@ -36,6 +36,7 @@ import in.viato.app.ui.widgets.MyVerticalLlm;
 import retrofit.HttpException;
 import retrofit.Response;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 public class BookingsFragment extends AbstractFragment {
 
@@ -49,6 +50,8 @@ public class BookingsFragment extends AbstractFragment {
     @Bind(R.id.bookings_empty) LinearLayout mEmptyContainer;
 
     private List<Booking> mBookings;
+
+    private CompositeSubscription mSubs;
 
     public static BookingsFragment newInstance() {
         return new BookingsFragment();
@@ -77,7 +80,7 @@ public class BookingsFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViatoAPI.getBookings()
+        mSubs.add(mViatoAPI.getBookings()
                 .subscribe(new Subscriber<Response<List<Booking>>>() {
                     @Override
                     public void onCompleted() {
@@ -111,13 +114,14 @@ public class BookingsFragment extends AbstractFragment {
                             }
                         }
                     }
-                });
+                }));
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mBookings = null;
+        mSubs.unsubscribe();
     }
 
     public void setupRentHistory() {

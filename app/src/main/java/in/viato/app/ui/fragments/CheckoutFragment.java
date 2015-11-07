@@ -48,6 +48,7 @@ import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyVerticalLlm;
 import retrofit.Response;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -81,6 +82,8 @@ public class CheckoutFragment extends AbstractFragment {
     @Bind(R.id.tv_address_locality) TextView mAddressLocality;
     @Bind(R.id.tv_address_label) TextView mAddressLabel;
 
+    private CompositeSubscription mSubs;
+
     public static CheckoutFragment newInstance() {
         return new CheckoutFragment();
     }
@@ -107,6 +110,12 @@ public class CheckoutFragment extends AbstractFragment {
 
         ViatoApplication.get().trackScreenView(getString(R.string.checkout_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.checkout_fragment));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     @OnClick(R.id.card_view_address)
@@ -325,7 +334,7 @@ public class CheckoutFragment extends AbstractFragment {
     }
 
     public void fetchCart() {
-        mViatoAPI.getCart()
+        mSubs.add(mViatoAPI.getCart()
                 .subscribe(new Subscriber<Cart>() {
                     @Override
                     public void onCompleted() {
@@ -353,7 +362,7 @@ public class CheckoutFragment extends AbstractFragment {
                         setDates();
                         mViewContainer.setDisplayedChildId(R.id.checkout_container);
                     }
-                });
+                }));
     }
 
     public class CheckoutListAdapter extends RecyclerView.Adapter<CheckoutListAdapter.ViewHolder> {

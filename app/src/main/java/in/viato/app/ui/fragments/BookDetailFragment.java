@@ -74,6 +74,7 @@ import in.viato.app.ui.widgets.MyVerticalLlm;
 import retrofit.Response;
 import rx.Subscriber;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 public class BookDetailFragment extends AbstractFragment {
 
@@ -97,6 +98,7 @@ public class BookDetailFragment extends AbstractFragment {
     private Context mContext;
 
     private BookDetail mBookDetail;
+    private CompositeSubscription mSubs;
 
     @Bind(R.id.img_header) ImageView mCover;
     @Bind(R.id.title) TextView mTitle;
@@ -161,7 +163,7 @@ public class BookDetailFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViatoAPI.getBookDetail(mBookId)
+        mSubs.add(mViatoAPI.getBookDetail(mBookId)
                 .subscribe(new Action1<BookDetail>() {
                     @Override
                     public void call(BookDetail bookDetail) {
@@ -175,7 +177,7 @@ public class BookDetailFragment extends AbstractFragment {
                     public void call(Throwable throwable) {
                         Logger.e(throwable.getMessage());
                     }
-                });
+                }));
 
         mActivity.setSupportActionBar(mToolbar);
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -219,6 +221,12 @@ public class BookDetailFragment extends AbstractFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     @Override

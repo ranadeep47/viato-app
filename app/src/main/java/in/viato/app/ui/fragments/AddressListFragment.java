@@ -32,6 +32,7 @@ import in.viato.app.http.models.Address;
 import in.viato.app.ui.activities.AddressListActivity;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 public class AddressListFragment extends AbstractFragment {
 
@@ -43,6 +44,8 @@ public class AddressListFragment extends AbstractFragment {
 
     private RecyclerView mAddressList;
     private AddressListAdapter mAdapter;
+
+    private CompositeSubscription mSubs;
 
     private int mSelectedAddress;
 
@@ -81,7 +84,7 @@ public class AddressListFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViatoAPI.getAddress()
+        mSubs.add(mViatoAPI.getAddress()
                 .subscribe(new Subscriber<List<Address>>() {
                     @Override
                     public void onCompleted() {
@@ -100,7 +103,7 @@ public class AddressListFragment extends AbstractFragment {
                         setupAddresses();
                         mAnimator.setDisplayedChildView(addressContainer);
                     }
-                });
+                }));
     }
 
     @OnClick(R.id.add_address)
@@ -158,6 +161,12 @@ public class AddressListFragment extends AbstractFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.ViewHolder> {
