@@ -155,7 +155,7 @@ public class BookSearchActivity extends AbstractActivity {
             performQuery(query);
 
             mViatoApp.trackEvent(getString(R.string.home_activity),
-                    "search", "submit", "query", query, getString(R.string.book_search_activity));
+                    "search", "submit", "query", query, "" , getString(R.string.book_search_activity));
         }
     }
 

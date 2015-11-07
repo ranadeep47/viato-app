@@ -122,7 +122,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
         t.setScreenName(null);
 
         mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
-                "wish_list", "add", "book", item.getCatalogueId(), getString(R.string.title_activity_my_books));
+                "wish_list", "add", "book", item.getCatalogueId(),"", getString(R.string.title_activity_my_books));
 
         mViatoAPI
                 .addToWishlist(item.getCatalogueId())
@@ -169,7 +169,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
         t.setScreenName(null);
 
         mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
-                "wish_list", "remove", "book", book.getCatalogueId(), getString(R.string.title_activity_my_books));
+                "wish_list", "remove", "book", book.getCatalogueId(), "", getString(R.string.title_activity_my_books));
 
         mViatoAPI
                 .removeFromWishlist(book.get_id())

@@ -435,7 +435,7 @@ public class CheckoutFragment extends AbstractFragment {
                                     t.setScreenName(null);
 
                                     mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                                            "cart", "remove", "book", removed.get_id(), removed.getTitle());
+                                            "cart", "remove", "book", removed.get_id(),"",  removed.getTitle());
 
                                     Snackbar.make(v, "Removed.", Snackbar.LENGTH_LONG).show();
                                 }

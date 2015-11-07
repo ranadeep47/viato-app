@@ -85,7 +85,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         super.onViewCreated(view, savedInstanceState);
 
         smsReceiver = new SMSReceiver();
-        smsReceiver.addListener(this);
 
         mSMSCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -137,6 +136,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.setPriority(999);
+        smsReceiver.addListener(this);
         getActivity().registerReceiver(smsReceiver, intentFilter);
     }
 
@@ -145,7 +145,11 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         super.onPause();
 
         getActivity().unregisterReceiver(smsReceiver);
+        smsReceiver.removeListener(this);
+
     }
+
+
 
     private String[] getEmails() {
         ArrayList<String> emails = new ArrayList<>();
@@ -334,6 +338,13 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
             mEmail.setError(getString(R.string.error_email_input));
             return;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        smsReceiver = null;
     }
 }
 

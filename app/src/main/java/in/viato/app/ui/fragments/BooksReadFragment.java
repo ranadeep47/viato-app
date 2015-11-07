@@ -126,7 +126,7 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         t.send(builder.build());
         t.setScreenName(null);
 
-        mViatoApp.trackEvent(getString(R.string.title_activity_my_books), "read_list", "add", "book", item.getCatalogueId(), getString(R.string.title_activity_my_books));
+        mViatoApp.trackEvent(getString(R.string.title_activity_my_books), "read_list", "add", "book", item.getCatalogueId(),"", getString(R.string.title_activity_my_books));
 
         mViatoAPI
                 .addToRead(item.getCatalogueId())
@@ -172,7 +172,7 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         t.setScreenName(null);
 
         mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
-                "read_list", "remove", "book", book.getCatalogueId(), getString(R.string.title_activity_my_books));
+                "read_list", "remove", "book", book.getCatalogueId(),"", getString(R.string.title_activity_my_books));
 
         mViatoAPI
                 .removeFromRead(book.get_id())

@@ -149,12 +149,12 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
             case R.id.menu_search:
                 startActivity(new Intent(this, BookSearchActivity.class));
                 mViatoApp.trackEvent(getString(R.string.home_activity),
-                        "search", "clicked", "icon", "", "home_menu");
+                        "search", "clicked", "icon", "", "", "home_menu");
                 return true;
             case R.id.menu_cart:
                 startActivity(new Intent(this, CheckoutActivity.class));
                 mViatoApp.trackEvent(getString(R.string.home_activity),
-                        "cart", "clicked", "icon", "", "home_menu");
+                        "cart", "clicked", "icon", "", "", "home_menu");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -254,7 +254,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                     intent.setAction("android.intent.action.SEARCH");
                     startActivity(intent);
                     mViatoApp.trackEvent(getString(R.string.home_activity),
-                            "search", "submit", "query", query, getString(R.string.home_activity));
+                            "search", "submit", "query", query,"", getString(R.string.home_activity));
                     searchBar.setText("");
                     return true;
                 }
@@ -297,7 +297,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                             //start barcode activity
                             startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
                             mViatoApp.trackEvent(getString(R.string.home_activity),
-                                    "barcode_scanner", "clicked", "icon", "", "searchbar_home");
+                                    "barcode_scanner", "clicked", "icon", "", "", "searchbar_home");
                         }
                         return true;
                     }
@@ -337,6 +337,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
     public void checkServiceability() {
         Boolean checkedAvailable =  SharedPrefHelper.getBoolean(R.string.pref_show_unavailable);
+
         if (checkedAvailable) {
             return;
         }
@@ -373,6 +374,8 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                                 })
                                 .create()
                                 .show();
+                        return;
+
                     }
                 }
             });
@@ -402,7 +405,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                             String places = serviceability.getSupported_localities();
                             if (!aBoolean) {
                                 new AlertDialog.Builder(mActivity)
-                                        .setTitle("Sorry")
+                                        .setTitle("Only in Mumbai")
                                         .setMessage("We currently serve following localities:\n" + places)
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override

@@ -1,20 +1,12 @@
 package in.viato.app;
 
-import android.app.AlertDialog;
 import android.app.Application;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Looper;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import in.viato.app.http.clients.login.HttpClient;
-import in.viato.app.http.models.ForceUpdate;
 import in.viato.app.utils.AppConstants;
 import in.viato.app.utils.AppConstants.UserInfo;
 
@@ -31,16 +23,11 @@ import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-
 import in.viato.app.http.clients.viato.ViatoAPI;
 import in.viato.app.receivers.NetworkStateReceiver;
 import in.viato.app.utils.MiscUtils;
 import in.viato.app.utils.SharedPrefHelper;
 import io.fabric.sdk.android.Fabric;
-import retrofit.Response;
-import rx.Subscriber;
-
 
 /**
  * Created by ranadeep on 10/09/15.
@@ -58,8 +45,6 @@ public class ViatoApplication extends Application implements NetworkStateReceive
     private HttpClient mHttpClient;
 
     private Tracker mTracker;
-
-    private int mAppVersion;
 
     public static Typeface montserrat;
 
@@ -81,8 +66,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         if (BuildConfig.DEBUG) {
             Logger.init(mTAG);
         } else {
-            Logger.init(mTAG);
-//            Logger.init(mTAG).setLogLevel(LogLevel.NONE);
+            Logger.init(mTAG).setLogLevel(LogLevel.NONE);
         }
 
         setupNetworkChangeReceiver();
@@ -247,7 +231,7 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         t.setScreenName(null);
     }
 
-    public void trackEvent(String screenName, String category, String action, String label, String extra_key, String source) {
+    public void trackEvent(String screenName, String category, String action, String label, String value, String extra_key, String source) {
         Tracker t = getGoogleAnalyticsTracker();
         t.setScreenName(screenName);
         // Build and send an Event.

@@ -23,7 +23,7 @@ public class SMSReceiver extends BroadcastReceiver {
     /**
      * SmsManager to get the sms in the receiver
      */
-    private Context mContext;
+//    private Context mContext;
 
     private List<OnSmsReceivedListener> mListeners;
 
@@ -34,7 +34,7 @@ public class SMSReceiver extends BroadcastReceiver {
 
         // Retrieves a map of extended data from the intent.
         final Bundle bundle = intent.getExtras();
-        mContext = context;
+//        mContext = context;
 
         try {
             if (bundle != null) {
@@ -75,5 +75,11 @@ public class SMSReceiver extends BroadcastReceiver {
             mListeners = new ArrayList<OnSmsReceivedListener>();
         }
         mListeners.add(l);
+    }
+
+    public void removeListener(OnSmsReceivedListener l) {
+        if (mListeners == null){
+            mListeners.remove(l);
+        }
     }
 }

@@ -174,6 +174,10 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
+        }
+
         flat.setText(mAddress.getFlat());
         street.setText(mAddress.getStreet());
         label.setText(mAddress.getLabel() == null ? "Home" : mAddress.getLabel());
@@ -188,10 +192,8 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
         });
 
         if(mAddress.getLocality() == null) {
-            if (checkPlayServices()) {
-                buildGoogleApiClient();
-                getLocality();
-            }
+            placeId = null;
+            placeName = null;
         } else {
             placeId = mAddress.getLocality().getPlaceId();
             placeName = mAddress.getLocality().getName();
@@ -378,7 +380,9 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
     @Override
     public void onConnected(Bundle bundle) {
-        getLocality();
+        if (placeId == null) {
+            getLocality();
+        }
     }
 
     @Override

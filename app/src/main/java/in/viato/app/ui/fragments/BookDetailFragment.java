@@ -201,12 +201,12 @@ public class BookDetailFragment extends AbstractFragment {
             case R.id.menu_search:
                 startActivity(new Intent(getActivity(), BookSearchActivity.class));
                 mViatoApp.trackEvent(getString(R.string.home_activity),
-                        "search", "clicked", "icon", "", "bookDetail_menu");
+                        "search", "clicked", "icon", "","", "bookDetail_menu");
                 return true;
             case R.id.menu_cart:
                 startActivity(new Intent(getActivity(), CheckoutActivity.class));
                 mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                        "cart", "clicked", "icon", "", "bookDetail_menu");
+                        "cart", "clicked", "icon", "", "","bookDetail_menu");
                 return true;
             case R.id.action_favorite:
                 toggleFavourite();
@@ -287,7 +287,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                 if ((!available) || (rent == 0)) {
                     mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                            "cart", "cannot_add", "book", mBookId, mBookDetail.getTitle());
+                            "cart", "cannot_add", "book", mBookId,"", mBookDetail.getTitle());
                     progressDialog.dismiss();
                     Snackbar.make(v, "Sorry, this book is unavailable for rental. We are updating our collection everyday.", Snackbar.LENGTH_LONG).show();
                     return;
@@ -304,7 +304,7 @@ public class BookDetailFragment extends AbstractFragment {
                                 progressDialog.dismiss();
 //                                Logger.d("Item not added to cart " + R.string.due_to + e.getMessage());
                                 mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                                        "cart", "cannot_add", "book", mBookId, mBookDetail.getTitle());
+                                        "cart", "cannot_add", "book", mBookId, "", mBookDetail.getTitle());
                                 Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
                             }
 
@@ -314,7 +314,7 @@ public class BookDetailFragment extends AbstractFragment {
                                 if (cart.isSuccess()) {
                                     startActivity(new Intent(getActivity(), CheckoutActivity.class));
                                     mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                                            "cart", "added", "book", mBookId, mBookDetail.getTitle());
+                                            "cart", "added", "book", mBookId,"", mBookDetail.getTitle());
                                 } else {
                                     try {
                                         Snackbar.make(v, cart.errorBody().string(), Snackbar.LENGTH_LONG).show();

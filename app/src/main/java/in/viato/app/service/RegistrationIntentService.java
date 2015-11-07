@@ -2,11 +2,10 @@ package in.viato.app.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.orhanobut.logger.Logger;
 
 import in.viato.app.R;
 import in.viato.app.utils.SharedPrefHelper;
@@ -28,7 +27,7 @@ public class RegistrationIntentService extends IntentService {
             SharedPrefHelper.set(R.string.pref_gcm_reg_token, token);
 
         } catch (Exception e) {
-            Log.d(TAG, "Failed to complete token refresh", e);
+            Logger.d(TAG, "Failed to complete token refresh", e);
         }
     }
 
