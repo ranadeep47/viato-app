@@ -23,6 +23,7 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by ranadeep on 24/09/15.
@@ -35,6 +36,8 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     @Bind(R.id.books_wishlist_animator) BetterViewAnimator container;
     @Bind(R.id.books_wishlist_grid) RecyclerView grid;
 
+    private CompositeSubscription mSubs;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,7 +48,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViatoAPI.getWishlist().subscribe(new Subscriber<List<BookItem>>() {
+        mSubs.add(mViatoAPI.getWishlist().subscribe(new Subscriber<List<BookItem>>() {
             @Override
             public void onCompleted() {
 
@@ -61,7 +64,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
             public void onNext(List<BookItem> books) {
                 setupGrid(books);
             }
-        });
+        }));
     }
 
     private void setupGrid(List<BookItem> books){
@@ -102,6 +105,12 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

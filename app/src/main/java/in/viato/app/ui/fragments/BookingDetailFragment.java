@@ -40,6 +40,7 @@ import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyVerticalLlm;
 import retrofit.Response;
 import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 public class BookingDetailFragment extends AbstractFragment {
     public static final String TAG = BookingDetailFragment.class.getSimpleName();
@@ -68,6 +69,8 @@ public class BookingDetailFragment extends AbstractFragment {
     @Bind(R.id.flat) TextView mAddressFlat;
     @Bind(R.id.street) TextView mAddressStreet;
     @Bind(R.id.locality) TextView mAddressLocality;
+
+    private CompositeSubscription mSubs;
 
 
     public static BookingDetailFragment newInstance(String orderId) {
@@ -107,8 +110,14 @@ public class BookingDetailFragment extends AbstractFragment {
 //        Analytics.with(getContext()).screen("screen", getString(R.string.booking_detail_fragment));
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSubs.unsubscribe();
+    }
+
     public void getBookingDetail() {
-        mViatoAPI.getBookingDetail(orderId)
+        mSubs.add(mViatoAPI.getBookingDetail(orderId)
                 .subscribe(new Subscriber<Response<Booking>>() {
                     @Override
                     public void onCompleted() {
@@ -140,7 +149,7 @@ public class BookingDetailFragment extends AbstractFragment {
                             }
                         }
                     }
-                });
+                }));
     }
 
     public void setDetails() {
