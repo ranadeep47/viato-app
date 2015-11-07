@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -287,7 +288,8 @@ public class BookDetailFragment extends AbstractFragment {
                 if ((!available) || (rent == 0)) {
                     mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
                             "cart", "cannot_add", "book", mBookId, mBookDetail.getTitle());
-                    Snackbar.make(v, "Sorry, this book is unavailable for rental.Checkout after some time, we update our collection everyday", Snackbar.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                    Snackbar.make(v, "Sorry, this book is unavailable for rental. We are updating our collection everyday.", Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
@@ -524,7 +526,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                     @Override
                     public void onNext(BookItem bookItem) {
-
+                        Toast.makeText(mContext, "Added to wishlist", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -545,7 +547,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                     @Override
                     public void onNext(String s) {
-
+                        Toast.makeText(mContext, "Removed from wishlist", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

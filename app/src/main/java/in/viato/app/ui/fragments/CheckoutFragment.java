@@ -120,7 +120,7 @@ public class CheckoutFragment extends AbstractFragment {
     @OnClick(R.id.place_order)
     public void placeOrder(final View v) {
         if(addresses.size() == 0 || mSelectedAddress == -1) {
-            Snackbar.make(v, "Please Select a address", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(v, "Add your address.", Snackbar.LENGTH_LONG).show();
             return;
         }
         final ProgressDialog progressDialog = showProgressDialog("Placing your order...");
@@ -181,6 +181,7 @@ public class CheckoutFragment extends AbstractFragment {
     @OnClick(R.id.btn_empty_action)
     public void goToTrending() {
         Intent intent = new Intent(getContext(), HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(HomeActivity.EXTRA_SELECT_TAB, HomeActivity.TAB_TRENDING);
         startActivity(intent);
         getActivity().finish();

@@ -82,8 +82,8 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
     @Bind(R.id.stub_cover_image) ViewStub stubCoverImage;
     @Bind(R.id.main_container) CoordinatorLayout mMainContainer;
 
-    public static final int TAB_CATEGORIES = '0';
-    public static final int TAB_TRENDING = '1';
+    public static final int TAB_CATEGORIES = 0;
+    public static final int TAB_TRENDING = 1;
 
     public static final String EXTRA_SELECT_TAB = "select_tab";
 
@@ -360,8 +360,8 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                         List<String> body = listResponse.body();
                         String places = TextUtils.join(", ", body);
                         new AlertDialog.Builder(mActivity)
-                                .setTitle("Sorry")
-                                .setMessage("We currently serve following localities:\n" + places)
+                                .setTitle("Only in Mumbai")
+                                .setMessage("We currently serve the following localities:\n" + places)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

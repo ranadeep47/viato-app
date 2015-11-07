@@ -109,16 +109,14 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         super.onPause();
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         BookItem item = data.getParcelableExtra("book"); // TODO: 01/11/15 replace the string with a resource
 
         Product product = new Product()
                 .setId(item.getCatalogueId())
                 .setName(item.getTitle())
-                .setCustomDimension(getResources().getInteger(R.integer.source),
-                        getString(R.string.title_activity_my_books));
+                .setCustomDimension(getActivity().getResources().getInteger(R.integer.source),
+                        getActivity().getString(R.string.title_activity_my_books));
 
         HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
                 .addImpression(product, "add to read list");

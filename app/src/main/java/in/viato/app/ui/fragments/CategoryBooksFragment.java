@@ -28,6 +28,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ranadeep on 21/09/15.
@@ -119,17 +120,13 @@ public class CategoryBooksFragment extends AbstractFragment{
             }
         }).debounce(400, TimeUnit.MILLISECONDS);
 
-
         loadFirstPage();
+        setupInfiniteLoader();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //Setup here because it deals with mRxSubs whose lifecycle depends on fragment's Pause/Resume cycle
-        setupInfiniteLoader();
-
-        //includes events from trending 'category' on Home screen
 //        ViatoApplication.get().trackScreenView(getString(R.string.category_books_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.category_books_fragment));
     }
@@ -155,7 +152,6 @@ public class CategoryBooksFragment extends AbstractFragment{
     private Subscription loadFirstPage(){
         mAnimator.setDisplayedChildId(R.id.category_books_loading);
         return  getBooks(page)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CategoryGrid>() {
                     @Override
                     public void onCompleted() {
@@ -183,7 +179,8 @@ public class CategoryBooksFragment extends AbstractFragment{
     }
 
     private void setupInfiniteLoader(){
-        mRxSubs.add(pageDetector
+        pageDetector
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<Void, Observable<CategoryGrid>>() {
                              @Override
@@ -191,7 +188,7 @@ public class CategoryBooksFragment extends AbstractFragment{
                                  if (!isFull) {
                                      toggleProgressBar();
                                      ++page;
-                                     return getBooks(page).observeOn(AndroidSchedulers.mainThread());
+                                     return getBooks(page);
                                  } else return Observable.empty();
                              }
                          }
@@ -217,7 +214,7 @@ public class CategoryBooksFragment extends AbstractFragment{
                         }
                         adapter.addAll(books);
                     }
-                }));
+                });
 
     }
 
