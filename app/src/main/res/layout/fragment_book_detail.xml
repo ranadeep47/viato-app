@@ -177,6 +177,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="8dp"
                         android:textColor="@color/primary"
+                        android:clickable="true"
                         style="?android:attr/borderlessButtonStyle"
                         android:text="Show More"/>
                 </LinearLayout>
