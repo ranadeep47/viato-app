@@ -30,7 +30,7 @@ import in.viato.app.utils.barcode.CameraSourcePreview;
  * Created by ranadeep on 22/09/15.
  */
 public class BarcodeScannerActivity extends AppCompatActivity {
-    private static final String TAG = "BarcodeScanner";
+    private static final String TAG = BarcodeScannerActivity.class.getSimpleName();
     private static final int RC_HANDLE_GMS = 9001;
 
     private CameraSource mCameraSource = null;
@@ -54,6 +54,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         if (mCameraSource != null) {
             mCameraSource.release();
         }
@@ -92,7 +93,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
         // is set to receive the barcode detection results, track the barcodes, and maintain
         // graphics for each barcode on screen.  The factory is used by the multi-processor to
         // create a separate tracker instance for each barcode.
-        BarcodeDetector detector = new BarcodeDetector.Builder(context)
+        BarcodeDetector detector = new BarcodeDetector.Builder(getApplicationContext())
                 .setBarcodeFormats(Barcode.EAN_13 | Barcode.UPC_A)
                 .build();
 

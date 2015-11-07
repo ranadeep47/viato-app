@@ -342,7 +342,7 @@ public class CheckoutFragment extends AbstractFragment {
                     public void onNext(Cart cart) {
                         items = cart.getCart();
                         addresses = cart.getAddresses();
-                        if (items.size() == 0) {
+                        if (items.isEmpty()) {
                             //Empty Cart
                             mViewContainer.setDisplayedChildId(R.id.checkout_empty);
                             return;

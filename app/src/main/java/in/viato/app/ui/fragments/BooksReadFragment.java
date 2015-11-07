@@ -73,7 +73,7 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         readGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
         readGrid.setAdapter(adapter);
 
-        if(myBooksReadResponse.getRead().size() == 0){
+        if(myBooksReadResponse.getRead().isEmpty()){
             container.setDisplayedChildId(R.id.books_read_empty);
         }
         else {

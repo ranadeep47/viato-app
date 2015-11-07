@@ -282,7 +282,7 @@ public class BookingDetailFragment extends AbstractFragment {
                 holder.mBtnExtend.setVisibility(View.GONE);
             }
 
-            if (rental.getPickup_requested_at() != null || rental.getExpires_at().before(new Date()) || rental.getStatus() == "CANCELLED") {
+            if (rental.getPickup_requested_at() != null || rental.getExpires_at().before(new Date()) || rental.getStatus().equals("CANCELLED")) {
                 holder.mBtnReturn.setVisibility(View.GONE);
                 holder.mBtnExtend.setVisibility(View.GONE);
                 holder.mDeliveredDate.setVisibility(View.GONE);

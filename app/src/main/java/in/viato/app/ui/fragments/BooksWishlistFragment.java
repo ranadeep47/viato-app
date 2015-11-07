@@ -68,7 +68,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
         grid.setLayoutManager(new GridLayoutManager(getContext(), 3));
         grid.setAdapter(adapter);
 
-        if(books.size() == 0){
+        if(books.isEmpty()){
             container.setDisplayedChildId(R.id.books_wishlist_empty);
         }
         else {

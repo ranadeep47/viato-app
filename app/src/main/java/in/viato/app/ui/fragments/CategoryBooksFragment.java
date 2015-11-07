@@ -93,7 +93,7 @@ public class CategoryBooksFragment extends AbstractFragment{
         adapter = new CategoryBooksGridAdapter(mCategoryName);
         layoutManager = new GridLayoutManager(getActivity(), mSpanCount);
 
-        if (mCategoryId != "trending") {
+        if (!(mCategoryId.equals("trending"))) {
             getActivity().setTitle(mCategoryName);
         }
         grid.setAdapter(adapter);
@@ -142,7 +142,7 @@ public class CategoryBooksFragment extends AbstractFragment{
     }
 
     private Observable<CategoryGrid> getBooks(int page){
-        if (mCategoryId == "trending") {
+        if (mCategoryId.equals("trending")) {
             return mViatoAPI.getTrending(page);
         } else {
             return mViatoAPI.getBooksByCategory(mCategoryId, page);
@@ -168,7 +168,7 @@ public class CategoryBooksFragment extends AbstractFragment{
                     @Override
                     public void onNext(CategoryGrid categoryGrid) {
                         List<BookItem> books = categoryGrid.getList();
-                        if (books == null || books.size() == 0) {
+                        if (books == null || books.isEmpty()) {
                             mAnimator.setDisplayedChildId(R.id.category_books_empty);
                         } else {
                             mAnimator.setDisplayedChildId(R.id.grid_container);

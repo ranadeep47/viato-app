@@ -95,7 +95,7 @@ public class BookingsFragment extends AbstractFragment {
                     public void onNext(Response<List<Booking>> listResponse) {
                         if (listResponse.isSuccess()) {
                             mBookings = listResponse.body();
-                            if (mBookings.size() == 0) {
+                            if (mBookings.isEmpty()) {
                                 mAnimator.setDisplayedChildView(mEmptyContainer);
                             } else {
                                 setupRentHistory();
