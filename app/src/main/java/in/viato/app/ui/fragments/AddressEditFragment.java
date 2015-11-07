@@ -176,7 +176,7 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
         flat.setText(mAddress.getFlat());
         street.setText(mAddress.getStreet());
-        label.setText(mAddress.getLabel());
+        label.setText(mAddress.getLabel() == null ? "Home" : mAddress.getLabel());
         label.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

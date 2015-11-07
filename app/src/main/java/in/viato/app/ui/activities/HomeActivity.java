@@ -94,8 +94,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
         mActivity = this;
 
-        Boolean checkedAvailable =  SharedPrefHelper.getBoolean(R.string.pref_show_unavailable);
-        if(!checkedAvailable && checkPlayServices()) {
+        if(checkPlayServices()) {
             buildGoogleApiClient();
         }
 
@@ -336,7 +335,11 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         return getResources().getInteger(R.integer.nav_item_home);
     }
 
-    public Boolean checkServiceability() {
+    public void checkServiceability() {
+        Boolean checkedAvailable =  SharedPrefHelper.getBoolean(R.string.pref_show_unavailable);
+        if (checkedAvailable) {
+            return;
+        }
         mLastLocation = LocationServices.FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
 
@@ -373,13 +376,11 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                     }
                 }
             });
-            return true;
+            return;
         }
 
         double latitude = mLastLocation.getLatitude();
         double longitude = mLastLocation.getLongitude();
-
-        Log.d("Location: %f, %f" ," latitude, longitude");
 
         mViatoAPI.getServiceability(String.valueOf(latitude), String.valueOf(longitude))
                 .subscribe(new Subscriber<Response<Serviceability>>() {
@@ -423,9 +424,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                         }
                     }
                 });
-
-
-        return false;
+        return;
     }
 
     protected synchronized void buildGoogleApiClient() {
