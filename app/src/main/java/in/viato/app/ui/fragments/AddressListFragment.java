@@ -45,7 +45,7 @@ public class AddressListFragment extends AbstractFragment {
     private RecyclerView mAddressList;
     private AddressListAdapter mAdapter;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     private int mSelectedAddress;
 

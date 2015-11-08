@@ -51,7 +51,7 @@ public class HomeFragment extends AbstractFragment {
     private LinearLayoutManager layoutManager;
     private CategoryListAdapter adapter;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     public static HomeFragment newInstance() {
         Bundle args = new Bundle();

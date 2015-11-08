@@ -82,7 +82,7 @@ public class CheckoutFragment extends AbstractFragment {
     @Bind(R.id.tv_address_locality) TextView mAddressLocality;
     @Bind(R.id.tv_address_label) TextView mAddressLabel;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     public static CheckoutFragment newInstance() {
         return new CheckoutFragment();

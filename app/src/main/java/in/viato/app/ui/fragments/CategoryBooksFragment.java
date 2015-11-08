@@ -57,7 +57,7 @@ public class CategoryBooksFragment extends AbstractFragment{
     private CategoryBooksGridAdapter adapter;
     private GridLayoutManager layoutManager;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     @Bind(R.id.category_books_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.category_books_grid) RecyclerView grid;

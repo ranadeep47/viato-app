@@ -51,7 +51,7 @@ public class BookingsFragment extends AbstractFragment {
 
     private List<Booking> mBookings;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     public static BookingsFragment newInstance() {
         return new BookingsFragment();

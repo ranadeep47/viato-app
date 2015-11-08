@@ -36,7 +36,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     @Bind(R.id.books_wishlist_animator) BetterViewAnimator container;
     @Bind(R.id.books_wishlist_grid) RecyclerView grid;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     @Nullable
     @Override

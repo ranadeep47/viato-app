@@ -70,7 +70,7 @@ public class BookingDetailFragment extends AbstractFragment {
     @Bind(R.id.street) TextView mAddressStreet;
     @Bind(R.id.locality) TextView mAddressLocality;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
 
     public static BookingDetailFragment newInstance(String orderId) {

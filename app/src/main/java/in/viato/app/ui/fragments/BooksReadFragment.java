@@ -39,7 +39,7 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
     @Bind(R.id.books_reading_grid) RecyclerView readGrid;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     @Nullable
     @Override
