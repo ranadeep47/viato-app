@@ -40,18 +40,20 @@
     <!-- theme colors -->
     <color name="primary_dark">#0097A7</color>
     <color name="primary">#00BCD4</color>
-    <color name="primary_light">#4DD0E1</color>
+    <color name="primary_light">#B2EBF2</color>
 
-    <color name="accent">#00BCD4</color>
-    <color name="accent_translucent">#8000BCD4</color>
+    <color name="accent">#5C6BC0</color>
+    <color name="accent_translucent">#C5CAE9</color>
 
     <color name="transparent">#00FFFFFF</color>
     <color name="overlay_black_15p">#26000000</color>
     <color name="transparent_scrim">#40000000</color>
 
+    <color name="green">#3FC277</color>
+    <color name="green_dark">#38AA68</color>
+
+
     <color name="test_red">#B03120</color>
-    <color name="test_green">#3FC277</color>
-    <color name="test_green_dark">#38AA68</color>
     <color name="test_yellow">#E8AF00</color>
     <color name="test_blue">#274CB6</color>
 </resources>

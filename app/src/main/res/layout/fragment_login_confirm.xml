@@ -68,14 +68,14 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_done_white"
                     android:layout_gravity="center_vertical"
-                    android:tint="@color/test_green"
+                    android:tint="@color/green"
                     android:layout_marginRight="@dimen/spacing_vv_small"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mobile Number Verified"
                     android:textSize="18sp"
-                    android:textColor="@color/test_green"/>
+                    android:textColor="@color/green"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

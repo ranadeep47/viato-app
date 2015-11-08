@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -338,7 +339,7 @@ public class BookDetailFragment extends AbstractFragment {
     @OnClick(R.id.btn_desc_more)
     public void toggleDesc(TextView view) {
         if(isFullDesc) {
-            mDescription.setMaxLines(8);
+            mDescription.setMaxLines(7);
             view.setText(R.string.show_more);
         } else {
             mDescription.setMaxLines(Integer.MAX_VALUE);
@@ -445,13 +446,14 @@ public class BookDetailFragment extends AbstractFragment {
         //set description
         Spanned sp = Html.fromHtml(mBookDetail.getDescription());
         mDescription.setText(sp);
-        mDescription.post(new Runnable() {
+
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 int lineCount = mDescription.getLineCount();
-                mBtn_desc_more.setVisibility(lineCount > 8 ? View.VISIBLE : View.GONE);
+                mBtn_desc_more.setVisibility(lineCount > 7 ? View.VISIBLE : View.GONE);
             }
-        });
+        }, 500);
     }
 
     @TargetApi(21)
