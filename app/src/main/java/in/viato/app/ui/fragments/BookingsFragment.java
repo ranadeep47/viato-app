@@ -27,6 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.Booking;
 import in.viato.app.http.models.response.Rental;
 import in.viato.app.ui.activities.HomeActivity;
@@ -51,7 +52,7 @@ public class BookingsFragment extends AbstractFragment {
 
     private List<Booking> mBookings;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     public static BookingsFragment newInstance() {
         return new BookingsFragment();
@@ -61,6 +62,7 @@ public class BookingsFragment extends AbstractFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +74,7 @@ public class BookingsFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-        mViatoApp.trackScreenView(getString(R.string.booking_list_fragment));
+        mViatoApp.sendScreenView(getString(R.string.booking_list_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.booking_list_fragment));
     }
 
@@ -178,6 +180,7 @@ public class BookingsFragment extends AbstractFragment {
                 public void onClick(View v) {
                 loadFragment(R.id.frame_content, BookingDetailFragment.newInstance(booking.get_id()),
                         BookingDetailFragment.TAG, true, BookingDetailFragment.TAG);
+                    ViatoApplication.get().sendEvent("bookings","view_details", "");
                 }
             });
         }

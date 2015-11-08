@@ -36,7 +36,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     @Bind(R.id.books_wishlist_animator) BetterViewAnimator container;
     @Bind(R.id.books_wishlist_grid) RecyclerView grid;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     @Nullable
     @Override
@@ -128,10 +128,8 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
         Tracker t = mViatoApp.getGoogleAnalyticsTracker();
         t.setScreenName(getString(R.string.title_activity_my_books));
         t.send(builder.build());
-        t.setScreenName(null);
 
-        mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
-                "wish_list", "add", "book", item.getCatalogueId(),"", getString(R.string.title_activity_my_books));
+        mViatoApp.sendEvent("wish_list", "add", item.getTitle());
 
         mViatoAPI
                 .addToWishlist(item.getCatalogueId())
@@ -175,10 +173,8 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
         Tracker t = mViatoApp.getGoogleAnalyticsTracker();
         t.setScreenName(getString(R.string.title_activity_my_books));
         t.send(builder.build());
-        t.setScreenName(null);
 
-        mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
-                "wish_list", "remove", "book", book.getCatalogueId(), "", getString(R.string.title_activity_my_books));
+        mViatoApp.sendEvent("wish_list", "remove", book.getTitle());
 
         mViatoAPI
                 .removeFromWishlist(book.get_id())

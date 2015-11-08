@@ -82,7 +82,7 @@ public class CheckoutFragment extends AbstractFragment {
     @Bind(R.id.tv_address_locality) TextView mAddressLocality;
     @Bind(R.id.tv_address_label) TextView mAddressLabel;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     public static CheckoutFragment newInstance() {
         return new CheckoutFragment();
@@ -108,7 +108,7 @@ public class CheckoutFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-        ViatoApplication.get().trackScreenView(getString(R.string.checkout_fragment));
+        ViatoApplication.get().sendScreenView(getString(R.string.checkout_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.checkout_fragment));
     }
 
@@ -168,10 +168,8 @@ public class CheckoutFragment extends AbstractFragment {
                         Tracker t = mViatoApp.getGoogleAnalyticsTracker();
                         t.setScreenName(getString(R.string.book_detail_fragment));
                         t.send(builder.build());
-                        t.setScreenName(null);
 
-                        mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                                "cart", "place", "order");
+                        mViatoApp.sendEvent("cart", "place", "order", 0l);
 
                         startActivity(intent);
                         getActivity().finish();
@@ -441,10 +439,8 @@ public class CheckoutFragment extends AbstractFragment {
                                     Tracker t = mViatoApp.getGoogleAnalyticsTracker();
                                     t.setScreenName(mContext.getString(R.string.book_detail_fragment));
                                     t.send(builder.build());
-                                    t.setScreenName(null);
 
-                                    mViatoApp.trackEvent(getString(R.string.book_detail_fragment),
-                                            "cart", "remove", "book", removed.get_id(),"",  removed.getTitle());
+                                    mViatoApp.sendEvent("cart", "remove", removed.getTitle());
 
                                     Snackbar.make(v, "Removed.", Snackbar.LENGTH_LONG).show();
                                 }

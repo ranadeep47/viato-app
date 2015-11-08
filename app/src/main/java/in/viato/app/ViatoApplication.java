@@ -167,18 +167,11 @@ public class ViatoApplication extends Application implements NetworkStateReceive
      *
      * @param screenName screen name to be displayed on GA dashboard
      */
-    public void trackScreenView(String screenName) {
+    public void sendScreenView(String screenName) {
         Tracker t = getGoogleAnalyticsTracker();
-
-        // Set screen name.
         t.setScreenName(screenName);
-
-        // Send a screen view.
         t.send(new HitBuilders.ScreenViewBuilder().build());
-
-        GoogleAnalytics.getInstance(this).dispatchLocalHits();
-
-        t.setScreenName(null);
+        Logger.d("Screen View recorded: " + screenName);
     }
 
     /***
@@ -198,9 +191,30 @@ public class ViatoApplication extends Application implements NetworkStateReceive
                             .setFatal(false)
                             .build()
             );
-            GoogleAnalytics.getInstance(this).dispatchLocalHits();
-            t.setScreenName(null);
         }
+    }
+
+
+    public void sendEvent(String category, String action, String label, long value,
+                                 HitBuilders.EventBuilder eventBuilder) {
+            Tracker t = getGoogleAnalyticsTracker();
+            t.send(eventBuilder
+                    .setCategory(category)
+                    .setAction(action)
+                    .setLabel(label)
+                    .setValue(value)
+                    .build());
+
+            Logger.d("Event recorded: \n" +
+                    "\tCategory: " + category +
+                    "\tAction: " + action +
+                    "\tLabel: " + label +
+                    "\tValue: " + value);
+    }
+
+    public void sendEvent(String category, String action, String label) {
+        HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
+        sendEvent(category, action, label, 0, eventBuilder);
     }
 
     /***
@@ -212,38 +226,35 @@ public class ViatoApplication extends Application implements NetworkStateReceive
      * @param label    label
      */
 
-    public void trackEvent(String screenName, String category, String action, String label) {
-        trackEvent(screenName, category, action, label, "");
+    public void sendEvent(String category, String action, String label, Long value) {
+        HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
+        sendEvent(category, action, label, value, eventBuilder);
     }
 
-    public void trackEvent(String screenName, String category, String action, String label, String extra_key) {
-        Tracker t = getGoogleAnalyticsTracker();
+    public void sendEventWithCustomDimension(String category, String action, String label,
+                                             int dimensionIndex, String dimensionValue) {
+        // Create a new HitBuilder, populate it with the custom dimension, and send it along
+        // to the rest of the event building process.
+        HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
+        eventBuilder.setCustomDimension(dimensionIndex, dimensionValue);
+        sendEvent(category, action, label, 0, eventBuilder);
 
-        t.setScreenName(screenName);
-        // Build and send an Event.
-        t.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .setCustomDimension(getResources().getInteger(R.integer.extra_key), extra_key)
-                .build());
-        GoogleAnalytics.getInstance(this).dispatchLocalHits();
-        t.setScreenName(null);
+        Logger.d("Custom Dimension Attached:\n" +
+                "\tindex: " + dimensionIndex +
+                "\tvalue: " + dimensionValue);
     }
 
-    public void trackEvent(String screenName, String category, String action, String label, String value, String extra_key, String source) {
-        Tracker t = getGoogleAnalyticsTracker();
-        t.setScreenName(screenName);
-        // Build and send an Event.
-        t.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .setCustomDimension(getResources().getInteger(R.integer.extra_key), extra_key)
-                .setCustomDimension(getResources().getInteger(R.integer.source), source)
-                .build());
-        GoogleAnalytics.getInstance(this).dispatchLocalHits();
-        t.setScreenName(null);
+    public void sendEventWithCustomDimension(String category, String action, String label, Long value,
+                                                    int dimensionIndex, String dimensionValue) {
+        // Create a new HitBuilder, populate it with the custom dimension, and send it along
+        // to the rest of the event building process.
+        HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder();
+        eventBuilder.setCustomDimension(dimensionIndex, dimensionValue);
+        sendEvent(category, action, label, value, eventBuilder);
+
+        Logger.d("Custom Dimension Attached:\n" +
+                "\tindex: " + dimensionIndex +
+                "\tvalue: " + dimensionValue);
     }
 
     public void initializeFabric () {

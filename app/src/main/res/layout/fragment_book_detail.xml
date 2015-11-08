@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
     <android.support.design.widget.AppBarLayout
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/appbar"
         android:fitsSystemWindows="true"
@@ -36,7 +36,6 @@
         android:id="@+id/scrollableView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:behavior_overlapTop="116dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:fillViewport="true">
         <in.viato.app.ui.widgets.BetterViewAnimator
@@ -64,7 +63,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin">
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_horizontal_margin">
                     <ImageView
                         android:id="@+id/img_header"
                         android:layout_width="128dp"
@@ -72,34 +72,37 @@
                         android:scaleType="fitXY"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_marginTop="@dimen/activity_horizontal_margin"
                         android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:src="@drawable/placeholder"
                         android:contentDescription="@string/cover_image"/>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="116dp"
-                        android:orientation="vertical"
-                        android:layout_toRightOf="@+id/img_header"
-                        android:gravity="bottom"
-                        android:id="@+id/title_wrapper"
-                        android:layout_alignParentTop="true">
-                        <TextView
-                            android:id="@+id/title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:textColor="@color/text" />
-                    </LinearLayout>
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="116dp"-->
+                        <!--android:orientation="vertical"-->
+                        <!--android:layout_toRightOf="@+id/img_header"-->
+                        <!--android:gravity="bottom"-->
+                        <!--android:id="@+id/title_wrapper"-->
+                        <!--android:layout_alignParentTop="true">-->
+                        <!-- -->
+                    <!--</LinearLayout>-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_toRightOf="@+id/img_header"
-                        android:layout_below="@+id/title_wrapper" >
+                        android:layout_alignParentTop="true">
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="What Got You Here Won't Get You There: How Successful People Become Even More Successful!"
+                            android:textSize="18sp"
+                            android:textColor="@color/text" />
                         <TextView
                             android:id="@+id/author"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:text="by Marshall Goldsmith"/>
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -109,12 +112,14 @@
                                 android:layout_height="wrap_content"
                                 android:numStars="5"
                                 android:stepSize="0.5"
+                                android:rating="4.5"
                                 style="?android:attr/ratingBarStyleSmall"/>
                             <TextView
                                 android:id="@+id/book_rating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#212121"
+                                android:text="4.5"
                                 android:layout_marginLeft="4dp"/>
                         </LinearLayout>
                         <TextView
@@ -122,19 +127,22 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/hint_text"
-                            android:layout_marginTop="4dp"/>
+                            android:layout_marginTop="4dp"
+                            android:text="Rs. 34"/>
                         <TextView
                             android:id="@+id/rental_price"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="#212121"
-                            android:textSize="20sp"/>
+                            android:textSize="20sp"
+                            android:text="Rs. 34"/>
                         <TextView
                             android:id="@+id/rental_period"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/text_small"
-                            android:textColor="@color/hint_text"/>
+                            android:textColor="@color/hint_text"
+                            android:text="for 15 days"/>
                     </LinearLayout>
 
                 </RelativeLayout>

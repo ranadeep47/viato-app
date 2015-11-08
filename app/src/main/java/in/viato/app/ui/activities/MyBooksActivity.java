@@ -106,7 +106,7 @@ public class  MyBooksActivity extends AbstractNavDrawerActivity {
                         setupFab(getFragmentName(position));
 
                         String screenName = (String) mViewPager.getAdapter().getPageTitle(position);
-                      ViatoApplication.get().trackScreenView(screenName + "Fragment");
+                        ViatoApplication.get().sendScreenView(screenName + "Fragment");
 //                        Analytics.with(mActivity).screen("screen", screenName + " Fragment");
                     }
 

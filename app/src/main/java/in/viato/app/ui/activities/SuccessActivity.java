@@ -84,7 +84,7 @@ public class SuccessActivity extends AbstractActivity {
     protected void onResume() {
         super.onResume();
 
-        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
+        mViatoApp.sendScreenView(getString(R.string.booking_detail_fragment));
 //        Analytics.with(this).screen("screen", getString(R.string.booking_detail_fragment));
 
     }

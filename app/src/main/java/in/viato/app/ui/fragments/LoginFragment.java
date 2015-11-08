@@ -128,7 +128,7 @@ public class LoginFragment extends AbstractFragment {
     @Override
     public void onResume() {
         super.onResume();
-        ViatoApplication.get().trackScreenView(getString(R.string.login_fragment));
+        ViatoApplication.get().sendScreenView(getString(R.string.login_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.login_fragment));
     }
 
@@ -176,7 +176,7 @@ public class LoginFragment extends AbstractFragment {
                         @Override
                         public void onNext(Response<String> stringResult) {
                             if (stringResult.isSuccess()) {
-                                mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "submit", "phone");
+                                mViatoApp.sendEvent("login", "submit", "phone");
                                 Toast.makeText(getContext(), stringResult.body(), Toast.LENGTH_SHORT).show();
                                 hideKeyboard(mMobileInput);
                                 loadFragment(R.id.frame_content,

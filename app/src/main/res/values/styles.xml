@@ -3,13 +3,14 @@
 
     <style name="Theme.Viato" parent="BaseTheme">
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white</item>
+
         <item name="android:windowActionModeOverlay">true</item>
     </style>
     <!--<item name="selectableItemBackground">@drawable/selector_click</item>-->
 
     <style name="BaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <!--<item name="colorPrimaryDark">@color/primary_dark</item>-->
         <item name="colorAccent">@color/accent</item>
     </style>
 

@@ -8,7 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +24,6 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.ecommerce.Product;
-import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -153,9 +150,6 @@ public class BookSearchActivity extends AbstractActivity {
             mSearchView.setIconified(false);
             mSearchView.setQuery(query, true);
             performQuery(query);
-
-            mViatoApp.trackEvent(getString(R.string.home_activity),
-                    "search", "submit", "query", query, "" , getString(R.string.book_search_activity));
         }
     }
 
@@ -168,18 +162,11 @@ public class BookSearchActivity extends AbstractActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ViatoApplication.get().trackScreenView(getString(R.string.book_search_activity));
+        ViatoApplication.get().sendScreenView(getString(R.string.book_search_activity));
 //        Analytics.with(this).screen("screen", getString(R.string.book_search_activity));
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-//        overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
-    }
-
     private void handleIntent(Intent intent) {
-        Logger.d("handlingIntent search");
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             isSearchToAdd = intent.getBooleanExtra(ARG_ACTION_TO_ADD, false);
             query = intent.getStringExtra(SearchManager.QUERY);
@@ -194,6 +181,7 @@ public class BookSearchActivity extends AbstractActivity {
 
 
     private void performQuery(String query){
+        mViatoApp.sendEvent("search", "submit_query",query);
         container.setDisplayedChildId(R.id.search_books_loading);
         int len = query.length();
         if(len == 0 && mAdapter != null) {
@@ -272,16 +260,14 @@ public class BookSearchActivity extends AbstractActivity {
                             .setId(result.getCatalogueId())
                             .setName(result.getTitle())
                             .setPosition(position)
-                            .setCustomMetric(getResources().getInteger(R.integer.extra_key), getItemCount());
+                            .setCustomMetric(getResources().getInteger(R.integer.name), getItemCount());
                     HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder()
                             .addImpression(product, "Search Results");
                     Tracker t = mViatoApp.getGoogleAnalyticsTracker();
                     t.setScreenName(getString(R.string.book_search_activity));
                     t.send(builder.build());
-                    t.setScreenName(null);
 
-                    mViatoApp.trackEvent(getString(R.string.book_search_activity),
-                            "search", "selected", "result", String.valueOf(position));
+                    mViatoApp.sendEventWithCustomDimension("book", "clicked", result.getTitle(), R.integer.source, "search_results");
 
                     startActivity(intent);
                 }

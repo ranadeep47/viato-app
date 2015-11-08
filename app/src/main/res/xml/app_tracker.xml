@@ -10,8 +10,6 @@
     <string name="ga_trackingId">UA-69466254-1</string>
 
     <bool name="ga_reportUncaughtExceptions">true</bool>
-    <!--
-      See Project Structure -> Analytics -> Google Analytics -> Learn More
-      to learn more about configuring this file.
-    -->
+
+    <int name="ga_dispatchPeriod">600</int>
 </resources>

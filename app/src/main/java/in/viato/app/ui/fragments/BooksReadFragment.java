@@ -39,7 +39,7 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
     @Bind(R.id.books_read_animator) BetterViewAnimator container;
     @Bind(R.id.books_reading_grid) RecyclerView readGrid;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     @Nullable
     @Override
@@ -133,9 +133,8 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         Tracker t = mViatoApp.getGoogleAnalyticsTracker();
         t.setScreenName(getString(R.string.title_activity_my_books));
         t.send(builder.build());
-        t.setScreenName(null);
 
-        mViatoApp.trackEvent(getString(R.string.title_activity_my_books), "read_list", "add", "book", item.getCatalogueId(),"", getString(R.string.title_activity_my_books));
+        mViatoApp.sendEvent("read_list", "add_book", item.getTitle());
 
         mViatoAPI
                 .addToRead(item.getCatalogueId())
@@ -178,10 +177,8 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         Tracker t = mViatoApp.getGoogleAnalyticsTracker();
         t.setScreenName(getString(R.string.title_activity_my_books));
         t.send(builder.build());
-        t.setScreenName(null);
 
-        mViatoApp.trackEvent(getString(R.string.title_activity_my_books),
-                "read_list", "remove", "book", book.getCatalogueId(),"", getString(R.string.title_activity_my_books));
+        mViatoApp.sendEvent("read_list", "remove", book.getTitle());
 
         mViatoAPI
                 .removeFromRead(book.get_id())

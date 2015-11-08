@@ -118,6 +118,8 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
         handleIntent(getIntent());
         checkForceUpdate();
+
+        mViatoApp.sendScreenView(getString(R.string.home_activity));
     }
 
     @Override
@@ -148,13 +150,11 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         switch (item.getItemId()) {
             case R.id.menu_search:
                 startActivity(new Intent(this, BookSearchActivity.class));
-                mViatoApp.trackEvent(getString(R.string.home_activity),
-                        "search", "clicked", "icon", "", "", "home_menu");
+                mViatoApp.sendEvent("search", "clicked_icon", "home_menu");
                 return true;
             case R.id.menu_cart:
                 startActivity(new Intent(this, CheckoutActivity.class));
-                mViatoApp.trackEvent(getString(R.string.home_activity),
-                        "cart", "clicked", "icon", "", "", "home_menu");
+                mViatoApp.sendEvent("cart", "clicked_icon", "home_menu");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -223,7 +223,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
             @Override
             public void onPageSelected(int position) {
                 String screenName = (String) mViewPager.getAdapter().getPageTitle(position);
-                mViatoApp.trackScreenView(screenName + " Fragment");
+                mViatoApp.sendScreenView(screenName + " Fragment");
 //                Analytics.with(mActivity).screen("screen", screenName + " Fragment");
             }
 
@@ -254,8 +254,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                     intent.putExtra(SearchManager.QUERY, query);
                     intent.setAction("android.intent.action.SEARCH");
                     startActivity(intent);
-                    mViatoApp.trackEvent(getString(R.string.home_activity),
-                            "search", "submit", "query", query,"", getString(R.string.home_activity));
+                    mViatoApp.sendEvent("search", "submit_clicked", getString(R.string.home_activity));
                     searchBar.setText("");
                     return true;
                 }
@@ -297,8 +296,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                         } else {
                             //start barcode activity
                             startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
-                            mViatoApp.trackEvent(getString(R.string.home_activity),
-                                    "barcode_scanner", "clicked", "icon", "", "", "searchbar_home");
+                            mViatoApp.sendEvent("barcode_scanner", "clicked_icon","searchbar_home");
                         }
                         return true;
                     }

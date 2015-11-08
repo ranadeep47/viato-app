@@ -77,9 +77,8 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
                 Tracker t = mViatoApp.getGoogleAnalyticsTracker();
                 t.setScreenName(mContext.getString(R.string.category_books_fragment));
                 t.send(builder.build());
-                t.setScreenName(null);
 
-                mViatoApp.trackEvent(mContext.getString(R.string.category_books_fragment), "category", "clicked", "book", book.getCatalogueId());
+                mViatoApp.sendEventWithCustomDimension("book", "clicked", book.getTitle(), R.integer.source, mCategoryName);
 
                 mContext.startActivity(intent);
             }

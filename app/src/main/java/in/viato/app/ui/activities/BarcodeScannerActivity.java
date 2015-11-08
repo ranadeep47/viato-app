@@ -74,7 +74,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startCameraSource();
-        ViatoApplication.get().trackScreenView(getString(R.string.barcode_scanner_activity));
+        ViatoApplication.get().sendScreenView(getString(R.string.barcode_scanner_activity));
 //        Analytics.with(this).screen("screen", getString(R.string.barcode_scanner_activity));
 
     }
@@ -223,8 +223,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     }
 
     private void sendISBN(String isbn){
-        ViatoApplication.get().trackEvent(getString(R.string.barcode_scanner_activity),
-                "barcode_scanner", "scan", "book", isbn);
+        ViatoApplication.get().sendEvent("barcode_scanner", "scan", isbn);
         if (getCallingActivity() == null) {
             String query = isbn;
             Intent intent = new Intent(getApplicationContext(), BookSearchActivity.class);

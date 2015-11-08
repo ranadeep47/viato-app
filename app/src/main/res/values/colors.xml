@@ -2,7 +2,7 @@
 <resources>
     <!-- greyscale -->
     <color name="white">#FFFFFF</color>
-    <color name="white_inactive">#EEEEEE</color>
+    <color name="white_inactive">#DDDDDD</color>
 
     <color name="grey_bg">#E9E9E9</color>
     <color name="light_grey">#D4D4D4</color>
@@ -38,9 +38,9 @@
     <!--android:drawable/divider_horizontal_holo_light (Theme.Holo.Light)-->
 
     <!-- theme colors -->
-    <color name="primary">#607D8B</color>
-    <color name="primary_dark">#455A64</color>
-    <color name="primary_light">#90A4AE</color>
+    <color name="primary_dark">#0097A7</color>
+    <color name="primary">#00BCD4</color>
+    <color name="primary_light">#4DD0E1</color>
 
     <color name="accent">#00BCD4</color>
     <color name="accent_translucent">#8000BCD4</color>

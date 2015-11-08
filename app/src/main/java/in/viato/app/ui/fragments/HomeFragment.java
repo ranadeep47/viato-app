@@ -51,7 +51,7 @@ public class HomeFragment extends AbstractFragment {
     private LinearLayoutManager layoutManager;
     private CategoryListAdapter adapter;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
     public static HomeFragment newInstance() {
         Bundle args = new Bundle();
@@ -166,8 +166,7 @@ public class HomeFragment extends AbstractFragment {
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_ID, category.get_id());
                     intent.putExtra(CategoryBooksActivity.ARG_CATEGORY_NAME, category.getTitle());
 
-                    mViatoApp.trackEvent(getString(R.string.category_books_fragment),
-                           "category" ,"selected", category.getTitle(), category.get_id());
+                    mViatoApp.sendEvent("category" ,"selected", category.getTitle());
 
                     startActivity(intent);
                 }

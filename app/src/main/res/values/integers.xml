@@ -17,7 +17,11 @@
 
 
     <!-- GA Custom Dimensions -->
-    <integer name="availability">1</integer>
-    <integer name="source">2</integer>
-    <integer name="extra_key">3</integer>
+    <integer name="name">1</integer>
+    <!--<integer name="extra_key">2</integer>-->
+    <integer name="source">3</integer>
+
+    <!--<integer name="availability">1</integer>-->
+    <!--<integer name="id">5</integer>-->
+    <!--<integer name="position">5</integer>-->
 </resources>

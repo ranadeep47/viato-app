@@ -113,7 +113,7 @@ public class NotificationsActivity extends AbstractNavDrawerActivity {
     protected void onResume() {
         super.onResume();
 
-        mViatoApp.trackScreenView(getString(R.string.notification_activity));
+        mViatoApp.sendScreenView(getString(R.string.notification_activity));
 //        Analytics.with(this).screen("screen", getString(R.string.notification_activity));
 
     }

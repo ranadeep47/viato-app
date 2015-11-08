@@ -21,6 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
 
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.activities.BookDetailActivity;
 
@@ -123,6 +124,8 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, BookDetailActivity.class);
                 intent.putExtra(BookDetailActivity.ARG_BOOK_ID, book.getCatalogueId());
+
+                ViatoApplication.get().sendEventWithCustomDimension("book", "clicked", book.getTitle(), R.integer.source, "my_books");
                 mContext.startActivity(intent);
             }
         });

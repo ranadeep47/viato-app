@@ -91,7 +91,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (v.getText().length() == 4) {
-                    mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "manual_verify", "otp");
+                    mViatoApp.sendEvent("login", "manual_verify", "otp");
                     verifyOTP();
                     return false;
                 }
@@ -135,7 +135,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     public void onResume() {
         super.onResume();
 
-        ViatoApplication.get().trackScreenView(getString(R.string.login_confirm_fragment));
+        ViatoApplication.get().sendScreenView(getString(R.string.login_confirm_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.login_confirm_fragment));
 
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
@@ -229,7 +229,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     @Override
     public void onSmsReceived(String otp) {
         mSMSCode.setText(otp);
-        mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "auto_verify", "otp");
+        mViatoApp.sendEvent("login", "auto_verify", "otp");
         verifyOTP();
     }
 
@@ -238,7 +238,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
         String mobile_number = SharedPrefHelper.getString(R.string.pref_mobile_number);
         String device_id = SharedPrefHelper.getString(R.string.pref_device_id);
 
-        mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "resend", "otp");
+        mViatoApp.sendEvent("login", "resend", "otp");
 
         //Todo: Handle error condition
         mHttpClient.login(mobile_number, device_id)
@@ -283,8 +283,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
             return;
         }
         if (isOtpVerified && isEmailVerified) {
-            mViatoApp.trackEvent(getString(R.string.login_confirm_fragment),
-                    "login", "finish", "login", mEmail.getText().toString());
+            mViatoApp.sendEvent("login", "finish", "login");
             startActivity(new Intent(getActivity(), HomeActivity.class));
             getActivity().finish();
         }
@@ -319,7 +318,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
                                 LoginResponse response = loginResponse.body();
 
-                                mViatoApp.trackEvent(getString(R.string.login_fragment), "login", "submit", "email");
+                                mViatoApp.sendEvent("login", "submit", "email");
 
                                 String access_token = response.getAccess_token();
                                 String user_id = response.getUser_id();

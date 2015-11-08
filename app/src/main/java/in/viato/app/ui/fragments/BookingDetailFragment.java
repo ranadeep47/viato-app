@@ -31,6 +31,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import in.viato.app.R;
+import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.Address;
 import in.viato.app.http.models.request.RentalBody;
 import in.viato.app.http.models.response.Booking;
@@ -70,7 +71,7 @@ public class BookingDetailFragment extends AbstractFragment {
     @Bind(R.id.street) TextView mAddressStreet;
     @Bind(R.id.locality) TextView mAddressLocality;
 
-    private CompositeSubscription mSubs;
+    private CompositeSubscription mSubs = new CompositeSubscription();
 
 
     public static BookingDetailFragment newInstance(String orderId) {
@@ -106,7 +107,7 @@ public class BookingDetailFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
 
-        mViatoApp.trackScreenView(getString(R.string.booking_detail_fragment));
+        mViatoApp.sendScreenView(getString(R.string.booking_detail_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.booking_detail_fragment));
     }
 
@@ -237,6 +238,7 @@ public class BookingDetailFragment extends AbstractFragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     extendRental(rental.get_id());
+                                    ViatoApplication.get().sendEvent("bookings", "extend_booking", "");
                                 }
                             })
                             .setNegativeButton(R.string.disagree, null)
@@ -255,6 +257,7 @@ public class BookingDetailFragment extends AbstractFragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     returnRental(rental.get_id());
+                                    ViatoApplication.get().sendEvent("bookings", "return_booking", "");
                                 }
                             })
                             .setNegativeButton(R.string.disagree, null)
