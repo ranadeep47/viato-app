@@ -169,6 +169,8 @@
     <string name="added_to_wish_list">Added to wishlist</string>
     <string name="removed_from_wish_list">Removed from wishlist</string>
 
+    <string name="add_to_cart">Rent</string>
+
     <!--show more/less-->
     <string name="show_more">Show More</string>
     <string name="show_less">Show Less</string>

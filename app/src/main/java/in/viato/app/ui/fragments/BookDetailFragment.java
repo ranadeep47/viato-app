@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -121,7 +122,7 @@ public class BookDetailFragment extends AbstractFragment {
     @Bind(R.id.user_rating) RatingBar mUserRating;
     @Bind(R.id.all_reviews) LinearLayout allReviews;
     @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.fab) FloatingActionButton mFAB;
+    @Bind(R.id.fab) Button mFAB;
 
     public static BookDetailFragment newInstance(String id) {
         BookDetailFragment fragment = new BookDetailFragment();
