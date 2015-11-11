@@ -4,11 +4,11 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,9 +25,11 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.ecommerce.Product;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -44,19 +47,16 @@ import rx.Subscriber;
 public class BookSearchActivity extends AbstractActivity {
 
     public static final String TAG = BookSearchActivity.class.getSimpleName();
+    public static final String ARG_SEARCH_ACTION = "search_action";
+    public static final String ARG_ACTION_TO_ADD = "to_add";
+
+    private static final int REQUEST_SCAN_BARCODE = 1;
 
     private View mResultsView;
     private SearchView mSearchView;
-
     private BetterViewAnimator container;
     private CardView scanButton;
-    private RecyclerView list;
-
-    private static final int REQUEST_SCAN_BARCODE = 1;
-    private SearchResultAdapter mAdapter;
-
-    public static final String ARG_SEARCH_ACTION = "search_action";
-    public static final String ARG_ACTION_TO_ADD = "to_add";
+    private RecyclerView list;private SearchResultAdapter mAdapter;
 
     private Boolean isSearchToAdd = false;
 
@@ -155,7 +155,6 @@ public class BookSearchActivity extends AbstractActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d(TAG, "onNewIntent");
         handleIntent(intent);
     }
 
@@ -180,7 +179,7 @@ public class BookSearchActivity extends AbstractActivity {
     }
 
 
-    private void performQuery(String query){
+    private void performQuery(final String query){
         mViatoApp.sendEvent("search", "submit_query",query);
         container.setDisplayedChildId(R.id.search_books_loading);
         int len = query.length();
@@ -206,7 +205,10 @@ public class BookSearchActivity extends AbstractActivity {
                         if (searchResultItems != null && searchResultItems.size() != 0) {
                             container.setDisplayedChildId(R.id.search_results_list);
                             mAdapter.setItems(searchResultItems);
-                        } else container.setDisplayedChildId(R.id.search_books_empty);
+                        } else {
+                            mViatoApp.sendEvent("search", "not_found", query);
+                            container.setDisplayedChildId(R.id.search_books_empty);
+                        }
                     }
                 });
     }
@@ -267,7 +269,7 @@ public class BookSearchActivity extends AbstractActivity {
                     t.setScreenName(getString(R.string.book_search_activity));
                     t.send(builder.build());
 
-                    mViatoApp.sendEventWithCustomDimension("book", "clicked", result.getTitle(), R.integer.source, "search_results");
+                    mViatoApp.sendEventWithCustomDimension("book", "clicked", result.getTitle(), getResources().getInteger(R.integer.source), "search_results");
 
                     startActivity(intent);
                 }

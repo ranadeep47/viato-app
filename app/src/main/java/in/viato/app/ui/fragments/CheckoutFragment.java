@@ -341,7 +341,7 @@ public class CheckoutFragment extends AbstractFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        mViewContainer.setDisplayedChildId(R.id.no_conection);
+                        mViewContainer.setDisplayedChildId(R.id.no_connection);
                         Logger.e("Failed to fetch cart " + getString(R.string.due_to) + e.getMessage());
                     }
 

@@ -1,128 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_container"
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <in.viato.app.ui.widgets.BetterViewAnimator
-        android:id="@+id/main_animator"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollableView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:inAnimation="@android:anim/fade_in"
-        android:outAnimation="@android:anim/fade_out">
-        <include
-            layout="@layout/progress_bar"
-            android:id="@+id/progress_bar"/>
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/booking_details"
+        android:fillViewport="true"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <in.viato.app.ui.widgets.BetterViewAnimator
+            android:id="@+id/main_animator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            xmlns:android="http://schemas.android.com/apk/res/android">
+            android:inAnimation="@android:anim/fade_in"
+            android:outAnimation="@android:anim/fade_out">
+            <include
+                layout="@layout/progress_bar"
+                android:id="@+id/progress_bar"/>
             <LinearLayout
+                android:id="@+id/booking_details"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/activity_vertical_margin">
-                <LinearLayout
+                android:orientation="vertical">
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/spacing_vvv_small">
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_vvv_small">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/secondary_text"
-                            android:text="Order id: "/>
-                        <TextView
-                            android:id="@+id/order_id"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="#no3esd"
-                            android:textAllCaps="true"
-                            android:textColor="@color/text" />
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                        android:textColor="@color/secondary_text"
+                        android:text="Order id: "/>
+                    <TextView
+                        android:id="@+id/order_id"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_vvv_small">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Placed On"
-                            android:textColor="@color/secondary_text"/>
-                        <TextView
-                            android:id="@+id/placed_on"
-                            android:layout_width="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_height="wrap_content"
-                            android:text="2 Nov 2025"
-                            android:textColor="@color/text"/>
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:text="#no3esd"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_vvv_small">
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_vvv_small">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/secondary_text"
-                            android:text="Status: "/>
-                        <TextView
-                            android:id="@+id/order_status"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="Placed"
-                            android:textColor="@color/text" />
-                    </RelativeLayout>
-                </LinearLayout>
+                        android:text="Placed On"
+                        android:textColor="@color/secondary_text"/>
+                    <TextView
+                        android:id="@+id/placed_on"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_height="wrap_content"
+                        android:text="2 Nov 2025"
+                        android:textColor="@color/text"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_vvv_small">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondary_text"
+                        android:text="Status: "/>
+                    <TextView
+                        android:id="@+id/order_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="Placed"
+                        android:textColor="@color/text" />
+                </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
-                <LinearLayout
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/order_items_rv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/order_items_rv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/text_xx_medium"
-                            android:textColor="@color/text"
-                            android:text="Total"/>
-                        <TextView
-                            android:id="@+id/order_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rs. 245"
-                            android:textColor="@color/text"
-                            android:textSize="@dimen/text_xx_medium"
-                            android:layout_alignParentRight="true"/>
-                    </RelativeLayout>
-                </LinearLayout>
+                    android:layout_height="wrap_content" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_xx_medium"
+                        android:textColor="@color/text"
+                        android:text="Total"/>
+                    <TextView
+                        android:id="@+id/order_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs. 245"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/text_xx_medium"
+                        android:layout_alignParentRight="true"/>
+                </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -152,7 +140,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
-                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -180,48 +168,45 @@
                         android:text="Rs. 100 COD"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-        <include
-            layout="@layout/no_connection_template"
-            android:id="@+id/no_conection" />
-        <LinearLayout
-            android:id="@+id/bookings_empty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_xx_largee">
-            <ImageView
-                android:id="@+id/empty_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/empty"
-                android:contentDescription="@string/error"
-                />
-            <TextView
+            <include
+                layout="@layout/no_connection_template"
+                android:id="@+id/no_connection" />
+            <LinearLayout
+                android:id="@+id/bookings_empty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:textSize="34sp"
-                android:textColor="@color/text"
-                android:text="Its lonely here"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_horizontal"
-                android:text="Rent your first book now to see the order details here."
-                />
-            <Button
-                android:id="@+id/btn_empty_action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="Checkout trending books"/>
-        </LinearLayout>
-    </in.viato.app.ui.widgets.BetterViewAnimator>
-</android.support.design.widget.CoordinatorLayout>
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_xx_largee">
+                <ImageView
+                    android:id="@+id/empty_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/empty"
+                    android:contentDescription="@string/error"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:textSize="34sp"
+                    android:textColor="@color/text"
+                    android:text="Its lonely here"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_horizontal"
+                    android:text="Rent your first book now to see the order details here."/>
+                <Button
+                    android:id="@+id/btn_empty_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="Checkout trending books"/>
+            </LinearLayout>
+        </in.viato.app.ui.widgets.BetterViewAnimator>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

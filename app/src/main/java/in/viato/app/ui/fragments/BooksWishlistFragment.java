@@ -131,8 +131,7 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
 
         mViatoApp.sendEvent("wish_list", "add", item.getTitle());
 
-        mViatoAPI
-                .addToWishlist(item.getCatalogueId())
+        mViatoAPI.addToWishlist(item.getCatalogueId())
                 .subscribe(new Subscriber<BookItem>() {
                     @Override
                     public void onCompleted() {

@@ -170,20 +170,17 @@ public abstract class AbstractFragment extends Fragment {
     }
 
     public void hideKeyboard(EditText editText) {
-
         if (editText != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         } else {
-
             getActivity().getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         }
     }
 
     public void showKeyboard(EditText editText) {
-
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
     }

@@ -54,10 +54,9 @@ public class BookingDetailFragment extends AbstractFragment {
     private String orderId;
     private Booking booking;
 
-    @Bind(R.id.main_container) CoordinatorLayout mCoordinatorLayout;
     @Bind(R.id.main_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.bookings_empty) LinearLayout mEmptyContainer;
-    @Bind(R.id.booking_details) NestedScrollView mBookingDetails;
+    @Bind(R.id.booking_details) LinearLayout mBookingDetails;
     @Bind(R.id.progress_bar) ProgressBar mProgressBar;
 
     @Bind(R.id.order_id) TextView mOrderId;
@@ -128,7 +127,7 @@ public class BookingDetailFragment extends AbstractFragment {
                     @Override
                     public void onError(Throwable e) {
                         Logger.e(e.getMessage());
-                        Snackbar.make(mCoordinatorLayout, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mAnimator, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -143,7 +142,7 @@ public class BookingDetailFragment extends AbstractFragment {
                             }
                         } else {
                             try {
-                                Snackbar.make(mCoordinatorLayout, bookingResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(mAnimator, bookingResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
                                 Logger.e(bookingResponse.errorBody().string());
                             } catch (IOException e) {
                                 Logger.e(e, "error");
@@ -353,12 +352,12 @@ public class BookingDetailFragment extends AbstractFragment {
                     public void onNext(Response<String> stringResponse) {
                         progressDialog.dismiss();
                         if (stringResponse.isSuccess()) {
-                            Snackbar.make(mCoordinatorLayout, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(mAnimator, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
                             mAnimator.setDisplayedChildView(mProgressBar);
                             getBookingDetail();
                         } else {
                             try {
-                                Snackbar.make(mCoordinatorLayout, stringResponse.errorBody().string(), Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(mAnimator, stringResponse.errorBody().string(), Snackbar.LENGTH_SHORT).show();
                                 Logger.e(stringResponse.errorBody().string());
                             } catch (IOException e) {
                                 Logger.e(e, "error");
@@ -391,12 +390,12 @@ public class BookingDetailFragment extends AbstractFragment {
                     public void onNext(Response<String> stringResponse) {
                         progressDialog.dismiss();
                         if (stringResponse.isSuccess()) {
-                            Snackbar.make(mCoordinatorLayout, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(mAnimator, stringResponse.message(), Snackbar.LENGTH_SHORT).show();
                             mAnimator.setDisplayedChildView(mProgressBar);
                             getBookingDetail();
                         } else {
                             try {
-                                Snackbar.make(mCoordinatorLayout, stringResponse.errorBody().string(), Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(mAnimator, stringResponse.errorBody().string(), Snackbar.LENGTH_SHORT).show();
                                 Logger.e(stringResponse.errorBody().string());
                             } catch (IOException e) {
                                 Logger.e(e, "error");

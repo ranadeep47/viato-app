@@ -47,7 +47,7 @@ public class BookingsFragment extends AbstractFragment {
     @Bind(R.id.main_animator) BetterViewAnimator mAnimator;
     @Bind(R.id.progress_bar) ProgressBar mProgressBar;
     @Bind(R.id.bookings_list) RecyclerView mBookingsList;
-    @Bind(R.id.no_conection) LinearLayout mNoConnection;
+    @Bind(R.id.no_connection) LinearLayout mNoConnection;
     @Bind(R.id.bookings_empty) LinearLayout mEmptyContainer;
 
     private List<Booking> mBookings;

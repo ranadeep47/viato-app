@@ -1,293 +1,238 @@
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="in.viato.app.ui.fragments.BookDetailFragment"
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/scrollableView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-    <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/appbar"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/collapsing_toolbar"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginBottom="32dp"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleTextAppearance="@style/TransparentText"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"
-                app:layout_collapseMode="pin"
-                android:elevation="4dp"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scrollableView"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <in.viato.app.ui.widgets.BetterViewAnimator
+        android:id="@+id/book_detail_animator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:fillViewport="true">
-        <in.viato.app.ui.widgets.BetterViewAnimator
-            android:id="@+id/book_detail_animator"
+        android:inAnimation="@android:anim/fade_in"
+        android:measureAllChildren="false"
+        android:outAnimation="@android:anim/fade_out">
+        <include
+            layout="@layout/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/books_detail_loading"/>
+        <LinearLayout
+            android:id="@+id/book_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inAnimation="@android:anim/fade_in"
-            android:measureAllChildren="false"
-            android:outAnimation="@android:anim/fade_out"
-            xmlns:android="http://schemas.android.com/apk/res/android">
-            <include
-                layout="@layout/progress_bar"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="56dp">
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/books_detail_loading"/>
-            <LinearLayout
-                android:id="@+id/book_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingBottom="56dp">
-                <RelativeLayout
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_horizontal_margin">
+                <ImageView
+                    android:id="@+id/img_header"
+                    android:layout_width="128dp"
+                    android:layout_height="200dp"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/placeholder"
+                    android:contentDescription="@string/cover_image"/>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/activity_horizontal_margin">
-                    <ImageView
-                        android:id="@+id/img_header"
-                        android:layout_width="128dp"
-                        android:layout_height="200dp"
-                        android:scaleType="fitXY"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:src="@drawable/placeholder"
-                        android:contentDescription="@string/cover_image"/>
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="116dp"-->
-                        <!--android:orientation="vertical"-->
-                        <!--android:layout_toRightOf="@+id/img_header"-->
-                        <!--android:gravity="bottom"-->
-                        <!--android:id="@+id/title_wrapper"-->
-                        <!--android:layout_alignParentTop="true">-->
-                        <!-- -->
-                    <!--</LinearLayout>-->
-                    <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_toRightOf="@+id/img_header"
+                    android:layout_alignParentTop="true">
+                    <TextView
+                        android:id="@+id/title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_toRightOf="@+id/img_header"
-                        android:layout_alignParentTop="true">
-                        <TextView
-                            android:id="@+id/title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="What Got You Here Won't Get You There: How Successful People Become Even More Successful!"
-                            android:textSize="18sp"
-                            android:textColor="@color/text" />
-                        <TextView
-                            android:id="@+id/author"
+                        android:textSize="18sp"
+                        android:textColor="@color/text" />
+                    <TextView
+                        android:id="@+id/author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <RatingBar
+                            android:id="@+id/book_rating_stars"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="by Marshall Goldsmith"/>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <RatingBar
-                                android:id="@+id/book_rating_stars"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="5"
-                                android:stepSize="0.5"
-                                android:rating="4.5"
-                                style="?android:attr/ratingBarStyleSmall"/>
-                            <TextView
-                                android:id="@+id/book_rating"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#212121"
-                                android:text="4.5"
-                                android:layout_marginLeft="4dp"/>
-                        </LinearLayout>
+                            android:numStars="5"
+                            android:stepSize="0.5"
+                            style="?android:attr/ratingBarStyleSmall"/>
                         <TextView
-                            android:id="@+id/retail_price"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/hint_text"
-                            android:layout_marginTop="4dp"
-                            android:text="Rs. 34"/>
-                        <TextView
-                            android:id="@+id/rental_price"
-                            android:layout_width="match_parent"
+                            android:id="@+id/book_rating"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#212121"
-                            android:textSize="20sp"
-                            android:text="Rs. 34"/>
-                        <TextView
-                            android:id="@+id/rental_period"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/text_small"
-                            android:textColor="@color/hint_text"
-                            android:text="for 15 days"/>
+                            android:layout_marginLeft="4dp"/>
                     </LinearLayout>
-
-                </RelativeLayout>
-                <Button
-                    android:id="@+id/fab"
+                    <TextView
+                        android:id="@+id/retail_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/hint_text"
+                        android:layout_marginTop="4dp"/>
+                    <TextView
+                        android:id="@+id/rental_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#212121"
+                        android:textSize="20sp"/>
+                    <TextView
+                        android:id="@+id/rental_period"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_small"
+                        android:textColor="@color/hint_text"/>
+                </LinearLayout>
+            </RelativeLayout>
+            <Button
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/add_to_cart"
+                android:drawableLeft="@drawable/ic_add_to_cart_white"
+                android:drawablePadding="@dimen/spacing_small"
+                android:textStyle="bold"
+                android:background="@drawable/bold_button_background"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="@dimen/spacing_vv_small"
+                android:paddingBottom="@dimen/spacing_vv_small"
+                android:paddingRight="@dimen/spacing_x_large"
+                android:paddingLeft="@dimen/spacing_x_large"
+                style="@style/Base.Widget.AppCompat.Button.Colored"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/add_to_cart"
-                    android:drawableLeft="@drawable/ic_add_to_cart_white"
-                    android:drawablePadding="@dimen/spacing_small"
-                    android:textStyle="bold"
-                    android:background="@drawable/bold_button_background"
+                    android:lineSpacingMultiplier="1.2"
+                    android:maxLines="7" />
+                <Button
+                    android:id="@+id/btn_desc_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:paddingTop="@dimen/spacing_vv_small"
-                    android:paddingBottom="@dimen/spacing_vv_small"
-                    android:paddingRight="@dimen/spacing_x_large"
-                    android:paddingLeft="@dimen/spacing_x_large"
-                    style="@style/Base.Widget.AppCompat.Button.Colored"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/primary"
+                    android:clickable="true"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:text="Show More"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:listDivider"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="visible">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Description"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:textStyle="bold"/>
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.2"
-                        android:maxLines="7" />
-                    <Button
-                        android:id="@+id/btn_desc_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/primary"
-                        android:clickable="true"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:text="Show More"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:listDivider"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin" />
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin">
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:orientation="horizontal"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_height="match_parent"
-                                android:layout_width="0dp"
-                                android:layout_weight="50"
-                                android:gravity="center|start"
-                                android:text="Your Review"/>
-                            <RatingBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="end"
-                                style="?android:attr/ratingBarStyleIndicator"
-                                android:numStars="5"
-                                android:rating="4.5"
-                                android:stepSize="0.5"
-                                android:gravity="end"
-                                android:id="@+id/user_rating"/>
-                        </LinearLayout>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/user_review"
-                            android:text="cool"
-                            android:singleLine="false"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:focusable="true"
-                        android:id="@+id/all_reviews">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Reviews"
-                            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                            android:textStyle="bold"
-                            android:focusable="false"/>
-                        <in.viato.app.ui.widgets.NoTouchRecyclerView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/review_list_small"
-                            android:focusable="false"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="All Reviews"
-                            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                            android:focusable="false"/>
-                    </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="@color/divider"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="From the author"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:textStyle="bold"/>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin">
-                        <android.support.v7.widget.RecyclerView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/related_books_list"/>
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="50"
+                            android:gravity="center|start"
+                            android:text="Your Review"/>
+                        <RatingBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="end"
+                            style="?android:attr/ratingBarStyleIndicator"
+                            android:numStars="5"
+                            android:rating="4.5"
+                            android:stepSize="0.5"
+                            android:gravity="end"
+                            android:id="@+id/user_rating"/>
                     </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/user_review"
+                        android:text="cool"
+                        android:singleLine="false"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:focusable="true"
+                    android:id="@+id/all_reviews">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Reviews"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:textStyle="bold"
+                        android:focusable="false"/>
+                    <in.viato.app.ui.widgets.NoTouchRecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/review_list_small"
+                        android:focusable="false"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="All Reviews"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:focusable="false"/>
                 </LinearLayout>
             </LinearLayout>
-        </in.viato.app.ui.widgets.BetterViewAnimator>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/divider"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="From the author"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin">
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/related_books_list"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </in.viato.app.ui.widgets.BetterViewAnimator>
+</android.support.v4.widget.NestedScrollView>

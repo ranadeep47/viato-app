@@ -37,8 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="48dp"
-        >
+        android:padding="48dp">
         <ImageView
             android:id="@+id/error_image"
             android:layout_width="wrap_content"
@@ -46,8 +45,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            android:src="@drawable/error"
-            />
+            android:src="@drawable/error" />
         <TextView
             android:id="@+id/error_title"
             android:layout_width="match_parent"
@@ -56,24 +54,21 @@
             android:gravity="center_horizontal"
             android:textSize="34sp"
             android:textColor="?android:attr/textColorPrimary"
-            android:text="Please try again"
-            />
+            android:text="Please try again" />
         <TextView
             android:id="@+id/error_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/error_image"
             android:gravity="center_horizontal"
-            android:text="Problem with your internet connection."
-            />
+            android:text="Problem with your internet connection." />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/search_books_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="48dp"
-        >
+        android:padding="48dp">
         <ImageView
             android:id="@+id/empty_image"
             android:layout_width="wrap_content"
@@ -81,8 +76,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            android:src="@drawable/empty"
-            />
+            android:src="@drawable/empty" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -90,20 +84,17 @@
             android:gravity="center_horizontal"
             android:textSize="34sp"
             android:textColor="?android:attr/textColorPrimary"
-            android:text="No results found."
-            />
+            android:text="No results found." />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/empty_image"
             android:gravity="center_horizontal"
-            android:text="No books found.Try searching with author / ISBN"
-            />
+            android:text="No books found.Try searching with author / ISBN" />
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_results_list"
         android:padding="@dimen/spacing_vv_small"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </in.viato.app.ui.widgets.BetterViewAnimator>

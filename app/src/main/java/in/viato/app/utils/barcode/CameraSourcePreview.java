@@ -9,9 +9,10 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.images.Size;
-import com.google.android.gms.vision.CameraSource;
-
+import in.viato.app.utils.barcode.CameraSource;
 import java.io.IOException;
+
+import in.viato.app.Manifest;
 
 public class CameraSourcePreview extends ViewGroup {
     private static final String TAG = "CameraSourcePreview";
@@ -33,7 +34,7 @@ public class CameraSourcePreview extends ViewGroup {
         addView(mSurfaceView);
     }
 
-    public void start(CameraSource cameraSource) throws IOException {
+    public void start(CameraSource cameraSource) throws IOException, SecurityException {
         if (cameraSource == null) {
             stop();
         }
@@ -59,7 +60,7 @@ public class CameraSourcePreview extends ViewGroup {
         }
     }
 
-    private void startIfReady() throws IOException {
+    private void startIfReady() throws IOException, SecurityException {
         if (mStartRequested && mSurfaceAvailable) {
             mCameraSource.start(mSurfaceView.getHolder());
             mStartRequested = false;
@@ -72,6 +73,8 @@ public class CameraSourcePreview extends ViewGroup {
             mSurfaceAvailable = true;
             try {
                 startIfReady();
+            } catch (SecurityException se) {
+                Log.e(TAG,"Do not have permission to start the camera", se);
             } catch (IOException e) {
                 Log.e(TAG, "Could not start camera source.", e);
             }
@@ -99,6 +102,14 @@ public class CameraSourcePreview extends ViewGroup {
             }
         }
 
+        // Swap width and height sizes when in portrait, since it will be rotated 90 degrees
+        if (isPortraitMode()) {
+            int tmp = width;
+            //noinspection SuspiciousNameCombination
+            width = height;
+            height = tmp;
+        }
+
         final int layoutWidth = right - left;
         final int layoutHeight = bottom - top;
 
@@ -118,9 +129,23 @@ public class CameraSourcePreview extends ViewGroup {
 
         try {
             startIfReady();
+        } catch (SecurityException se) {
+            Log.e(TAG,"Do not have permission to start the camera", se);
         } catch (IOException e) {
             Log.e(TAG, "Could not start camera source.", e);
         }
     }
 
+    private boolean isPortraitMode() {
+        int orientation = mContext.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return false;
+        }
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            return true;
+        }
+
+        Log.d(TAG, "isPortraitMode returning false by default");
+        return false;
+    }
 }

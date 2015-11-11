@@ -125,7 +125,7 @@ public class MyBooksGirdAdapter extends RecyclerView.Adapter<MyBooksGirdAdapter.
                 Intent intent = new Intent(mContext, BookDetailActivity.class);
                 intent.putExtra(BookDetailActivity.ARG_BOOK_ID, book.getCatalogueId());
 
-                ViatoApplication.get().sendEventWithCustomDimension("book", "clicked", book.getTitle(), R.integer.source, "my_books");
+                ViatoApplication.get().sendEventWithCustomDimension("book", "clicked", book.getTitle(), mContext.getResources().getInteger(R.integer.source), "my_books");
                 mContext.startActivity(intent);
             }
         });

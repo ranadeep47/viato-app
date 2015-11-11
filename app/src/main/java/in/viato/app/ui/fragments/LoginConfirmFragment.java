@@ -1,6 +1,7 @@
 package in.viato.app.ui.fragments;
 
 import android.accounts.AccountManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -77,6 +78,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ViatoApplication.get().sendScreenView(getString(R.string.login_confirm_fragment));
         return inflater.inflate(R.layout.fragment_login_confirm, container, false);
     }
 
@@ -135,7 +137,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     public void onResume() {
         super.onResume();
 
-        ViatoApplication.get().sendScreenView(getString(R.string.login_confirm_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.login_confirm_fragment));
 
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
@@ -181,6 +182,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     }
 
     public void verifyOTP() {
+        final ProgressDialog dialog = showProgressDialog("Signing in...");
         String otp = mSMSCode.getText().toString();
         if (otp.matches(getString(R.string.regex_otp))) {
             mSMSCode.setError(null);
@@ -194,6 +196,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                         //Todo: Handle error condition
                         @Override
                         public void onError(Throwable e) {
+                            dialog.dismiss();
                             if (e instanceof HttpException) {
                                 handleNetworkException(((HttpException) e));
                             }
@@ -201,6 +204,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
                         @Override
                         public void onNext(Response<String> response) {
+                            dialog.dismiss();
                             if (response.isSuccess()) {
                                 isOtpVerified = true;
                                 mToken = response.body();

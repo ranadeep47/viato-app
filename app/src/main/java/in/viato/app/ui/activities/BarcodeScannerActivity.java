@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.FocusingProcessor;
 import com.google.android.gms.vision.Tracker;
@@ -25,6 +25,7 @@ import java.io.IOException;
 import in.viato.app.R;
 import in.viato.app.ViatoApplication;
 import in.viato.app.utils.barcode.CameraSourcePreview;
+import in.viato.app.utils.barcode.CameraSource;
 
 /**
  * Created by ranadeep on 22/09/15.
@@ -47,7 +48,9 @@ public class BarcodeScannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode_scanner);
         mHandler = new Handler();
+
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
+
         createCameraSource();
     }
 
@@ -85,15 +88,13 @@ public class BarcodeScannerActivity extends AppCompatActivity {
      * at long distances.
      */
     private void createCameraSource() {
-
-
-        Context context = ViatoApplication.get();
+        Context context = getApplicationContext();
 
         // A barcode detector is created to track barcodes.  An associated multi-processor instance
         // is set to receive the barcode detection results, track the barcodes, and maintain
         // graphics for each barcode on screen.  The factory is used by the multi-processor to
         // create a separate tracker instance for each barcode.
-        BarcodeDetector detector = new BarcodeDetector.Builder(getApplicationContext())
+        BarcodeDetector detector = new BarcodeDetector.Builder(context)
                 .setBarcodeFormats(Barcode.EAN_13 | Barcode.UPC_A)
                 .build();
 
@@ -138,16 +139,13 @@ public class BarcodeScannerActivity extends AppCompatActivity {
                     }
                     isbn = item.rawValue;
                     sendISBN(isbn);
-                }
-                else if (len == 12){
+                } else if (len == 12){
                     message = "You seem to have a very old book. Please use search instead";
                     showErrorMessage(message);
-                }
-                else {
+                } else {
                     message = "Strange !";
                     showErrorMessage(message);
                 }
-
             }
 
             public void showErrorMessage(final String message){
@@ -191,6 +189,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(1600, 1024)
                 .setRequestedFps(15.0f)
+                .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 .build();
     }
 
@@ -214,6 +213,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
         if (mCameraSource != null) {
             try {
                 mPreview.start(mCameraSource);
+                Toast.makeText(this, "Place the barcode in the center of the screen", Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 Log.e(TAG, "Unable to start camera source.", e);
                 mCameraSource.release();
@@ -237,5 +237,4 @@ public class BarcodeScannerActivity extends AppCompatActivity {
         }
         finish();
     }
-
 }

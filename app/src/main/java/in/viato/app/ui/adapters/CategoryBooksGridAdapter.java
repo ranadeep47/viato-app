@@ -78,7 +78,7 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
                 t.setScreenName(mContext.getString(R.string.category_books_fragment));
                 t.send(builder.build());
 
-                mViatoApp.sendEventWithCustomDimension("book", "clicked", book.getTitle(), R.integer.source, mCategoryName);
+                mViatoApp.sendEventWithCustomDimension("book", "clicked", book.getTitle(), mContext.getResources().getInteger(R.integer.source), mCategoryName);
 
                 mContext.startActivity(intent);
             }

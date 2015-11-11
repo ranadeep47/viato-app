@@ -15,12 +15,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +43,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -125,6 +128,13 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        Boolean firstLaunch = SharedPrefHelper.getBoolean(R.string.pref_first_launch, true);
+        if(firstLaunch){
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+        SharedPrefHelper.set(R.string.pref_first_launch, false);
+
         setupViewPager();
         showCoverImage();
         Picasso.with(this)
@@ -296,7 +306,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                         } else {
                             //start barcode activity
                             startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
-                            mViatoApp.sendEvent("barcode_scanner", "clicked_icon","searchbar_home");
+                            mViatoApp.sendEvent("barcode_scanner", "clicked_icon", "searchbar_home");
                         }
                         return true;
                     }

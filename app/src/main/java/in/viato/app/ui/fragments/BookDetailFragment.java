@@ -14,19 +14,15 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,8 +110,8 @@ public class BookDetailFragment extends AbstractFragment {
     @Bind(R.id.btn_desc_more) Button mBtn_desc_more;
     @Bind(R.id.rental_period) TextView mRentalPeriod;
 
+    @Bind(R.id.scrollableView) NestedScrollView mScrollableView;
     @Bind(R.id.book_detail_animator) BetterViewAnimator mAnimator;
-    @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @Bind(R.id.books_detail_loading) ProgressBar mProgressBar;
 
     @Bind(R.id.related_books_list) RecyclerView mRelatedBooksRV;
@@ -122,7 +119,6 @@ public class BookDetailFragment extends AbstractFragment {
     @Bind(R.id.user_review) TextView mUserReview;
     @Bind(R.id.user_rating) RatingBar mUserRating;
     @Bind(R.id.all_reviews) LinearLayout allReviews;
-    @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.fab) Button mFAB;
 
     public static BookDetailFragment newInstance(String id) {
@@ -139,7 +135,6 @@ public class BookDetailFragment extends AbstractFragment {
 
         ViatoApplication.get().sendScreenView(getString(R.string.book_detail_fragment));
 //        Analytics.with(getContext()).screen("screen", getString(R.string.book_detail_fragment));
-
     }
 
     @Override
@@ -180,9 +175,6 @@ public class BookDetailFragment extends AbstractFragment {
                         Logger.e(throwable.getMessage());
                     }
                 }));
-
-        mActivity.setSupportActionBar(mToolbar);
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setListeners();
 
@@ -321,7 +313,7 @@ public class BookDetailFragment extends AbstractFragment {
                                 progressDialog.dismiss();
                                 if (cart.isSuccess()) {
                                     startActivity(new Intent(getActivity(), CheckoutActivity.class));
-                                    mViatoApp.sendEventWithCustomDimension("cart", "added", "book", R.integer.name, mBookDetail.getTitle());
+                                    mViatoApp.sendEvent("cart", "added_book", mBookDetail.getTitle());
                                 } else {
                                     try {
                                         Snackbar.make(v, cart.errorBody().string(), Snackbar.LENGTH_LONG).show();
@@ -415,7 +407,7 @@ public class BookDetailFragment extends AbstractFragment {
                 .into(mCover);
         //set title
         mTitle.setText(book.getTitle());
-        mCollapsingToolbarLayout.setTitle(book.getTitle());
+	getActivity().setTitle(book.getTitle());
         //set Author
         mAuthor.setText("by " + book.getAuthors());
         //set stars
@@ -450,8 +442,10 @@ public class BookDetailFragment extends AbstractFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                int lineCount = mDescription.getLineCount();
-                mBtn_desc_more.setVisibility(lineCount > 7 ? View.VISIBLE : View.GONE);
+                if (mDescription!= null){
+                    int lineCount = mDescription.getLineCount();
+                    mBtn_desc_more.setVisibility(lineCount > 7 ? View.VISIBLE : View.GONE);
+                }
             }
         }, 500);
     }
@@ -470,8 +464,8 @@ public class BookDetailFragment extends AbstractFragment {
                     }
                     int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary));
                     int darkMutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.primary_light));
-                    mCollapsingToolbarLayout.setBackgroundColor(mutedColor);
-                    mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
+//                    mCollapsingToolbarLayout.setBackgroundColor(mutedColor);
+//                    mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
 
                     mFAB.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
 
@@ -540,7 +534,7 @@ public class BookDetailFragment extends AbstractFragment {
                     @Override
                     public void onError(Throwable e) {
                         Logger.e(e.getMessage());
-                        Snackbar.make(mCollapsingToolbarLayout, "Something went wrong please try again", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mScrollableView, "Something went wrong please try again", Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -561,7 +555,7 @@ public class BookDetailFragment extends AbstractFragment {
                     @Override
                     public void onError(Throwable e) {
                         Logger.e(e.getMessage());
-                        Snackbar.make(mCollapsingToolbarLayout, "Something went wrong please try again", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mScrollableView, "Something went wrong please try again", Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override

@@ -16,9 +16,10 @@
         android:textSize="@dimen/text_large"
         android:textAllCaps="true"
         android:layout_gravity="center"
-        android:textStyle="normal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center|center_horizontal"
+        android:textStyle="normal"
         custom:typeface="montserrat"/>
 
     <!--android:shadowColor="@color/dark_grey"-->

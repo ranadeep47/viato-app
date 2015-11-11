@@ -246,7 +246,7 @@
             </FrameLayout>
         </RelativeLayout>
         <include layout="@layout/no_connection_template"
-                 android:id="@+id/no_conection" />
+                 android:id="@+id/no_connection" />
         <LinearLayout
             android:id="@+id/checkout_empty"
             android:layout_width="match_parent"
