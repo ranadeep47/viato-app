@@ -75,6 +75,15 @@ public class ViatoApplication extends Application implements NetworkStateReceive
         //Initialise API only after all the apt prefs have been read into memory
         initAPI();
         initializeFabric();
+
+        //fabric initiate
+        String email = SharedPrefHelper.getString(R.string.pref_email);
+        String user_id = SharedPrefHelper.getString(R.string.pref_user_id);
+
+        if ((!email.isEmpty()) && (!user_id.isEmpty())) {
+            Crashlytics.setUserIdentifier(user_id);
+            Crashlytics.setUserEmail(email);
+        }
     }
 
     public static ViatoApplication get(){

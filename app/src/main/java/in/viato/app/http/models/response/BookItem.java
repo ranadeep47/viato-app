@@ -98,7 +98,6 @@ public class BookItem implements Parcelable {
         this.authors = authors;
     }
 
-
     @Override
     public int describeContents() {
         return 0;

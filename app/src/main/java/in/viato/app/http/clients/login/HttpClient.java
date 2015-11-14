@@ -60,9 +60,9 @@ public class HttpClient {
 
     }
 
-    public Observable<Response<LoginResponse>> finishLogin(String email, String token, List<Account> accounts) {
+    public Observable<Response<LoginResponse>> finishLogin(String email, String token, List<Account> accounts, String app_token) {
         return mHttpService
-                .finishLogin(new EmailBody(email, token, accounts))
+                .finishLogin(new EmailBody(email, token, accounts, app_token))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
 

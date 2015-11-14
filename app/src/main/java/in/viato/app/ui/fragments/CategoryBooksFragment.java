@@ -23,6 +23,7 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.CategoryGrid;
 import in.viato.app.ui.adapters.CategoryBooksGridAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import in.viato.app.utils.RxUtils;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -135,19 +136,8 @@ public class CategoryBooksFragment extends AbstractFragment{
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
-    }
-
-    @Override
     public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
         super.onDestroy();
     }
 

@@ -24,6 +24,7 @@ import in.viato.app.http.models.response.BookItem;
 import in.viato.app.http.models.response.MyBooksReadResponse;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import in.viato.app.utils.RxUtils;
 import retrofit.HttpException;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
@@ -72,12 +73,6 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         }));
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
-    }
-
     private void setupGrids(MyBooksReadResponse myBooksReadResponse){
         readGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
         readGrid.setAdapter(adapter);
@@ -108,14 +103,11 @@ public class BooksReadFragment extends AbstractFragment implements MyBooksGirdAd
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

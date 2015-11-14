@@ -69,10 +69,15 @@
             android:name=".ui.activities.CategoryBooksActivity"
             android:label="@string/title_activity_home"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
+            <intent-filter>
+                <action android:name="in.viato.app.CATEGORY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.BookDetailActivity"
@@ -112,13 +117,18 @@
                 android:value=".ui.activities.HomeActivity" />
         </activity>
         <activity
-            android:name=".ui.activities.PreviousOrders"
+            android:name=".ui.activities.BookingsActivity"
             android:label="@string/title_activity_previous_orders"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.HomeActivity" />
+            <intent-filter>
+                <action android:name="in.viato.app.BOOKING" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.NotificationsActivity"
@@ -215,7 +225,6 @@
             android:name="io.fabric.ApiKey"
             android:value="148277b763bc5d138b2fce43c5e87891d2887ffb" />
 
-
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -240,5 +249,4 @@
             </intent-filter>
         </service>
     </application>
-
 </manifest>

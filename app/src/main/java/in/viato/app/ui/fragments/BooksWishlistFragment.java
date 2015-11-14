@@ -15,6 +15,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.ecommerce.Product;
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,6 +23,8 @@ import in.viato.app.R;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.adapters.MyBooksGirdAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import in.viato.app.utils.RxUtils;
+import retrofit.Response;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
@@ -98,19 +101,9 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -175,9 +168,8 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
 
         mViatoApp.sendEvent("wish_list", "remove", book.getTitle());
 
-        mViatoAPI
-                .removeFromWishlist(book.get_id())
-                .subscribe(new Subscriber<String>() {
+        mViatoAPI.removeFromWishlist(book.get_id())
+                .subscribe(new Subscriber<Response<String>>() {
                     @Override
                     public void onCompleted() {
 
@@ -189,11 +181,18 @@ public class BooksWishlistFragment extends AbstractFragment implements MyBooksGi
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        Logger.d("Removed from wishlist");
-                        adapter.remove(position);
+                    public void onNext(Response<String> s) {
+                        if (s.isSuccess()) {
+                            Logger.d("Removed from wishlist");
+                            adapter.remove(position);
+                        } else {
+                            try {
+                                Toast.makeText(getContext(), s.errorBody().string(), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 });
-
     }
 }

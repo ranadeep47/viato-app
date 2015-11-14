@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +12,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -110,7 +107,7 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                                 createBackStack(intent);
                                 break;
                             case R.id.nav_lends:
-                                intent = new Intent(mActivity, PreviousOrders.class);
+                                intent = new Intent(mActivity, BookingsActivity.class);
                                 createBackStack(intent);
                                 break;
 //                            case R.id.nav_notifications:

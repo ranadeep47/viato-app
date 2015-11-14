@@ -21,8 +21,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,20 +28,18 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
-import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -90,30 +86,18 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
     public static final String EXTRA_SELECT_TAB = "select_tab";
 
+    private int currentTab = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_drawer_tablayout);
 
         mActivity = this;
 
         if(checkPlayServices()) {
             buildGoogleApiClient();
-        }
-
-        String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
-        if(access_token.length() == 0) {
-            startActivity(new Intent(this, RegistrationActivity.class));
-            finish();
-            return;
-        } else {
-            // TODO: 30/10/15 replace 1 with user id
-            String userId = SharedPrefHelper.getString(R.string.pref_user_id);
-            String email = SharedPrefHelper.getString(R.string.pref_email);
-
-//            Analytics.with(this).identify(userId, new Traits().putEmail(email).putPhone(phone), null);
-            Crashlytics.setUserIdentifier(userId);
-            Crashlytics.setUserEmail(email);
         }
 
         mViewPager = (ViewPager)((ViewStub) findViewById(R.id.stub_viewpager_my_books)).inflate();
@@ -222,6 +206,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         );
 
         mViewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(currentTab);
         mTabs.setupWithViewPager(mViewPager);
 
         ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
@@ -255,40 +240,40 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         coverImage = (ImageView) coverContainer.findViewById(R.id.cover_image);
         searchBar = (EditText) coverContainer.findViewById(R.id.search_bar);
 
-        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    String query = v.getText().toString();
-                    Intent intent = new Intent(mActivity, BookSearchActivity.class);
-                    intent.putExtra(SearchManager.QUERY, query);
-                    intent.setAction("android.intent.action.SEARCH");
-                    startActivity(intent);
-                    mViatoApp.sendEvent("search", "submit_clicked", getString(R.string.home_activity));
-                    searchBar.setText("");
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                setSearchBarDrawables();
-            }
-        });
-
+//        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                    String query = v.getText().toString();
+//                    Intent intent = new Intent(mActivity, BookSearchActivity.class);
+//                    intent.putExtra(SearchManager.QUERY, query);
+//                    intent.setAction("android.intent.action.SEARCH");
+//                    startActivity(intent);
+//                    mViatoApp.sendEvent("search", "submit_clicked", getString(R.string.home_activity));
+//                    searchBar.setText("");
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//
+//        searchBar.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                setSearchBarDrawables();
+//            }
+//        });
+//
         searchBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -299,17 +284,19 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getRawX() >= (searchBar.getRight() - searchBar.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        setSearchBarDrawables();
-                        if (searchBar.getText().length() > 0) {
-                            //clear search bar
-                            searchBar.setText("");
-                        } else {
+//                        setSearchBarDrawables();
+//                        if (searchBar.getText().length() > 0) {
+//                            //clear search bar
+//                            searchBar.setText("");
+//                        } else {
                             //start barcode activity
                             startActivity(new Intent(mActivity, BarcodeScannerActivity.class));
                             mViatoApp.sendEvent("barcode_scanner", "clicked_icon", "searchbar_home");
-                        }
+//                        }
                         return true;
                     }
+                    startActivity(new Intent(getApplicationContext(), BookSearchActivity.class));
+
                 }
                 return false;
             }
@@ -320,24 +307,24 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         if(intent == null){ return; }
         if(intent.hasExtra(EXTRA_SELECT_TAB)){
             int index = intent.getIntExtra(EXTRA_SELECT_TAB, 0);
-            mViewPager.setCurrentItem(index);
+            currentTab = index;
         }
     }
 
-    public void setSearchBarDrawables() {
-        if(searchBar.getText().toString().length() > 0) {
-            searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
-                    null,
-                    mActivity.getResources().getDrawable(R.drawable.ic_close_black),
-                    null);
-        } else {
-            searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
-                    null,
-                    mActivity.getResources().getDrawable(R.drawable.ic_barcode_black),
-                    null);
-
-        }
-    }
+//    public void setSearchBarDrawables() {
+//        if(searchBar.getText().toString().length() > 0) {
+//            searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
+//                    null,
+//                    mActivity.getResources().getDrawable(R.drawable.ic_close_black),
+//                    null);
+//        } else {
+//            searchBar.setCompoundDrawablesWithIntrinsicBounds(mActivity.getResources().getDrawable(R.drawable.ic_search_black),
+//                    null,
+//                    mActivity.getResources().getDrawable(R.drawable.ic_barcode_black),
+//                    null);
+//
+//        }
+//    }
 
     @Override
     protected int getSelfNavDrawerItem() {
@@ -353,7 +340,6 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
         mLastLocation = LocationServices.FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
 
-//        Log.d( "qwe3", mLastLocation + "");
 
         if (mLastLocation == null) {
             mViatoAPI.getServiceLocations().subscribe(new Subscriber<Response<List<String>>>() {
@@ -364,7 +350,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
                 @Override
                 public void onError(Throwable e) {
-
+                    SharedPrefHelper.set(R.string.pref_show_unavailable, false);
                 }
 
                 @Override
@@ -383,11 +369,10 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                                 })
                                 .create()
                                 .show();
-                        return;
-
                     }
                 }
             });
+            SharedPrefHelper.set(R.string.pref_show_unavailable, true);
             return;
         }
 
@@ -403,7 +388,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
 
                     @Override
                     public void onError(Throwable e) {
-
+                        SharedPrefHelper.set(R.string.pref_show_unavailable, false);
                     }
 
                     @Override
@@ -436,6 +421,7 @@ public class HomeActivity extends AbstractNavDrawerActivity implements GoogleApi
                         }
                     }
                 });
+        SharedPrefHelper.set(R.string.pref_show_unavailable, true);
         return;
     }
 

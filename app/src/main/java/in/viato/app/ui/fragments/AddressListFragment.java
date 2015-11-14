@@ -2,6 +2,7 @@ package in.viato.app.ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import in.viato.app.R;
 import in.viato.app.http.models.Address;
 import in.viato.app.ui.activities.AddressListActivity;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import in.viato.app.utils.RxUtils;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
@@ -164,9 +166,9 @@ public class AddressListFragment extends AbstractFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
+    public void onDestroy() {
+	RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.ViewHolder> {

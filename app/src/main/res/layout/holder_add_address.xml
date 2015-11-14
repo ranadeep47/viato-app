@@ -14,7 +14,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@color/black_38"
-            android:src="@drawable/ic_add_black"
+            android:src="@drawable/ic_add_white"
+            android:backgroundTint="@color/black_54"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/spacing_vv_small"/>
 

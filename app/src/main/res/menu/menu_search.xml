@@ -5,7 +5,8 @@
         android:id="@+id/menu_search"
         android:title="@string/menu_search"
         android:icon="@drawable/ic_search_white"
-        app:showAsAction="always"
+        app:showAsAction="always|collapseActionView"
+        android:inputType="textFilter|textNoSuggestions"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
     <item
         android:id="@+id/menu_barcode"

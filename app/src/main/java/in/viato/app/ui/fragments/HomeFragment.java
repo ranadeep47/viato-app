@@ -108,9 +108,9 @@ public class HomeFragment extends AbstractFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     private class CategoryListAdapter extends RecyclerView.Adapter<CategoryViewHolder> {

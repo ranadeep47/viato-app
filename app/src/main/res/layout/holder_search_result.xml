@@ -34,7 +34,6 @@
                     android:textSize="15sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Angry Birds Comics, Vol. 1: Welcome to the Flock"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/text"/>
@@ -47,7 +46,6 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Peter Flanery"
                     android:layout_marginBottom="8dp"/>
             </LinearLayout>
             <LinearLayout

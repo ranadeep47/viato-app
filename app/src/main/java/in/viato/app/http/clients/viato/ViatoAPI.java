@@ -97,6 +97,13 @@ public class ViatoAPI {
 
     }
 
+    public Observable<Response<List<String>>> getSuggestions(String query){
+        return mViatoService
+                .getSuggestions(query)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
     public Observable<List<CoverQuote>> getQuotes(){
         return mViatoService
                 .getQuotes()
@@ -146,7 +153,7 @@ public class ViatoAPI {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<String> removeFromWishlist(String wishlistId) {
+    public Observable<Response<String>> removeFromWishlist(String wishlistId) {
         return mViatoService
                 .removeFromWishlist(wishlistId)
                 .observeOn(AndroidSchedulers.mainThread())

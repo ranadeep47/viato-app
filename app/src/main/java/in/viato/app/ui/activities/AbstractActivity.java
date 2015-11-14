@@ -1,5 +1,6 @@
 package in.viato.app.ui.activities;
 
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.orhanobut.logger.Logger;
@@ -43,7 +45,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class AbstractActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener{
 
-    public final static String TAG = "AbstractActivity";
+    public final static String TAG = AbstractActivity.class.getSimpleName();
 
     private ProgressDialog mProgressDialog;
     private static boolean mMainActivityIsOpen;
@@ -66,6 +68,18 @@ public class AbstractActivity extends AppCompatActivity implements NetworkStateR
 
         mViatoApp = ViatoApplication.get();
         mViatoAPI = mViatoApp.getViatoAPI();
+
+        String activityName = this.getClass().getSimpleName();
+        String access_token = SharedPrefHelper.getString(R.string.pref_access_token);
+
+        if(access_token.isEmpty()) {
+            if(activityName.equals(RegistrationActivity.TAG)) {
+                return;
+            }
+            startActivity(new Intent(this, RegistrationActivity.class));
+            finish();
+            return;
+        }
     }
 
     @Override

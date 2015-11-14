@@ -7,7 +7,7 @@ import android.util.Log;
 import in.viato.app.R;
 import in.viato.app.ui.fragments.BookingsFragment;
 
-public class PreviousOrders extends AbstractNavDrawerActivity {
+public class BookingsActivity extends AbstractNavDrawerActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,6 @@ public class PreviousOrders extends AbstractNavDrawerActivity {
     @Override
     public boolean onSupportNavigateUp() {
         //This method is called when the up button is pressed. Just the pop back stack.
-        Log.d(TAG, "called");
         getSupportFragmentManager().popBackStack();
         return true;
     }

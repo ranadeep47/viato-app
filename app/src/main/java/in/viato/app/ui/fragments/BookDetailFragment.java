@@ -3,7 +3,6 @@ package in.viato.app.ui.fragments;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -37,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +50,8 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.StatementEvent;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -70,6 +70,7 @@ import in.viato.app.ui.adapters.ReviewRVAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyHorizantalLlm;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import in.viato.app.utils.RxUtils;
 import retrofit.Response;
 import rx.Subscriber;
 import rx.functions.Action1;
@@ -88,13 +89,13 @@ public class BookDetailFragment extends AbstractFragment {
     private static final int REQUEST_RATING = 0;
 
     private String mBookId;
+    private String wishListId;
 
     private Boolean inWishList = false;
 
     private static Boolean isFullDesc = false;
 
     private AbstractActivity mActivity;
-    private Context mContext;
 
     private BookDetail mBookDetail;
     private CompositeSubscription mSubs = new CompositeSubscription();
@@ -146,7 +147,6 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         mActivity = (AbstractActivity) getActivity();
-        mContext = getContext();
 
         setHasOptionsMenu(true);
     }
@@ -219,9 +219,9 @@ public class BookDetailFragment extends AbstractFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     @Override
@@ -355,7 +355,7 @@ public class BookDetailFragment extends AbstractFragment {
             links.add("http://i.imgur.com/DvpvklR.png");
         }
 
-        LinearLayoutManager layoutManager = new MyHorizantalLlm(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new MyHorizantalLlm(getContext(), LinearLayoutManager.HORIZONTAL, false);
         RelatedBooksRVAdapter adapter = new RelatedBooksRVAdapter(R.layout.book_item_layout, links, true);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -384,7 +384,7 @@ public class BookDetailFragment extends AbstractFragment {
 
     public void setupReviewRecyclerView(RecyclerView mRecyclerView) {
         List<Review> reviews = ((new Review()).get());
-        mRecyclerView.setLayoutManager(new MyVerticalLlm(mRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(new MyVerticalLlm(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(new ReviewRVAdapter(reviews));
     }
 
@@ -400,7 +400,7 @@ public class BookDetailFragment extends AbstractFragment {
 
     public void setVariables(final BookDetail book)  {
         //set cover
-        Picasso.with(mContext)
+        Picasso.with(getContext())
                 .load(book.getCover())
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
@@ -447,7 +447,7 @@ public class BookDetailFragment extends AbstractFragment {
                     mBtn_desc_more.setVisibility(lineCount > 7 ? View.VISIBLE : View.GONE);
                 }
             }
-        }, 500);
+        }, 300);
     }
 
     @TargetApi(21)
@@ -484,14 +484,6 @@ public class BookDetailFragment extends AbstractFragment {
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        mActivity = null;
-        mContext = null;
-    }
-
     public void setupWishList(String id) {
         mViatoAPI.isInWishList(id)
                 .subscribe(new Subscriber<Response<String>>() {
@@ -508,12 +500,14 @@ public class BookDetailFragment extends AbstractFragment {
                     @Override
                     public void onNext(Response<String> stringResponse) {
                         if (stringResponse.isSuccess()) {
-                            inWishList = Boolean.valueOf(stringResponse.body());
+                            wishListId = stringResponse.body();
                             ActionMenuItemView menuItem = (ActionMenuItemView)getActivity().findViewById(R.id.action_favorite);
 
-                            if (inWishList){
+                            if (wishListId.length() > 0){
+                                inWishList = true;
                                 menuItem.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white));
                             } else {
+                                inWishList = false;
                                 menuItem.setIcon(getResources().getDrawable(R.drawable.ic_favorite_outline));
                             }
                         } else {
@@ -539,14 +533,15 @@ public class BookDetailFragment extends AbstractFragment {
 
                     @Override
                     public void onNext(BookItem bookItem) {
-                        Toast.makeText(mContext, "Added to wishlist", Toast.LENGTH_SHORT).show();
+                        wishListId = bookItem.get_id();
+                        Toast.makeText(getContext(), "Added to wishlist", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     public void removeFromWishlist() {
-        mViatoAPI.removeFromWishlist(mBookDetail.get_id())
-                .subscribe(new Subscriber<String>() {
+        mViatoAPI.removeFromWishlist(wishListId)
+                .subscribe(new Subscriber<Response<String>>() {
                     @Override
                     public void onCompleted() {
 
@@ -559,8 +554,10 @@ public class BookDetailFragment extends AbstractFragment {
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        Toast.makeText(mContext, "Removed from wishlist", Toast.LENGTH_SHORT).show();
+                    public void onNext(Response<String> s) {
+                        if (s.isSuccess()) {
+                            Toast.makeText(getContext(), "Removed from wishlist", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }

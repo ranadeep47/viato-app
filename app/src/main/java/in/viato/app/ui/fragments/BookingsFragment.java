@@ -6,6 +6,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,7 @@ import android.widget.TextView;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -34,6 +32,8 @@ import in.viato.app.ui.activities.HomeActivity;
 import in.viato.app.ui.adapters.TitleAdapter;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import in.viato.app.utils.MiscUtils;
+import in.viato.app.utils.RxUtils;
 import retrofit.HttpException;
 import retrofit.Response;
 import rx.Subscriber;
@@ -42,6 +42,8 @@ import rx.subscriptions.CompositeSubscription;
 public class BookingsFragment extends AbstractFragment {
 
     public static final String TAG = BookingsFragment.class.getSimpleName();
+
+    public static final String ARG_BOOKING_ID = "bookingId";
 
     @Bind(R.id.main_container) CoordinatorLayout mCoordinatorLayout;
     @Bind(R.id.main_animator) BetterViewAnimator mAnimator;
@@ -61,6 +63,16 @@ public class BookingsFragment extends AbstractFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent =  getActivity().getIntent();
+        Bundle bundle = intent.getExtras();
+        if (intent != null) {
+            if(intent.hasExtra(ARG_BOOKING_ID)) {
+                String id = intent.getStringExtra(ARG_BOOKING_ID);
+                loadFragment(R.id.frame_content, BookingDetailFragment.newInstance(id),
+                        BookingDetailFragment.TAG, true, BookingDetailFragment.TAG);
+            }
+        }
     }
 
 
@@ -120,10 +132,9 @@ public class BookingsFragment extends AbstractFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mBookings = null;
-        mSubs.unsubscribe();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     public void setupRentHistory() {
@@ -134,9 +145,6 @@ public class BookingsFragment extends AbstractFragment {
 
     public class OrdersListAdapter extends RecyclerView.Adapter<OrdersListAdapter.ViewHolder> {
         private List<Booking> mBookings = new ArrayList<>();
-
-        DateFormat dateFormat = new SimpleDateFormat("d MMM y");
-        Calendar cal = Calendar.getInstance(); // creates calendar
 
         public OrdersListAdapter(List<Booking> orders) {
             this.mBookings = orders;
@@ -168,10 +176,8 @@ public class BookingsFragment extends AbstractFragment {
             final Booking booking = mBookings.get(position);
             final List<Rental> rentals =  booking.getRentals();
 
-            cal.setTime(booking.getBooked_at()); // sets calendar time/date
-
             holder.orderId.setText(booking.getOrder_id());
-            holder.datePlaced.setText(dateFormat.format(cal.getTime()));
+            holder.datePlaced.setText(MiscUtils.getFormattedDate(booking.getBooked_at()));
             holder.status.setText(booking.getStatus());
             holder.books.setLayoutManager(new MyVerticalLlm(getContext(), LinearLayoutManager.VERTICAL, false));
             holder.books.setAdapter(new TitleAdapter(rentals));

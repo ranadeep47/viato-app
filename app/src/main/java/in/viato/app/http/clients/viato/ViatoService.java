@@ -51,6 +51,9 @@ public interface ViatoService {
     @GET("search")
     Observable<List<BookItem>> search(@Query("q") String query);
 
+    @GET("search/suggest")
+    Observable<Response<List<String>>> getSuggestions(@Query("q") String query);
+
     @GET("user/mybooks/home")
     Observable<List<CoverQuote>> getQuotes();
 
@@ -70,7 +73,7 @@ public interface ViatoService {
     Observable<BookItem> addToWishlist(@Body BookCatalogueId book);
 
     @DELETE("user/mybooks/wishlist/{wishlistId}")
-    Observable<String> removeFromWishlist(@Path("wishlistId") String wishlistId);
+    Observable<Response<String>> removeFromWishlist(@Path("wishlistId") String wishlistId);
 
     @GET("books/{bookId}")
     Observable<BookDetail> getBookDetail(@Path("bookId") String bookId);

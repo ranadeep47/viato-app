@@ -22,9 +22,6 @@ import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +36,8 @@ import in.viato.app.http.models.response.Rental;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import in.viato.app.utils.MiscUtils;
+import in.viato.app.utils.RxUtils;
 import retrofit.Response;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
@@ -111,9 +110,9 @@ public class BookingDetailFragment extends AbstractFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     public void getBookingDetail() {
@@ -154,11 +153,7 @@ public class BookingDetailFragment extends AbstractFragment {
 
     public void setDetails() {
         mOrderId.setText(booking.getOrder_id());
-
-        DateFormat dateFormat = new SimpleDateFormat("d MMM y");
-        Calendar cal = Calendar.getInstance(); // creates calendar
-        cal.setTime(booking.getBooked_at()); // sets calendar time/date
-        mPlacedOn.setText(dateFormat.format(cal.getTime()));
+        mPlacedOn.setText(MiscUtils.getFormattedDate(booking.getBooked_at()));
         mOrderStatus.setText(booking.getStatus());
 
         List<Rental> rentalList = booking.getRentals();
@@ -176,9 +171,6 @@ public class BookingDetailFragment extends AbstractFragment {
 
     public class RentalsAdapter extends RecyclerView.Adapter<RentalsAdapter.ViewHolder> {
         private List<Rental> mRentals;
-
-        DateFormat dateFormat = new SimpleDateFormat("d MMM y");
-        Calendar cal = Calendar.getInstance(); // creates calendar
 
         public RentalsAdapter(List<Rental> rentals) {
             this.mRentals = rentals;
@@ -267,8 +259,7 @@ public class BookingDetailFragment extends AbstractFragment {
 
 
             if (rental.getExpected_delivery_at() != null) {
-                cal.setTime(rental.getExpected_delivery_at());
-                holder.mDeliveredDate.setText("Estimated Delivery: " + dateFormat.format(cal.getTime()));
+                holder.mDeliveredDate.setText("Estimated Delivery: " + MiscUtils.getFormattedDate(rental.getExpected_delivery_at()));
                 holder.mDeliveredDate.setVisibility(View.VISIBLE);
             }
 
@@ -276,19 +267,16 @@ public class BookingDetailFragment extends AbstractFragment {
                 holder.mBtnExtend.setVisibility(View.VISIBLE);
                 holder.mBtnReturn.setVisibility(View.VISIBLE);
 
-                cal.setTime(rental.getDelivered_at());
-                holder.mDeliveredDate.setText("Delivered on: " + dateFormat.format(cal.getTime()));
-                cal.setTime(rental.getExpires_at());
-                holder.mReturnDate.setText("Return on: " + dateFormat.format(cal.getTime()));
+                holder.mDeliveredDate.setText("Delivered on: " + MiscUtils.getFormattedDate(rental.getDelivered_at()));
+                holder.mReturnDate.setText("Return on: " + MiscUtils.getFormattedDate(rental.getExpires_at()));
 
                 holder.mDeliveredDate.setVisibility(View.VISIBLE);
                 holder.mReturnDate.setVisibility(View.VISIBLE);
             }
 
             if (rental.getExtended_at() != null) {
-                cal.setTime(rental.getExtended_at());
                 holder.mPriceExtended.setText("+ Rs. " + (int) rental.getExtension_payment().getTotal_payable());
-                holder.mDeliveredDate.setText("Extended on: " + dateFormat.format(cal.getTime()));
+                holder.mDeliveredDate.setText("Extended on: " + MiscUtils.getFormattedDate(rental.getExtended_at()));
 
                 holder.mBtnExtend.setVisibility(View.GONE);
             }
@@ -301,8 +289,7 @@ public class BookingDetailFragment extends AbstractFragment {
             }
 
             if (rental.getPickup_done_at() != null) {
-                cal.setTime(rental.getPickup_done_at());
-                holder.mReturnDate.setText("Returned on: " + dateFormat.format(cal.getTime()));
+                holder.mReturnDate.setText("Returned on: " + MiscUtils.getFormattedDate(rental.getPickup_done_at()));
                 holder.mReturnDate.setVisibility(View.VISIBLE);
             }
         }
@@ -403,9 +390,5 @@ public class BookingDetailFragment extends AbstractFragment {
                         }
                     }
                 });
-    }
-
-    public void getTransactions() {
-
     }
 }

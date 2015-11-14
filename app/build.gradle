@@ -45,8 +45,8 @@ android {
         applicationId "in.viato.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 102
-        versionName "1.0.2"
+        versionCode 104
+        versionName "1.0.4"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
     }

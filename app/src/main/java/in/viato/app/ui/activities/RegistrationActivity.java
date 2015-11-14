@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.orhanobut.logger.Logger;
 
 import in.viato.app.R;
 import in.viato.app.service.RegistrationIntentService;
@@ -20,10 +21,13 @@ import in.viato.app.utils.SharedPrefHelper;
  * Created by ranadeep on 15/09/15.
  */
 public class RegistrationActivity extends AbstractActivity {
+    public static final String TAG = RegistrationActivity.class.getSimpleName();
+
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState); //NOTE should be placed after requestWindowFeature
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

@@ -3,6 +3,8 @@ package in.viato.app.utils;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.google.android.gms.analytics.Logger;
+
 /**
  * Created by ranadeep on 12/09/15.
  */

@@ -6,11 +6,18 @@
     android:inAnimation="@android:anim/fade_in"
     android:outAnimation="@android:anim/fade_out"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/suggestions_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="4dp"/>
     <android.support.v7.widget.CardView
         android:id="@+id/button_scan_barcode"
         android:layout_margin="@dimen/spacing_medium"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
         <LinearLayout
             android:gravity="center_vertical"
             android:orientation="horizontal"

@@ -1,110 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/green"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:fitsSystemWindows="true">
+        <RelativeLayout
+            android:layout_width="@dimen/avatar_large"
+            android:layout_height="@dimen/avatar_large"
+            android:background="@drawable/circle"
+            android:layout_gravity="center_horizontal"
+            android:elevation="@dimen/spacing_vv_small"
+            android:id="@+id/icon_success">
+            <ImageView
+                android:layout_width="@dimen/avatar_normal"
+                android:layout_height="@dimen/avatar_normal"
+                android:tint="#3FC277"
+                android:src="@drawable/ic_done_white_48dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/icon_success"
+            android:text="Order Placed!"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/spacing_vv_small"
+            android:textSize="@dimen/text_huge"/>
+        <TextView
+            android:id="@+id/orderId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/text_inverse"
+            android:textSize="@dimen/text_x_medium" />
+        <TextView
+            android:id="@+id/success_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@color/green_dark"
+        android:elevation="6dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_centerVertical="true"
-            android:fitsSystemWindows="true">
-            <RelativeLayout
-                android:layout_width="@dimen/avatar_large"
-                android:layout_height="@dimen/avatar_large"
-                android:background="@drawable/circle"
-                android:layout_gravity="center_horizontal"
-                android:elevation="@dimen/spacing_vv_small"
-                android:id="@+id/icon_success">
-                <ImageView
-                    android:layout_width="@dimen/avatar_normal"
-                    android:layout_height="@dimen/avatar_normal"
-                    android:tint="#3FC277"
-                    android:src="@drawable/ic_done_white_48dp"
-                    android:layout_centerInParent="true"/>
-            </RelativeLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/icon_success"
-                android:text="Success!"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:layout_marginTop="@dimen/spacing_vv_small"
-                android:textSize="@dimen/text_huge"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:gravity="center"
-                android:text="Sit back and relax.\n Your book(s) will be delivered soon."
-                android:textColor="@color/white"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Order Placed"
-                android:gravity="center"
-                android:textSize="@dimen/text_xx_large"
-                android:visibility="gone"
-                android:layout_marginTop="@dimen/spacing_xx_largee"/>
-            <TextView
-                android:id="@+id/orderid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Order id: 4r5544"
-                android:gravity="center"
-                android:visibility="gone"
-                android:textSize="@dimen/text_x_medium" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Estimated Delivery"
-                android:gravity="center"
-                android:textSize="@dimen/text_xx_large"
-                android:visibility="gone"
-                android:layout_marginTop="@dimen/spacing_xx_medium"/>
-            <TextView
-                android:id="@+id/delivery_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="12-Sep-15"
-                android:gravity="center"
-                android:visibility="gone"
-                android:textSize="@dimen/text_x_medium"
-                android:layout_marginTop="@dimen/spacing_vvv_small"/>
-            <Button
-                android:id="@+id/letShare"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/spacing_xx_largee"
-                android:visibility="gone"
-                android:text="Tell your friends"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="and"
-                android:visibility="gone"
-                android:gravity="center_horizontal"/>
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/green_dark">
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:gravity="end">
             <Button
                 android:id="@+id/trendingBooks"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:textColor="@color/white"
                 android:layout_alignParentRight="true"
                 android:text="Ok"
-                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                style="?android:borderlessButtonStyle"
                 android:layout_gravity="center_horizontal"/>
-        </RelativeLayout>
-    </RelativeLayout>
-</LinearLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+</RelativeLayout>

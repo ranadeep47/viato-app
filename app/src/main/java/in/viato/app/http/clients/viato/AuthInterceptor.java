@@ -21,7 +21,7 @@ public class AuthInterceptor implements Interceptor {
         builder.header("Authorization", "Bearer " + UserInfo.INSTANCE.getAccessToken());
         builder.header("X-APP-VERSION", String.valueOf(UserInfo.INSTANCE.getAppVersion()));
         builder.header("X-DEVICE-ID", UserInfo.INSTANCE.getDeviceId());
-        builder.header("X-APP-TOKEN", UserInfo.INSTANCE.getAccessToken());
+        builder.header("X-APP-TOKEN", UserInfo.INSTANCE.getAppToken());
         return chain.proceed(builder.build());
     }
 

@@ -40,8 +40,6 @@ import rx.subscriptions.CompositeSubscription;
 public abstract class AbstractFragment extends Fragment {
     private boolean mIsAttached;
 
-    private ProgressDialog mProgressDialog;
-
     //Props that need to be inherited. API Services, Composite Subscribers, Listener buses etc..
     protected CompositeSubscription mRxSubs;
     //Add api services here
@@ -236,7 +234,7 @@ public abstract class AbstractFragment extends Fragment {
         if (message.length() == 0 ){
             message = "Loading...";
         }
-        mProgressDialog = new ProgressDialog(getContext());
+        ProgressDialog mProgressDialog = new ProgressDialog(getContext());
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setMessage(message);
         mProgressDialog.setCancelable(false);

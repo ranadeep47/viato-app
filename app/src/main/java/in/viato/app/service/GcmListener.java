@@ -10,8 +10,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.orhanobut.logger.Logger;
 
 
 import in.viato.app.R;
@@ -28,15 +31,18 @@ public class GcmListener extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         super.onMessageReceived(from, data);
 
+//        Logger.d(data.toString());
+
         String message = data.getString("message");
 //        Log.d(TAG, "From: " + from);
 //        Log.d(TAG, "Message: " + message);
 
-        sendNotification(message);
+//        sendNotification(message);
     }
 
     private void sendNotification(String message) {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent();
+        intent.setClassName("in.viato.app", "in.viato.app.ui.activities.HomeActivity");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

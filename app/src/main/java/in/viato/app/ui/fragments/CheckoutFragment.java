@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -25,8 +25,6 @@ import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +44,8 @@ import in.viato.app.ui.activities.SuccessActivity;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.DividerItemDecoration;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import in.viato.app.utils.MiscUtils;
+import in.viato.app.utils.RxUtils;
 import retrofit.Response;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
@@ -67,6 +67,8 @@ public class CheckoutFragment extends AbstractFragment {
     private String deliveryDate;
     private String returnDate;
 
+    private CoordinatorLayout grandParent;
+
     @Bind(R.id.checkout_list) RecyclerView checkoutListRV;
     @Bind(R.id.lv_addressList) LinearLayout mAddressWrapper;
     @Bind(R.id.checkout_animator) BetterViewAnimator mViewContainer;
@@ -74,6 +76,7 @@ public class CheckoutFragment extends AbstractFragment {
     @Bind(R.id.total) TextView totalTV;
     @Bind(R.id.delivery_date) TextView deliveryDateTV;
     @Bind(R.id.return_date) TextView returnDateTV;
+    @Bind(R.id.return_period) TextView returnPeriod;
     @Bind(R.id.add_address) View addAddress;
     @Bind(R.id.already_address) View alreadyAddress;
 
@@ -95,7 +98,12 @@ public class CheckoutFragment extends AbstractFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_checkout, container, false);
+        View view = inflater.inflate(R.layout.fragment_checkout, container, false);
+
+        grandParent = (CoordinatorLayout) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
+
+        return view;
+
     }
 
     @Override
@@ -113,9 +121,9 @@ public class CheckoutFragment extends AbstractFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mSubs.unsubscribe();
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
     }
 
     @OnClick(R.id.card_view_address)
@@ -129,7 +137,7 @@ public class CheckoutFragment extends AbstractFragment {
     @OnClick(R.id.place_order)
     public void placeOrder(final View v) {
         if(addresses.size() == 0 || mSelectedAddress == -1) {
-            Snackbar.make(v, "Add your address.", Snackbar.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Add your address.", Toast.LENGTH_SHORT).show();
             return;
         }
         final ProgressDialog progressDialog = showProgressDialog("Placing your order...");
@@ -169,13 +177,13 @@ public class CheckoutFragment extends AbstractFragment {
                         t.setScreenName(getString(R.string.book_detail_fragment));
                         t.send(builder.build());
 
-                        mViatoApp.sendEvent("cart", "place", "order", 0l);
+                        mViatoApp.sendEvent("cart", "place", "order");
 
                         startActivity(intent);
                         getActivity().finish();
                     } else {
                         try {
-                            Snackbar.make(v, stringResponse.errorBody().string(), Snackbar.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), stringResponse.errorBody().string(), Toast.LENGTH_LONG).show();
                         } catch (IOException e) {
                             Logger.e(e, "error");
                         }
@@ -265,17 +273,17 @@ public class CheckoutFragment extends AbstractFragment {
     }
 
     public void setDates() {
-        DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d y");
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
 
         cal.add(Calendar.HOUR_OF_DAY, 48); // adds 48 hours
-        deliveryDate = dateFormat.format(cal.getTime());
+        deliveryDate = MiscUtils.getFormattedDate(cal.getTime());
         deliveryDateTV.setText(deliveryDate);
 
         int period = items.get(0).getPricing().getPeriod();
-        cal.add(Calendar.DAY_OF_YEAR, period); // adds 48 hours
-        returnDate = dateFormat.format(cal.getTime());
+        cal.add(Calendar.DAY_OF_YEAR, period);
+        returnPeriod.setText("Estimated Return (" + period + " days)");
+        returnDate = MiscUtils.getFormattedDate(cal.getTime());
         returnDateTV.setText(returnDate);
     }
 
@@ -415,7 +423,7 @@ public class CheckoutFragment extends AbstractFragment {
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    Snackbar.make(v, "Some error occurred. Please try again after some time", Snackbar.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "Some error occurred. Please try again after some time.", Toast.LENGTH_LONG).show();
                                     Logger.e(e.getMessage());
                                 }
 
@@ -442,7 +450,7 @@ public class CheckoutFragment extends AbstractFragment {
 
                                     mViatoApp.sendEvent("cart", "remove", removed.getTitle());
 
-                                    Snackbar.make(v, "Removed.", Snackbar.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "Removed", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }

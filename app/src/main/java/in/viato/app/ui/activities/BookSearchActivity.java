@@ -1,14 +1,16 @@
 package in.viato.app.ui.activities;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -28,9 +30,13 @@ import com.google.android.gms.analytics.ecommerce.Product;
 import com.orhanobut.logger.Logger;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,7 +44,14 @@ import in.viato.app.R;
 import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
+import in.viato.app.ui.widgets.MyVerticalLlm;
+import in.viato.app.utils.SharedPrefHelper;
+import retrofit.Response;
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -56,21 +69,29 @@ public class BookSearchActivity extends AbstractActivity {
     private SearchView mSearchView;
     private BetterViewAnimator container;
     private CardView scanButton;
-    private RecyclerView list;private SearchResultAdapter mAdapter;
+    private RecyclerView list;
+    private SearchResultAdapter mAdapter;
+    private RecyclerView suggestionsList;
+    private LinearLayout suggestionsContainer;
 
     private Boolean isSearchToAdd = false;
 
     private String query = "";
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_drawer);
 
+        mActivity = this;
+
         mResultsView = ((ViewStub) findViewById(R.id.stub_import)).inflate();
         container = (BetterViewAnimator) mResultsView;
         scanButton = (CardView) mResultsView.findViewById(R.id.button_scan_barcode);
         list = (RecyclerView) mResultsView.findViewById(R.id.search_results_list);
+        suggestionsList = (RecyclerView) mResultsView.findViewById(R.id.suggestions_list);
+
         Intent intent = getIntent();
         if (intent != null){
             handleIntent(intent);
@@ -103,6 +124,23 @@ public class BookSearchActivity extends AbstractActivity {
         mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                showRecentSuggestions();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                hideSuggestions();
+                onBackPressed();
+                return true;
+            }
+        });
+        menuItem.expandActionView();
+
         /*final int textViewID = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text",null, null);
         final AutoCompleteTextView searchTextView = (AutoCompleteTextView) mSearchView.findViewById(textViewID);
         try {
@@ -110,10 +148,20 @@ public class BookSearchActivity extends AbstractActivity {
             mCursorDrawableRes.setAccessible(true);
             mCursorDrawableRes.set(searchTextView, "#FFFFFF"); //This sets the cursor resource ID to 0 or @null which will make it visible on white background
         } catch (Exception e) {}*/
-
-        mSearchView.setIconifiedByDefault(true);
+//        mSearchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    showRecentSuggestions();
+//                } else {
+//                    hideSuggestions();
+//                }
+//            }
+//        });
+//        showRecentSuggestions();
         mSearchView.setFocusable(true);
-        mSearchView.setIconified(false);
+//        mSearchView.setIconifiedByDefault(true);
+//        mSearchView.setIconified(false);
         mSearchView.requestFocusFromTouch();
         mSearchView.setQuery(query, true);
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -123,16 +171,72 @@ public class BookSearchActivity extends AbstractActivity {
                 return false;
             }
         });
+
+        observeQueryChange().subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(final String s) {
+                if (s.isEmpty()) {
+                    showRecentSuggestions();
+                    return;
+                }
+
+                if (s.equals(query)) {
+                    return;
+                }
+
+                mViatoAPI.getSuggestions(s)
+                        .subscribe(new Subscriber<Response<List<String>>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Response<List<String>> bookItems) {
+                                if (bookItems.isSuccess()) {
+                                    List<String> suggestions = bookItems.body();
+                                    SuggestionsAdapter adapter = (SuggestionsAdapter) suggestionsList.getAdapter();
+                                    if (adapter == null) {
+                                        adapter = new SuggestionsAdapter(suggestions, false);
+                                        suggestionsList.setLayoutManager(new MyVerticalLlm(mActivity, LinearLayoutManager.VERTICAL, false));
+                                        suggestionsList.setAdapter(adapter);
+                                    } else {
+                                        adapter.replaceAll(suggestions, false);
+                                    }
+                                    container.setDisplayedChildView(suggestionsList);
+                                } else {
+                                    try {
+                                        Logger.e(bookItems.errorBody().string());
+                                        Toast.makeText(mActivity, bookItems.errorBody().string(), Toast.LENGTH_LONG).show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+            }
+        });
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-//            case android.R.id.home:
-//                onBackPressed();
-//                break;
             case R.id.menu_barcode:
                 scanBarcode();
                 return true;
@@ -179,16 +283,20 @@ public class BookSearchActivity extends AbstractActivity {
     }
 
 
-    private void performQuery(final String query){
-        mViatoApp.sendEvent("search", "submit_query",query);
+    private void performQuery(final String Query1){
+        mViatoApp.sendEvent("search", "submit_query",Query1);
         container.setDisplayedChildId(R.id.search_books_loading);
-        int len = query.length();
+        int len = Query1.length();
         if(len == 0 && mAdapter != null) {
             mAdapter.clear();
             return;
         }
+
+        query = Query1;
+        updateRecentSearch(Query1);
+
         mViatoAPI
-                .search(query)
+                .search(Query1)
                 .subscribe(new Subscriber<List<BookItem>>() {
                     @Override
                     public void onCompleted() {
@@ -206,7 +314,7 @@ public class BookSearchActivity extends AbstractActivity {
                             container.setDisplayedChildId(R.id.search_results_list);
                             mAdapter.setItems(searchResultItems);
                         } else {
-                            mViatoApp.sendEvent("search", "not_found", query);
+                            mViatoApp.sendEvent("search", "not_found", Query1);
                             container.setDisplayedChildId(R.id.search_books_empty);
                         }
                     }
@@ -303,4 +411,152 @@ public class BookSearchActivity extends AbstractActivity {
         }
     }
 
+    public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.ViewHolder> {
+        private List<String> suggestions;
+        private Context mContext;
+        private Boolean mIsRecent;
+
+        public SuggestionsAdapter(List<String> suggestions, boolean isRecent) {
+            this.suggestions = suggestions;
+            this.mIsRecent = isRecent;
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            @Bind(R.id.title) TextView mTitle;
+            @Bind(R.id.icon) ImageView mIcon;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+
+        @Override
+        public SuggestionsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            mContext = parent.getContext();
+            View view = LayoutInflater.from(mContext)
+                    .inflate(R.layout.holder_search_suggestions, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(SuggestionsAdapter.ViewHolder holder, int position) {
+            final String suggestion = suggestions.get(position);
+            holder.mTitle.setText(suggestion);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    query = suggestion;
+                    mSearchView.setQuery(suggestion, true);
+                }
+            });
+            int drawableId = R.drawable.ic_search_black;
+            if (mIsRecent) {
+                drawableId = R.drawable.ic_history_black;
+            }
+            Picasso.with(mContext)
+                    .load(drawableId)
+                    .into(holder.mIcon);
+        }
+
+        @Override
+        public int getItemCount() {
+            return suggestions.size();
+        }
+
+        public void clearAll() {
+            this.suggestions.clear();
+            notifyDataSetChanged();
+        }
+
+        public void replaceAll(List<String> suggestions, Boolean isRecent) {
+            this.suggestions = suggestions;
+            this.mIsRecent = isRecent;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void showRecentSuggestions() {
+        String suggestionsString = SharedPrefHelper.getString(R.string.pref_suggestions, null);
+        if (suggestionsString == null) {
+            return;
+        }
+        ArrayList<String> suggestionsArray = new ArrayList<String>(Arrays.asList(suggestionsString.split(",")));
+        suggestionsList.setLayoutManager(new MyVerticalLlm(this, LinearLayoutManager.VERTICAL, false));
+        suggestionsList.setAdapter(new SuggestionsAdapter(suggestionsArray, true));
+        container.setDisplayedChildView(suggestionsList);
+    }
+
+    public void hideSuggestions() {
+        SuggestionsAdapter adapter = (SuggestionsAdapter) suggestionsList.getAdapter();
+        if (adapter != null) {
+            adapter.clearAll();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(suggestionsList.getAdapter() != null) {
+            if (suggestionsList.getAdapter().getItemCount() > 0) {
+                hideSuggestions();
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    public Observable<String> observeQueryChange() {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+
+                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(final String newText) {
+                        subscriber.onNext(newText);
+                        return true;
+                    }
+                });
+            }
+        })
+        .debounce(400, TimeUnit.MILLISECONDS, Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void updateRecentSearch(String query) {
+        int suggestionsCount = 5;
+        String suggestionsString = SharedPrefHelper.getString(R.string.pref_suggestions);
+        Logger.d(suggestionsString);
+        String[] temp =  new String[suggestionsCount + 1];
+        String[] suggestionsArray;
+        suggestionsArray = suggestionsString.split(",");
+        List<String> suggestionsList = new ArrayList<>(Arrays.asList(suggestionsArray));
+        suggestionsList.removeAll(Collections.singleton(null));
+
+        int index = suggestionsArray.length;
+
+        if (suggestionsList.contains(query)){
+            index = suggestionsList.indexOf(query);
+            Logger.d("index " + index);
+            if (index + 1 != suggestionsArray.length) {
+                System.arraycopy(suggestionsArray, index + 1, temp, index + 1, suggestionsArray.length - index - 1);
+            }
+        }
+
+        System.arraycopy(suggestionsArray, 0, temp, 1, index);
+        temp[0] = query;
+
+        suggestionsList = new ArrayList<String>(Arrays.asList(temp)).subList(0, suggestionsCount);
+        suggestionsList.removeAll(Collections.singleton(null));
+        suggestionsArray = suggestionsList.toArray(suggestionsArray);
+
+        suggestionsString = TextUtils.join(",", suggestionsArray);
+        Logger.d(suggestionsString);
+        SharedPrefHelper.set(R.string.pref_suggestions, suggestionsString);
+    }
 }

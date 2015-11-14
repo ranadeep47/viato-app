@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
@@ -182,7 +183,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
     }
 
     public void verifyOTP() {
-        final ProgressDialog dialog = showProgressDialog("Signing in...");
         String otp = mSMSCode.getText().toString();
         if (otp.matches(getString(R.string.regex_otp))) {
             mSMSCode.setError(null);
@@ -196,7 +196,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                         //Todo: Handle error condition
                         @Override
                         public void onError(Throwable e) {
-                            dialog.dismiss();
                             if (e instanceof HttpException) {
                                 handleNetworkException(((HttpException) e));
                             }
@@ -204,7 +203,6 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
                         @Override
                         public void onNext(Response<String> response) {
-                            dialog.dismiss();
                             if (response.isSuccess()) {
                                 isOtpVerified = true;
                                 mToken = response.body();
@@ -300,10 +298,12 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 //    }
 
     public void verifyEmail() {
+        final ProgressDialog dialog = showProgressDialog("Signing in...");
         final String email = mEmail.getText().toString();
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mEmail.setError(null);
-            mHttpClient.finishLogin(email, mToken, getAccounts())
+            String app_token = SharedPrefHelper.getString(R.string.pref_gcm_reg_token);
+            mHttpClient.finishLogin(email, mToken, getAccounts(), app_token)
                     .subscribe(new Subscriber<Response<LoginResponse>>() {
                         @Override
                         public void onCompleted() {
@@ -312,7 +312,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
 
                         @Override
                         public void onError(Throwable e) {
-
+                            dialog.dismiss();
                         }
 
                         @Override
@@ -335,10 +335,17 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                                 SharedPrefHelper.set(R.string.pref_user_id, user_id);
                                 SharedPrefHelper.set(R.string.pref_email, email);
 
+                                //fabric initiate
+                                Crashlytics.setUserIdentifier(user_id);
+                                Crashlytics.setUserEmail(email);
+
+                                dialog.dismiss();
+
                                 if(isFinishClicked){
                                     finishLogin();
                                 }
                             } else {
+                                dialog.dismiss();
                                 try {
                                     Toast.makeText(getContext(), loginResponse.errorBody().string(), Toast.LENGTH_LONG).show();
                                     Logger.e(loginResponse.errorBody().string());
@@ -350,6 +357,7 @@ public class LoginConfirmFragment extends AbstractFragment implements SMSReceive
                         }
                     });
         } else {
+            dialog.dismiss();
             mEmail.setError(getString(R.string.error_email_input));
             return;
         }

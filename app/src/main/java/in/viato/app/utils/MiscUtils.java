@@ -1,13 +1,16 @@
 package in.viato.app.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.orhanobut.logger.Logger;
 
@@ -22,6 +25,10 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.NonWritableChannelException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import in.viato.app.ViatoApplication;
 
@@ -172,5 +179,19 @@ public class MiscUtils {
 
         // Bound inside min/max size for disk cache.
         return Math.max(Math.min(size, MAX_DISK_CACHE_SIZE), MIN_DISK_CACHE_SIZE);
+    }
+
+    public static String getFormattedDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("d MMM y");
+        return dateFormat.format(date);
+    }
+
+    public static void printIntentExtras(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        for (String key : bundle.keySet()) {
+            Object value = bundle.get(key);
+            Log.d("extras", String.format("%s %s (%s)", key,
+                    value.toString(), value.getClass().getName()));
+        }
     }
 }
