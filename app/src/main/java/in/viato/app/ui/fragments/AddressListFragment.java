@@ -2,7 +2,6 @@ package in.viato.app.ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -140,6 +139,9 @@ public class AddressListFragment extends AbstractFragment {
 
         switch (id) {
             case R.id.action_edit:
+                if (mAddresses == null) {
+                    return false;
+                }
                 editAddress(mAddresses.get(mSelectedAddress));
                 return true;
             case R.id.action_delete:
@@ -167,7 +169,7 @@ public class AddressListFragment extends AbstractFragment {
 
     @Override
     public void onDestroy() {
-	RxUtils.unsubscribeIfNotNull(mSubs);
+    	RxUtils.unsubscribeIfNotNull(mSubs);
         super.onDestroy();
     }
 
@@ -242,6 +244,9 @@ public class AddressListFragment extends AbstractFragment {
     }
 
     public void deleteAddress(int index) {
+        if (mAddresses == null) {
+            return;
+        }
         mViatoAPI.deleteAddress(mAddresses.get(index).getId())
                 .subscribe(new Subscriber<String>() {
                     @Override

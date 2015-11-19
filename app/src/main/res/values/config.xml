@@ -4,4 +4,7 @@
     <string name="c2d_message_permission">in.viato.app.permission.C2D_MESSAGE</string>
     <string name="version_code">100</string>
     <string name="version_name">1.0.0</string>
+
+    <string name="base_url">https://viato.in/</string>
+    <string name="base_api_url">https://viato.in/api/</string>
 </resources>

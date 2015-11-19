@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.viato.app"
-    android:versionCode="100"
-    android:versionName="1.0.0">
+<manifest package="in.viato.app"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:versionCode="100"
+          android:versionName="1.0.0">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <!-- Get permission for reliable local dispatching on non-Google Play devices. -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <permission
         android:name=".permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+        android:protectionLevel="signature"/>
 
-    <uses-permission
-        android:name=".permission.C2D_MESSAGE" />
+    <uses-permission android:name=".permission.C2D_MESSAGE"/>
 
     <application
         android:name=".ViatoApplication"
@@ -33,10 +31,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Viato" >
+        android:theme="@style/Theme.Viato">
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".ui.activities.BookSearchActivity"/>
+
         <activity
             android:name=".ui.activities.HomeActivity"
             android:label="@string/app_name"
@@ -44,100 +43,104 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <intent-filter android:autoVerify="true" >
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="www.viato.in" />
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="www.viato.in"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.RegistrationActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.activities.CategoryBooksActivity"
+            android:exported="true"
             android:label="@string/title_activity_home"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
+
             <intent-filter>
-                <action android:name="in.viato.app.CATEGORY" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="in.viato.app.CATEGORY"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.BookDetailActivity"
             android:label="@string/title_activity_book_detail"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.CheckoutActivity"
             android:label="@string/title_activity_checkout"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.AddressListActivity"
             android:label="@string/title_activity_address_list"
             android:parentActivityName=".ui.activities.CheckoutActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.CheckoutActivity" />
+                android:value=".ui.activities.CheckoutActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.MyBooksActivity"
             android:label="@string/title_activity_my_books"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.BookingsActivity"
+            android:exported="true"
             android:label="@string/title_activity_previous_orders"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
+
             <intent-filter>
-                <action android:name="in.viato.app.BOOKING" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="in.viato.app.BOOKING"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.NotificationsActivity"
             android:label="@string/title_activity_notifications"
             android:parentActivityName=".ui.activities.HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.BookSearchActivity"
@@ -146,50 +149,50 @@
             android:launchMode="singleTop"
             android:parentActivityName=".ui.activities.HomeActivity"
             android:screenOrientation="portrait"
-            android:stateNotNeeded="true" >
+            android:stateNotNeeded="true">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.SEARCH"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+                android:resource="@xml/searchable"/>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.HomeActivity" />
+                android:value=".ui.activities.HomeActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.BarcodeScannerActivity"
             android:label="Book Scanner"
             android:parentActivityName=".ui.activities.BookSearchActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.BookSearchActivity" />
+                android:value=".ui.activities.BookSearchActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.SuccessActivity"
             android:label="@string/title_activity_success"
-            android:parentActivityName=".ui.activities.HomeActivity" >
+            android:parentActivityName=".ui.activities.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.viato.app.ui.activities.HomeActivity" />
+                android:value="in.viato.app.ui.activities.HomeActivity"/>
         </activity>
         <!-- Receivers -->
         <!-- <receiver android:name=".receivers.SMSReceiver" ></receiver> -->
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode" />
+            android:value="barcode"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_places_api_key" />
+            android:value="@string/google_places_api_key"/>
 
         <!--
           Optionally, register AnalyticsReceiver and AnalyticsService to support background
@@ -197,16 +200,16 @@
         -->
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
-                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH"/>
             </intent-filter>
         </receiver>
 
         <service
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"/>
 
         <!--
              Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
@@ -214,31 +217,34 @@
         -->
         <receiver
             android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
+                <action android:name="com.android.vending.INSTALL_REFERRER"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="148277b763bc5d138b2fce43c5e87891d2887ffb" />
+            android:value="148277b763bc5d138b2fce43c5e87891d2887ffb"/>
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.example.gcm" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+
+                <category android:name="com.example.gcm"/>
             </intent-filter>
         </receiver>
+
         <service
             android:name=".service.GcmListener"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
         <service
@@ -248,5 +254,23 @@
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".ui.activities.LocalityActivity"
+            android:label="@string/title_activity_location"
+            android:parentActivityName=".ui.activities.AddressListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.viato.app.ui.activities.AddressListActivity"/>
+        </activity>
+        <activity
+            android:name=".ui.activities.FaqActivity"
+            android:label="@string/title_activity_faq"
+            android:parentActivityName=".ui.activities.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.viato.app.ui.activities.HomeActivity"/>
+        </activity>
     </application>
+
 </manifest>

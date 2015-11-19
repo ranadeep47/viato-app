@@ -14,6 +14,7 @@
     <integer name="nav_item_lends">2</integer>
     <integer name="nav_item_notifications">3</integer>
     <integer name="nav_item_help">4</integer>
+    <integer name="nav_item_faq">5</integer>
 
 
     <!-- GA Custom Dimensions -->

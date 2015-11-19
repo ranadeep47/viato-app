@@ -117,6 +117,10 @@ public class AbstractNavDrawerActivity extends AbstractActivity {
                             case R.id.nav_help:
                                 sendEmail();
                                 break;
+                            case R.id.nav_faq:
+                                intent = new Intent(mActivity, FaqActivity.class);
+                                createBackStack(intent);
+                                break;
                         }
                     }
                 }, NAVDRAWER_LAUNCH_DELAY);

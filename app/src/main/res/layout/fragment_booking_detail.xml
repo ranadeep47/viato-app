@@ -99,7 +99,7 @@
                         android:id="@+id/order_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rs. 245"
+                        android:text="₹245"
                         android:textColor="@color/text"
                         android:textSize="@dimen/text_xx_medium"
                         android:layout_alignParentRight="true"/>
@@ -165,7 +165,7 @@
                         android:id="@+id/payment_status"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Rs. 100 COD"/>
+                        android:text="₹100 COD"/>
                 </LinearLayout>
             </LinearLayout>
             <include

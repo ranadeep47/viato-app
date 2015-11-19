@@ -249,8 +249,7 @@ public class BookDetailFragment extends AbstractFragment {
 
                 FragmentManager fm = mActivity.getSupportFragmentManager();
 
-                RatingDialogFragment dialog = RatingDialogFragment
-                        .newInstance(rating, review);
+                RatingDialogFragment dialog = RatingDialogFragment.newInstance(rating, review);
                 dialog.setTargetFragment(BookDetailFragment.this, REQUEST_RATING);
                 dialog.show(fm, DIALOG_RATING);
             }
@@ -425,9 +424,9 @@ public class BookDetailFragment extends AbstractFragment {
         }
         //set price and strike through retail price
         if ((int) book.getPricing().getRental().get(0).getRent() != 0){
-            mRetailPrice.setText("Buy at Rs. " + (int) book.getPricing().getOwning().getMrp());
+            mRetailPrice.setText("Buy at "\u20B9 " " + (int) book.getPricing().getOwning().getMrp());
             mRetailPrice.setPaintFlags(mRetailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            mRentalPrice.setText("Rent at Rs. " + (int) book.getPricing().getRental().get(0).getRent());
+            mRentalPrice.setText("Rent at "\u20B9 " " + (int) book.getPricing().getRental().get(0).getRent());
             mRentalPeriod.setText("for " + book.getPricing().getRental().get(0).getPeriod() + " days");
         } else {
             mRentalPrice.setVisibility(View.GONE);
@@ -436,13 +435,13 @@ public class BookDetailFragment extends AbstractFragment {
         }
 
         //set description
-        Spanned sp = Html.fromHtml(mBookDetail.getDescription());
+        Spanned sp = Html.fromHtml(book.getDescription());
         mDescription.setText(sp);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mDescription!= null){
+                if (mDescription!= null && mBtn_desc_more!= null){
                     int lineCount = mDescription.getLineCount();
                     mBtn_desc_more.setVisibility(lineCount > 7 ? View.VISIBLE : View.GONE);
                 }

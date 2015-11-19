@@ -16,7 +16,7 @@
         android:title="@string/action_cart"
         android:orderInCategory="3"
         app:showAsAction="always"
-        android:icon="@drawable/ic_shopping_cart_white"/>
+        android:icon="@drawable/ic_cart"/>
     <item
         android:id="@+id/menu_search"
         android:title="@string/menu_search"

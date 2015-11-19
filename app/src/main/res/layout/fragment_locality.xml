@@ -1,0 +1,29 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="in.viato.app.ui.fragments.LocalityFragment">
+    <AutoCompleteTextView
+        android:id="@+id/locality"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:hint="Locality"
+        android:imeOptions="actionDone"
+        android:singleLine="true"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"/>
+    <TextView
+        android:id="@+id/use_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_gps_fixed"
+        android:text="Use my location"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:drawablePadding="@dimen/activity_horizontal_margin"/>
+</LinearLayout>

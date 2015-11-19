@@ -29,6 +29,9 @@ public class BetterViewAnimator extends ViewAnimator {
     }
 
     public void setDisplayedChildView(View view) {
+        if (view == null) {
+			throw new IllegalArgumentException("Cannot find " + view + ", since it is null");
+        }
         int id = view.getId();
         setDisplayedChildId(id);
     }

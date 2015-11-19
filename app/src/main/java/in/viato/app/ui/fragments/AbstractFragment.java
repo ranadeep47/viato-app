@@ -23,6 +23,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.orhanobut.logger.Logger;
 
 import in.viato.app.ViatoApplication;
@@ -46,6 +48,8 @@ public abstract class AbstractFragment extends Fragment {
     protected ViatoAPI mViatoAPI;
     protected ViatoApplication mViatoApp;
     protected int mContainerViewId;
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -241,5 +245,17 @@ public abstract class AbstractFragment extends Fragment {
         mProgressDialog.setProgress(0);
         mProgressDialog.show();
         return mProgressDialog;
+    }
+
+    public boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
     }
 }

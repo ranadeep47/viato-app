@@ -1,8 +1,11 @@
 package in.viato.app.http.clients.viato;
 
+import android.content.res.Resources;
+
 import java.util.List;
 import java.util.Map;
 
+import in.viato.app.R;
 import in.viato.app.http.models.Address;
 import in.viato.app.http.models.ForceUpdate;
 import in.viato.app.http.models.Locality;
@@ -35,7 +38,7 @@ import rx.Observable;
  */
 public interface ViatoService {
 
-    String baseUrl = "https://viato.in/api/";
+    String baseUrl = Resources.getSystem().getString(R.string.base_api_url);
 
     @GET("feed/home")
     Observable<List<CategoryItem>> getCategories();

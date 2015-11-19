@@ -23,6 +23,7 @@
                 android:hint="Flat / House no."
                 android:textColor="@color/black"
                 android:singleLine="true"
+                android:inputType="text|textAutoComplete|textNoSuggestions"
                 android:imeOptions="actionNext"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -35,23 +36,8 @@
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:singleLine="true"
+                      android:inputType="text|textAutoComplete|textNoSuggestions"
                       android:hint="Building and Street" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-            <AutoCompleteTextView
-                android:id="@+id/editText_locality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:hint="Locality"
-                android:imeOptions="actionNext"
-                android:singleLine="true"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -67,5 +53,22 @@
                       android:text="Home"
                       android:imeOptions="actionDone"/>
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/editText_locality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:hint="Click to add locality"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:textColor="@color/text"
+            android:drawableRight="@drawable/ic_edit"
+            android:drawableLeft="@drawable/ic_location_on"
+            android:drawablePadding="@dimen/spacing_vv_small"
+            android:drawableTint="@color/black_54"
+            android:backgroundTintMode="src_atop"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"/>
     </LinearLayout>
 </ScrollView>

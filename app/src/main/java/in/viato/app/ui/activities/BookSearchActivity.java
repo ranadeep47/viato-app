@@ -21,6 +21,7 @@ import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ import in.viato.app.ViatoApplication;
 import in.viato.app.http.models.response.BookItem;
 import in.viato.app.ui.widgets.BetterViewAnimator;
 import in.viato.app.ui.widgets.MyVerticalLlm;
+import in.viato.app.utils.RxUtils;
 import in.viato.app.utils.SharedPrefHelper;
 import retrofit.Response;
 import rx.Observable;
@@ -52,6 +54,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -70,6 +73,8 @@ public class BookSearchActivity extends AbstractActivity {
     private BetterViewAnimator container;
     private CardView scanButton;
     private RecyclerView list;
+    private RelativeLayout emptyLayout;
+    private RelativeLayout errorLayout;
     private SearchResultAdapter mAdapter;
     private RecyclerView suggestionsList;
     private LinearLayout suggestionsContainer;
@@ -79,10 +84,14 @@ public class BookSearchActivity extends AbstractActivity {
     private String query = "";
     private Activity mActivity;
 
+    private CompositeSubscription mSubs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_drawer);
+
+        mSubs = new CompositeSubscription();
 
         mActivity = this;
 
@@ -91,6 +100,8 @@ public class BookSearchActivity extends AbstractActivity {
         scanButton = (CardView) mResultsView.findViewById(R.id.button_scan_barcode);
         list = (RecyclerView) mResultsView.findViewById(R.id.search_results_list);
         suggestionsList = (RecyclerView) mResultsView.findViewById(R.id.suggestions_list);
+        emptyLayout = (RelativeLayout) mResultsView.findViewById(R.id.search_books_empty);
+        errorLayout = (RelativeLayout) mResultsView.findViewById(R.id.search_books_error);
 
         Intent intent = getIntent();
         if (intent != null){
@@ -159,9 +170,9 @@ public class BookSearchActivity extends AbstractActivity {
 //            }
 //        });
 //        showRecentSuggestions();
-        mSearchView.setFocusable(true);
 //        mSearchView.setIconifiedByDefault(true);
 //        mSearchView.setIconified(false);
+        mSearchView.setFocusable(true);
         mSearchView.requestFocusFromTouch();
         mSearchView.setQuery(query, true);
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -194,7 +205,7 @@ public class BookSearchActivity extends AbstractActivity {
                     return;
                 }
 
-                mViatoAPI.getSuggestions(s)
+                mSubs.add(mViatoAPI.getSuggestions(s)
                         .subscribe(new Subscriber<Response<List<String>>>() {
                             @Override
                             public void onCompleted() {
@@ -228,7 +239,7 @@ public class BookSearchActivity extends AbstractActivity {
                                     }
                                 }
                             }
-                        });
+                        }));
             }
         });
         return true;
@@ -295,8 +306,7 @@ public class BookSearchActivity extends AbstractActivity {
         query = Query1;
         updateRecentSearch(Query1);
 
-        mViatoAPI
-                .search(Query1)
+        mSubs.add(mViatoAPI.search(Query1)
                 .subscribe(new Subscriber<List<BookItem>>() {
                     @Override
                     public void onCompleted() {
@@ -305,20 +315,20 @@ public class BookSearchActivity extends AbstractActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        container.setDisplayedChildId(R.id.search_books_error);
+                        container.setDisplayedChildView(errorLayout);
                     }
 
                     @Override
                     public void onNext(List<BookItem> searchResultItems) {
                         if (searchResultItems != null && searchResultItems.size() != 0) {
-                            container.setDisplayedChildId(R.id.search_results_list);
+                            container.setDisplayedChildView(list);
                             mAdapter.setItems(searchResultItems);
                         } else {
                             mViatoApp.sendEvent("search", "not_found", Query1);
-                            container.setDisplayedChildId(R.id.search_books_empty);
+                            container.setDisplayedChildView(emptyLayout);
                         }
                     }
-                });
+                }));
     }
 
     public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ResultItemHolder>{
@@ -531,7 +541,6 @@ public class BookSearchActivity extends AbstractActivity {
     public void updateRecentSearch(String query) {
         int suggestionsCount = 5;
         String suggestionsString = SharedPrefHelper.getString(R.string.pref_suggestions);
-        Logger.d(suggestionsString);
         String[] temp =  new String[suggestionsCount + 1];
         String[] suggestionsArray;
         suggestionsArray = suggestionsString.split(",");
@@ -542,7 +551,6 @@ public class BookSearchActivity extends AbstractActivity {
 
         if (suggestionsList.contains(query)){
             index = suggestionsList.indexOf(query);
-            Logger.d("index " + index);
             if (index + 1 != suggestionsArray.length) {
                 System.arraycopy(suggestionsArray, index + 1, temp, index + 1, suggestionsArray.length - index - 1);
             }
@@ -556,7 +564,13 @@ public class BookSearchActivity extends AbstractActivity {
         suggestionsArray = suggestionsList.toArray(suggestionsArray);
 
         suggestionsString = TextUtils.join(",", suggestionsArray);
-        Logger.d(suggestionsString);
         SharedPrefHelper.set(R.string.pref_suggestions, suggestionsString);
     }
+
+    @Override
+    public void onDestroy() {
+        RxUtils.unsubscribeIfNotNull(mSubs);
+        super.onDestroy();
+    }
+
 }

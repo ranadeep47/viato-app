@@ -56,7 +56,7 @@ public class CheckoutListAdapter extends RecyclerView.Adapter<CheckoutListAdapte
         BookItem book = sBookList.get(position);
         holder.mTitle.setText(book.getTitle());
         holder.mAuthor.setText(book.getAuthors());
-        holder.mPrice.setText("Rs. " + book.getPricing().getRent());
+        holder.mPrice.setText("\u20B9 " + book.getPricing().getRent());
         Picasso.with(mContext)
                 .load(book.getCover())
                 .into(holder.mCover);

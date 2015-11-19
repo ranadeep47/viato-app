@@ -1,8 +1,10 @@
 package in.viato.app.ui.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -135,11 +137,27 @@ public class CheckoutFragment extends AbstractFragment {
     }
 
     @OnClick(R.id.place_order)
-    public void placeOrder(final View v) {
+    public void confirmPlaceOrder(final View v) {
         if(addresses.size() == 0 || mSelectedAddress == -1) {
             Toast.makeText(getContext(), "Add your address.", Toast.LENGTH_SHORT).show();
             return;
         }
+        new AlertDialog.Builder(getContext())
+                .setTitle("Confirm Order")
+                .setMessage("Are you sure you want to place the order?")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        placeOrder();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .create()
+                .show();
+    }
+
+
+    public void placeOrder() {
         final ProgressDialog progressDialog = showProgressDialog("Placing your order...");
         mViatoAPI.placeOrder(new BookingBody(addresses.get(mSelectedAddress).getId()))
             .subscribe(new Subscriber<Response<String>>() {
@@ -191,7 +209,6 @@ public class CheckoutFragment extends AbstractFragment {
                 }
             });
     }
-
 
     @OnClick(R.id.btn_empty_action)
     public void goToTrending() {
@@ -269,7 +286,7 @@ public class CheckoutFragment extends AbstractFragment {
         for (BookItem item : items){
             total += (int) item.getPricing().getRent();
         }
-        totalTV.setText("Rs. " + total);
+        totalTV.setText("\u20B9 " + total);
     }
 
     public void setDates() {
@@ -405,7 +422,7 @@ public class CheckoutFragment extends AbstractFragment {
             BookItem book = sBookList.get(position);
             holder.mTitle.setText(book.getTitle());
             holder.mAuthor.setText(book.getAuthors());
-            holder.mPrice.setText("Rs. " + ((int)book.getPricing().getRent()));
+            holder.mPrice.setText("\u20B9 " + ((int)book.getPricing().getRent()));
             Picasso.with(mContext)
                     .load(book.getCover())
                     .into(holder.mCover);

@@ -44,7 +44,7 @@
         android:layout_alignParentRight="true"
         android:gravity="center_vertical"
         android:textColor="@color/text"
-        android:text="Rs. 162.00"/>
+        android:text="₹162.00"/>
     <ImageButton
         android:id="@+id/remove"
         android:layout_width="36dp"

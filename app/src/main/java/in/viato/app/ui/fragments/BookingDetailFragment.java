@@ -164,7 +164,7 @@ public class BookingDetailFragment extends AbstractFragment {
         mOrderItemsList.addItemDecoration(new DividerItemDecoration(getContext(), null));
         mOrderItemsList.hasFixedSize();
 
-        mOrderValue.setText("Rs. " + getOrderTotal());
+        mOrderValue.setText("&#8377; " + getOrderTotal());
 
         setupDeliveryAddress();
     }
@@ -213,7 +213,7 @@ public class BookingDetailFragment extends AbstractFragment {
             holder.mTitle.setText(rental.getItem().getTitle());
             holder.mSubtitle.setText(rental.getItem().getAuthors());
             holder.mStatus.setText(rental.getStatus());
-            holder.mPrice.setText("Rs. " + (int) rental.getItem().getPricing().getRent() + "");
+            holder.mPrice.setText("&#8377; " + (int) rental.getItem().getPricing().getRent() + "");
             holder.mBtnExtend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -224,7 +224,7 @@ public class BookingDetailFragment extends AbstractFragment {
 
                     new android.app.AlertDialog.Builder(getContext())
                             .setTitle("Extend")
-                            .setMessage("You can extend the rental tenure for " + period + " days at Rs. " + price +".")
+                            .setMessage("You can extend the rental tenure for " + period + " days at &#8377; " + price +".")
                             .setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -275,7 +275,7 @@ public class BookingDetailFragment extends AbstractFragment {
             }
 
             if (rental.getExtended_at() != null) {
-                holder.mPriceExtended.setText("+ Rs. " + (int) rental.getExtension_payment().getTotal_payable());
+                holder.mPriceExtended.setText("+ &#8377; " + (int) rental.getExtension_payment().getTotal_payable());
                 holder.mDeliveredDate.setText("Extended on: " + MiscUtils.getFormattedDate(rental.getExtended_at()));
 
                 holder.mBtnExtend.setVisibility(View.GONE);

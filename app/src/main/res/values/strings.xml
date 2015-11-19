@@ -10,6 +10,7 @@
     <string name="nav_profile">Profile</string>
     <string name="nav_notifications">Notifications</string>
     <string name="nav_help">Help &amp; Feedback</string>
+    <string name="nav_faq">FAQ</string>
 
     <!--Menu-->
     <string name="menu_search">Title, Author, ISBN</string>
@@ -109,7 +110,7 @@
     <string name="rating_dialog_title">Your Review</string>
 
     <!--Search-->
-    <string name="search_hint">Search by Title,Author,ISBN</string>
+    <string name="search_hint">Search by Title, Author, ISBN</string>
 
     <!--Fragments & Activities specific-->
     <!--Login Fragment-->
@@ -203,4 +204,9 @@
     <!-- Availability status-->
     <string name="available">Available</string>
     <string name="not_available">Not Available</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_faq">FAQ</string>
 </resources>

@@ -2,6 +2,7 @@ package in.viato.app.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -54,8 +55,14 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
     public void onBindViewHolder(CategoryBookItemHolder holder, final int position) {
         final BookItem book = mBooks.get(position);
 
+        Picasso.with(holder.itemView.getContext())
+                .load(book.getThumbs().get(0))
+                .into(holder.cover);
         holder.title.setText(book.getTitle());
         holder.author.setText(book.getAuthors());
+        holder.retailPrice.setText("\u20B9 " + (int) book.getPricing().getRent());
+        holder.retailPrice.setPaintFlags(holder.retailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        holder.rentalPrice.setText("\u20B9 " + (int) book.getPricing().getRent());
         holder.itemView.setTag(R.string.book_id, book.getCatalogueId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +70,7 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
                 Intent intent = new Intent(mContext, BookDetailActivity.class);
                 intent.putExtra(BookDetailActivity.ARG_BOOK_ID, book.getCatalogueId());
 
-                Product product =  new Product()
+                Product product = new Product()
                         .setId(book.getCatalogueId())
                         .setName(book.getTitle())
                         .setCategory(mCategoryName)
@@ -83,10 +90,6 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
                 mContext.startActivity(intent);
             }
         });
-        Picasso.with(holder.itemView.getContext())
-                .load(book.getThumbs().get(0))
-//                .load(book.getCover())
-                .into(holder.cover);
     }
 
     @Override
@@ -105,7 +108,8 @@ public class CategoryBooksGridAdapter extends RecyclerView.Adapter<CategoryBooks
         @Bind(R.id.book_cover) ImageView cover;
         @Bind(R.id.book_title) TextView title;
         @Bind(R.id.book_author) TextView author;
-//        @Bind(R.id.book_rent_price) TextView rent;
+        @Bind(R.id.retail_price) TextView retailPrice;
+        @Bind(R.id.rental_price) TextView rentalPrice;
 
         public CategoryBookItemHolder(View itemView) {
             super(itemView);

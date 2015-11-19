@@ -1,5 +1,8 @@
 package in.viato.app.http.clients.login;
 
+import android.content.res.Resources;
+
+import in.viato.app.R;
 import in.viato.app.http.models.request.EmailBody;
 import in.viato.app.http.models.request.LoginBody;
 import in.viato.app.http.models.request.OtpBody;
@@ -14,7 +17,7 @@ import rx.Observable;
  * Created by saiteja on 15/10/15.
  */
 public interface HttpService {
-    String baseUrl = "https://viato.in/";
+    String baseUrl = Resources.getSystem().getString(R.string.base_url);
 
     @POST("login")
     Observable<Response<String>> login(@Body LoginBody body);

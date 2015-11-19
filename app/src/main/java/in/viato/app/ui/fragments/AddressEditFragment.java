@@ -1,11 +1,12 @@
 package in.viato.app.ui.fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,19 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Places;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -40,6 +36,7 @@ import in.viato.app.R;
 import in.viato.app.http.models.Address;
 import in.viato.app.http.models.Locality;
 import in.viato.app.ui.activities.AddressListActivity;
+import in.viato.app.ui.activities.LocalityActivity;
 import in.viato.app.ui.adapters.PlaceAutocompleteAdapter;
 import retrofit.HttpException;
 import rx.Subscriber;
@@ -49,33 +46,19 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
     public static final String TAG = AddressEditFragment.class.getSimpleName();
 
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
     private Location mLastLocation;
 
-    // Google client to interact with Google API
     private GoogleApiClient mGoogleApiClient;
-
-    // boolean flag to toggle periodic location updates
-    private boolean mRequestingLocationUpdates = false;
-
-    private LocationRequest mLocationRequest;
-
-    // Location updates intervals in sec
-    private static int UPDATE_INTERVAL = 10000; // 10 sec
-    private static int FATEST_INTERVAL = 5000; // 5 sec
-    private static int DISPLACEMENT = 10; // 10 meters
 
     public static final String ARG_SELECTED_ADDRESS = "selectedAddress";
     public static final String ARG_ADDRESS = "address";
     public static final String ARG_LENGTH = "listSize";
-
     public static final String ARG_ACTION = "action";
 
     public static final int CREATE_ADDRESS = 0;
     public static final int EDIT_ADDRESS = 1;
 
-    private PlaceAutocompleteAdapter mAdapter;
+    public static final int LOCALITY_REQUEST_CODE = 0;
 
     @Bind(R.id.editText_label)
     @NotEmpty
@@ -91,7 +74,7 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
     @Bind(R.id.editText_locality)
     @NotEmpty
-    AutoCompleteTextView localityTV;
+    TextView localityTV;
 
     @Bind(R.id.scrollView) ScrollView mScrollView;
 
@@ -106,12 +89,15 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
     public static AddressEditFragment newInstance (int selectedAddressId, int action, Address address, int listSize){
         AddressEditFragment fragment = new AddressEditFragment();
         Bundle args = new Bundle();
+
         args.putInt(ARG_SELECTED_ADDRESS, selectedAddressId);
         args.putInt(ARG_ACTION, action);
         args.putInt(ARG_LENGTH, listSize);
+
         if(address == null){
             address = new Address();
         }
+
         args.putParcelable(ARG_ADDRESS, address);
         fragment.setArguments(args);
         return fragment;
@@ -122,6 +108,7 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
+
         mSelectedAddress = args.getInt(ARG_SELECTED_ADDRESS, -1);
         mAction = args.getInt(ARG_ACTION, 0);
         mAddress = args.getParcelable(ARG_ADDRESS);
@@ -166,8 +153,7 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_address_edit, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_address_edit, container, false);
     }
 
     @Override
@@ -199,10 +185,16 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
             placeName = mAddress.getLocality().getName();
         }
 
-        mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, null, null);
-        localityTV.setAdapter(mAdapter);
+        final AddressEditFragment thisFragment = this;
+
         localityTV.setText(placeName);
-        localityTV.setOnItemClickListener(mAutocompleteClickListener);
+        localityTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LocalityActivity.class);
+                startActivityForResult(intent, LOCALITY_REQUEST_CODE);
+            }
+        });
     }
 
     @Override
@@ -242,24 +234,13 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         mValidator = null;
         mGoogleApiClient = null;
+
+        super.onDestroy();
     }
 
-    private AdapterView.OnItemClickListener mAutocompleteClickListener
-            = new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    final AutocompletePrediction item = mAdapter.getItem(position);
-                    placeId = item.getPlaceId();
-                    placeName = (String)item.getPrimaryText(null);
-                }
-            };
-
     public void createAddress(Address address) {
-        address.setId("");
         mViatoAPI.createAddress(address)
                 .subscribe(new Subscriber<Address>() {
                     @Override
@@ -311,18 +292,6 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
         intent.putExtra(AddressListActivity.ARG_ADDRESS_INDEX, mSelectedAddress);
         getActivity().setResult(resultCode, intent);
         getActivity().finish();
-    }
-
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext());
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            }
-            return false;
-        }
-        return true;
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -394,5 +363,24 @@ public class AddressEditFragment extends AbstractFragment implements GoogleApiCl
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-}
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Logger.d("received codes: " + requestCode + ", " + resultCode);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == LOCALITY_REQUEST_CODE) {
+            String localPlaceId = data.getStringExtra(LocalityFragment.EXTRA_PLACE_ID);
+            String localPlaceName = data.getStringExtra(LocalityFragment.EXTRA_PLACE_NAME);
+            if (localPlaceName.isEmpty()){
+                return;
+            }
+            Logger.d("received result: " + localPlaceId + ", " + localPlaceName);
+            placeName = localPlaceName;
+            placeId = localPlaceId;
+            localityTV.setText(placeName);
+        }
+    }
+}
